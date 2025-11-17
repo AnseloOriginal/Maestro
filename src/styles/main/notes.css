@@ -1,0 +1,94 @@
+.notes-button {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s scale 0.2s;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.notes-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+}
+
+.notes-button:active {
+  transform: translateY(-1px);
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+  scale: 0.9;
+}
+
+.notes-button:disabled {
+  background: linear-gradient(135deg, #d4d4d4, #f5f5f5);
+  color: black;
+  cursor: not-allowed;
+}
+.notes-recents{
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  margin-bottom: 20px;
+}
+
+.recents-no-notes{
+  vertical-align: 100px;
+}
+
+.notes-offline-header{
+  display: block;
+}
+
+.notes-offline-options{
+  margin-bottom: 20px;
+  padding-left: 10px;
+}
+
+.notes-offline-options-sort{
+  width: 150px;
+  height: 35px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.notes-classic-button{
+  background-color: white;
+  color: black;
+  border: 2px solid black;
+  border-radius: 100px;
+  transition: color 0.15s background-color 0.15s scale 0.1s;
+}
+
+.notes-classic-button:hover{
+  background-color: black;
+  color: white;
+}
+
+.notes-classic-button:active{
+  scale: 0.9;
+}
+.notes-offline-options-online{
+  width: 200px;
+  height: 40px;
+}
+
+.notes-online-back{
+  margin-left: 5px;
+  width: 60px;
+  height: 35px; 
+}
+
+.notes-online-sorter{
+  display: block;
+  width: 200px;
+  height: 40px;
+  margin-bottom: 30px;
+}
+
+.offline-butn-group{
+  overflow-y: scroll;
+  min-height: 200px;
+  max-height: 400px;
+}

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="manifest" href="./../manifestv2.json" />
+    <script src="../nodeless/prescript.js" type="module" fetchpriority="high"></script>
+    <title>Create New Account | Maestro</title>
+    <link rel="stylesheet" type="text/css" href="styles/general-form.css">
+    <link rel="stylesheet" type="text/css" href="styles/new-account.css">
+  </head>
+  <body>
+    <div class="panel"></div>
+    <div class="form-body">
+      <p class="form-header"> Create a new account </p>
+      <div class="new-type-body">
+        <button class="new-type-button-active" id="switch-student">Student</button>
+        <button class="new-type-button-inactive" id="switch-worker">Worker</button>
+      </div>
+      <div class="username">
+        <label class="form-label" for="username-input">Username:</label>
+        <input class="form-input" id="username-input" type="text"></input>
+        <p class="form-input-error" id="username-error"> </p>
+      </div>
+      <div class="surname">
+        <label class="form-label" for="surname-input">Surname:</label>
+        <input class="form-input" id="surname-input" type="text"></input>
+        <p class="form-input-error" id="surname-error"> </p>
+      </div>
+      <div class="firstname">
+        <label class="form-label" for="firstname-input">Firstname:</label>
+        <input class="form-input" id="firstname-input" type="text"></input>
+        <p class="form-input-error" id="firstname-error"> </p>
+      </div>
+      <div class="othername">
+        <label class="form-label" for="othername-input">Othername:</label>
+        <input class="form-input" id="othername-input" type="text"></input>
+        <p class="form-input-error" id="othername-error"> </p>
+      </div>
+      <div class="student-class" id="student-class">
+        <label class="form-label" for="student-class-input">Student Class:</label>
+        <select id="student-class-input" class="form-input">
+          <option value="7"> JSS1 </option>
+          <option value="8"> JSS2 </option>
+          <option value="9"> JSS3 </option>
+          <option value="10"> SS1 </option>
+          <option value="11"> SS2 </option>
+          <option value="12"> SS3 </option>
+        </select>
+      </div>
+      <div class="worker-type" id="worker-type">
+        <label class="form-label" for="worker-type-input">Worker Type:</label>
+        <select id="worker-type-input" class="form-input">
+          <option value="teacher"> Teacher </option>
+          <option value="admin"> Admin </option>
+        </select>
+      </div>
+      <div class="password" id="password">
+        <label class="form-label" for="password-input">Password:</label>
+        <input class="form-input" id="password-input" type="password"></input>
+        <p class="form-input-error" id="password-error"> </p>
+      </div>
+      <div class="ver-password">
+        <label class="form-label" for="ver-password-input">Verify Password:</label>
+        <input class="form-input" id="ver-password-input" type="password"></input>
+        <p class="form-input-error" id="ver-password-error"> </p>
+      </div>
+      <div class="password-actions">
+        <label>
+          <input type="checkbox" class="form-checkbox" id="show-password"> Show Password 
+        </label>
+      </div>
+      <div class="new-actions">
+        <p class="form-link"><a href="login.html"> Already have an account </a></p>
+        <button class="form-button" id="new-button" >Create</button>
+      </div>
+    </div>
+    <dialog id="form-dialog-process" class="form-dialog-process">
+      <img id="form-dialog-process-img" class="form-dialog-process-text" src="">
+      <p id="form-dialog-process-text" class="form-dialog-process-text"> Please wait!!</p>
+      <button id="form-dialog-process-button" class="form-button">Close</button>
+    </dialog>
+    <script src="scripts/new-account.js"></script>
+  </body>
+</html>

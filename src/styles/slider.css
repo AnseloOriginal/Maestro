@@ -1,0 +1,81 @@
+.sidepanel{
+  background-color: white;
+  height: 100vh;
+  position: fixed;
+  border-right: 1px solid black;
+}
+.sidepanel-min{
+  width: 150px;
+  text-align: left;
+  animation: slideOut 0.5s ease-out forwards;
+}
+
+.sidepanel-max{
+  width: 50px;
+  text-align: center;
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+.content{
+  background-color:rgb(254, 254, 254);
+  width: 100vw;
+  height: 100vh;
+  padding-left: 60px;
+}
+
+.menu-button{
+  margin-top: 2px;
+  margin-bottom: 20px;
+  background-color: white;
+  border-color: white;
+  border-style: solid;
+  width: 50px;
+  border-radius: 300px;
+  transition: background-color 0.15s linear;
+  user-select: none;
+}
+
+.menu-button:hover{
+  background-color: rgb(192, 192, 192);
+}
+
+.menu-button:active{
+  background-color: rgb(128, 128, 128);
+}
+
+.menu-butn{
+  margin-bottom: 20px;
+  user-select: none;
+  cursor: pointer;
+}
+
+.menu-butn:hover{
+  background-color: rgb(230, 230, 230);
+}
+
+.menu-butn:active{
+  background-color: rgb(151, 151, 151);
+}
+
+.menu-butn-text{
+  display: inline;
+  vertical-align: top;
+  font-size: 20px;
+  font-weight: 400;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  user-select: none;
+}
+
+.menu-butn-icon{
+  user-select: none;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+  from { transform: translateX(-100%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}

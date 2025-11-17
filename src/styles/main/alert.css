@@ -1,0 +1,14 @@
+.alert{
+  background-color: rgb(245, 190, 190);
+  height: 40px;
+  vertical-align: middle;
+  border: 1px solid black;
+}
+
+.alert-text{
+  display: inline;
+  vertical-align: top;
+  font-size: 20px;
+  font-weight: 400;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

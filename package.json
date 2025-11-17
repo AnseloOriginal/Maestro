@@ -1,0 +1,33 @@
+{
+  "name": "maestro",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "nodeless": "www.activebrains.com/app/src",
+    "test": "mocha",
+    "package": "@electron-packager . --arch=x64 --asar --electron-version=22.3.27 --electron-zip-dir=D:\\Dev\\Electron --platform=win32 --tempdir=\"D:\\Dev\\Auto Apps\\Brain Power\\Export\\\" --no-tmpdir --icon=logo.ico"
+  },
+  "keywords": [],
+  "author": "Uzebu Ansel",
+  "license": "MIT",
+  "description": "",
+  "devDependencies": {
+    "@electron/packager": "^18.4.4",
+    "chai": "^6.0.1",
+    "electron": "^37.2.4",
+    "mocha": "^11.7.2"
+  },
+  "dependencies": {
+    "docx-preview": "^0.3.6",
+    "electron-is-dev": "^3.0.1",
+    "electron-store": "^10.1.0",
+    "electron-updater": "^6.6.2",
+    "esbuild": "^0.25.9",
+    "mammoth": "^1.10.0",
+    "material-symbols": "^0.34.1",
+    "ps-list": "^8.1.1",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  }
+}

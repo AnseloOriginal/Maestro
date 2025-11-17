@@ -1,0 +1,16 @@
+{
+  "short_name": "Maestro",
+  "name": "Maestro",
+  "id": "/",
+  "description": "Access school notes and more",
+  "start_url": "src/",
+  "icons": [
+    {
+      "src": "src/images/logo.png",
+      "sizes": "512x512"
+    }
+  ],
+  "display": "fullscreen",
+  "theme_color": "#eeffee",
+  "background_color": "#eeffee"
+}

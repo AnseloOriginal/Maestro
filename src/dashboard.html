@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="manifest" href="./../manifestv2.json" />
+    <script src="../nodeless/prescript.js" type="module" fetchpriority="high"></script>
+    <title> Maestro  </title>
+    <link rel="stylesheet" type="text/css" href="styles/main/alert.css">
+    <link rel="stylesheet" type="text/css" href="styles/main/general.css">
+    <link rel="stylesheet" type="text/css" href="styles/slider.css">
+    <link rel="stylesheet" type="text/css" href="styles/main/notes.css">
+    <link rel="stylesheet" type="text/css" href="styles/main/monitor.css">
+    <link href="./images/material-symbols/outlined.css" rel="stylesheet">
+    <link href="./images/material-symbols/rounded.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="sidepanel" id="sidepanel" style="opacity: 0;">
+      <button id="switch" class="menu-button">
+        <span class="material-symbols-outlined" >menu</span>
+      </button>
+      <div class="menu-butn" id="main-butn-dashboard">
+        <span class="material-symbols-outlined menu-butn-icon" title="Dashboard">home</span>
+        <p class="menu-butn-text" name="menu-butn-text"> Dashboard </p>
+      </div>
+      <div class="menu-butn" id="main-butn-notes">
+        <span class="material-symbols-outlined menu-butn-icon" title="Notes">book</span>
+        <p class="menu-butn-text" name="menu-butn-text"> Notes </p>
+      </div>
+      <div class="menu-butn" id="main-butn-monitor">
+        <span class="material-symbols-outlined menu-butn-icon" title="Monitor Students">monitor</span>
+        <p class="menu-butn-text" name="menu-butn-text"> Monitor </p>
+      </div>
+    </div>
+    <div class="content" id="content">
+      <div class="alert" id="alert"></div>
+      <div class="content2" id="content2"></div>
+    </div>
+  </body>
+  <script src="scripts/main.js" type="module"></script>
+</html>

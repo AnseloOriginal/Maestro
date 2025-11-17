@@ -1,0 +1,84 @@
+.monitor-user{
+  display: inline-block;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  border: 0.5px solid rgb(200, 182, 204);
+  border-radius: 20px;
+  background-color: rgb(251, 247, 255);
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+.monitor-user-lower{
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 10px;
+  border: 0.5px solid rgb(200, 182, 204);
+  display: grid;
+  flex-flow: column;
+}
+
+.monitor-user-upper{
+  height: 40px;
+  padding-left: 50px;
+  padding-top: 30px;
+}
+
+.monitor-device-header{
+  margin-top: 0px;
+  background-color: rgb(233, 233, 233);
+  margin-bottom: 10px;
+}
+
+.monitor-device-header-name{
+  display: inline;
+}
+
+.monitor-device-header-app{
+  display: inline;
+}
+
+.monitor-user-name{
+  display: inline;
+  font-weight: 600;
+}
+
+.monitor-device{
+  padding-left: 5px;
+  display: grid;
+  grid-template-columns:60px 1fr 60px;
+  gap: 10px;
+  text-align: center;
+  border-bottom: 1px dashed rgb(194, 194, 194);
+}
+
+.monitor-device-name{
+  display: inline;
+}
+
+.monitor-device-app{
+  display: inline;
+  overflow-wrap: break-word;
+}
+
+.monitor-device-lock{
+  display: inline;
+  padding-top: 15px;
+  color: rgb(63, 37, 92);
+  transition: background-color 0.15s;
+}
+
+.monitor-device-lock-inactive{
+  opacity: 60%;
+  color: black;
+}
+
+.monitor-device-lock-icon:hover{
+  border-radius: 20px;
+  background-color: rgb(184, 161, 189);
+}
+
+.monitor-device-lock-icon:active{
+  border-radius: 20px;
+  background-color: rgb(204, 183, 209);
+}

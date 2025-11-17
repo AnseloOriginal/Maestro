@@ -1,0 +1,33 @@
+html{
+  width: 100%;
+}
+
+.main{
+  text-align: center;
+}
+
+.logo{
+  height: 70vh;
+  max-width: 100%;
+  min-height: 200px;
+  object-fit: contain;
+  text-align: center;
+}
+
+@media (max-height: 500px) {
+  .extra1{
+    display: none;
+  }
+}
+
+ body {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+h1,image {
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+
+

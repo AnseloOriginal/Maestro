@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="manifest" href="./../manifestv2.json" />
+    <script src="../nodeless/prescript.js" type="module" fetchpriority="high"></script>
+    <title>Login | Maestro</title>
+    <link rel="stylesheet" type="text/css" href="styles/general-form.css">
+    <link rel="stylesheet" type="text/css" href="styles/login.css">
+  </head>
+  <body>
+    <div class="panel"></div>
+    <div class="form-body">
+      <p class="form-header"> Login to Maestro</p>
+      <div class="username">
+        <label class="form-label" for="username-input">Username:</label>
+        <input class="form-input" id="username-input" type="text"></input>
+      </div>
+      <div class="password">
+        <label class="form-label" for="password-input">Password:</label>
+        <input class="form-input" id="password-input" type="password"></input>
+      </div>
+      <div class="password-actions">
+        <label>
+          <input type="checkbox" class="form-checkbox" id="show-password"> Show Password 
+        </label>
+      </div>
+      <div class="login-actions">
+        <p class="form-link"><a href="docs/forgot.html"> Forgot Login Details </a></p>
+        <p class="form-link"><a href="new.html"> Create New Account </a></p>
+        <button class="form-button" id="logon-button" >Login</button>
+      </div>
+      <dialog id="form-dialog-process" class="form-dialog-process">
+        <img id="form-dialog-process-img" class="form-dialog-process-text" src="">
+        <p id="form-dialog-process-text" class="form-dialog-process-text"> Please wait!!</p>
+      <button id="form-dialog-process-button" class="form-button">Close</button>
+    </dialog>
+    </div>
+    <script src="scripts/login.js" type="module"></script>
+  </body>
+</html>

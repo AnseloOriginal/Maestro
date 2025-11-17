@@ -1,0 +1,57 @@
+.form-header{
+  padding-left: 70px;
+}
+
+.new-type-body{
+  display: inline-block;
+  border: black;
+  width: 500px; 
+  height: 50px;
+  border-radius: 40px;
+  vertical-align: middle;
+  text-align: center;
+  margin-bottom: 20px;
+  padding-left: 70px;
+}
+
+.new-type-button-active{
+  background-color: rgb(66, 0, 219);
+  color: white;
+  border: blue;
+  width: 80px; 
+  height: 40px;
+  border-radius: 40px;
+}
+
+.new-type-button-inactive{
+  background-color: rgb(206, 206, 206);
+  border: black;
+  width: 80px; 
+  height: 40px;
+  border-radius: 40px;
+  transition: background-color 0.15s;
+}
+
+.new-type-button-inactive:hover{
+  background-color: rgb(192, 185, 185);
+}
+
+.new-type-button-inactive:active{
+  background-color: rgb(153, 153, 153);
+}
+
+.password-actions{
+  padding-left: 75px;
+}
+
+.form-dialog-process{
+  text-align: center;
+}
+
+.form-dialog-process-img{
+  width: 100px; 
+}
+
+.form-dialog-process-text{
+  font-weight: bold;
+}
