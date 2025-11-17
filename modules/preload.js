@@ -7,7 +7,9 @@ contextBridge.exposeInMainWorld('runtime', {
   createNewAccount: (message) => ipcRenderer.invoke('Runtime Create Account',message),
   newSession: () => ipcRenderer.invoke('Runtime New Session'),
   logout: () => ipcRenderer.invoke('Runtime Logout'),
-  serverOnline: () => ipcRenderer.invoke('Runtime Server Status')
+  serverOnline: () => ipcRenderer.invoke('Runtime Server Status'),
+  onDownloadComplete: (callback) => ipcRenderer.on('note-download-complete', 
+    (_event,details) => callback(details))
 })
 
 contextBridge.exposeInMainWorld('server', {

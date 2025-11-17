@@ -126,7 +126,7 @@ main_notes_butn.onclick = () => changeScreen("notes")
 main_dash_butn.onclick = () => changeScreen("dashboard")
 main_monitor_butn.onclick = () => changeScreen("monitor")
 
-function handle(e,property) {
+function handle(e,property,caller) {
   if (e === "screen") {
     changeScreen(property)
   } else if (e === "download") {
@@ -171,3 +171,21 @@ function contentProtection() {
     main_monitor_butn.style.display = "none"
   }
 }
+
+window.runtime.onDownloadComplete((details) => {
+  if (currentScreen === "notes-online") {
+    let download_button = document.getElementById(details.download)
+    if (download_button) {
+      let icon = download_button.getElementsByTagName("span")
+      if (icon[0]) {
+        if (details.status == "complete") {
+          icon[0].innerText = "check"
+        } else {
+          icon[0].innerText = "x"
+        }
+      }
+      download_button.disabled = false
+    }
+  }
+  // console.log("Download: ",details)
+})

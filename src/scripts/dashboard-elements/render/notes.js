@@ -131,7 +131,8 @@ function attachHooks(hook,section) {
  }
  downloadNoteButton.forEach((button)=>{
   button.onclick = () => {
-    hook("download", button.getAttribute("content"))
+    button.id = button.getAttribute("content")
+    hook("download", button.getAttribute("content"), button)
     //button.disabled = true
   }
  })

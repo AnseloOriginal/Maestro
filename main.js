@@ -25,6 +25,7 @@ const createWindow = () => {
     }
   })
   win.loadFile('src/index.html')
+  return win
 }
 
 const createFileViewer = (filepath,filename) => {
@@ -47,9 +48,12 @@ const createFileViewer = (filepath,filename) => {
   })
 }
 
+let mainApp;
+let reporter;
 app.whenReady().then(() => {
-  createWindow(),
-  ipcMain.handle('Runtime Init', () => Runtime.Initialization()),
+  mainApp = createWindow(),
+  reporter = (status,report) => mainApp.webContents.send(status,report),
+  ipcMain.handle('Runtime Init', () => Runtime.Initialization(reporter)),
   ipcMain.handle('Runtime Login', async (event, username, password) => Runtime.freshLogin(username, password)),
   ipcMain.handle('Runtime Create Account', async (event, message) => Runtime.newAccount(message)),
   ipcMain.handle('Runtime New Session', async () => Runtime.getSession()),
@@ -63,3 +67,4 @@ app.whenReady().then(() => {
   ipcMain.handle('Server Monitor Data', async () => Runtime.getMonitorNotes()),
   ipcMain.handle('System Recents Note', async () => Runtime.getRecentNotes())
 })
+

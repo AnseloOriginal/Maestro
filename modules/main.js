@@ -11,9 +11,10 @@ export async function serverStatus() {
   return await server.serverIsAvailable()
 }
 
-export function Initialization() {
+export function Initialization(reporter) {
   fs.init()
   server.tests()
+  download.setReporter(reporter)
   //deviceID.deleteID()
   if (InitAllowed) {
     //console.log(deviceID.hasID())

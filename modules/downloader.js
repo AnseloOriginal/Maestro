@@ -4,12 +4,16 @@ import * as api from "./api.js"
 import {createWriteStream, accessSync} from "node:fs";
 import { copyFile, rm, constants, stat, writeFile } from 'node:fs/promises';
 
-
+let reporter;
 const downloadList = new Map()
 export const downloadQueue = []
 let process = "idle"
 const TempPath = path.join(os.homedir(),"Appdata","Roaming","ABA","temp")
 const baseNotesPath = path.join(os.homedir(),"Appdata","Roaming","ABA","files","notes")
+
+export function setReporter(method) {
+  reporter = method
+}
 
 async function downloadFile(filename) {
   const response = await getDownloadResource(filename)
@@ -87,8 +91,10 @@ function downloadRuntime(meth,target) {
     downloadFile(downloadQueue[0])
     .then(response => {
       if (response.ok && (response.received == response.totalLength) && response.received > 0) {
+        completeDownload("complete",response.filename)
         return moveDownload(response.filename)
       } else {
+        completeDownload("failed",response.filename)
         return trashDownload(response.filename)
       }
     })
@@ -98,5 +104,13 @@ function downloadRuntime(meth,target) {
       process = "idle"
       if (downloadQueue.length > 0){downloadRuntime("start")}
     }) 
+  }
+}
+
+function completeDownload(status,download) {
+  if (reporter) {
+    reporter("note-download-complete",{status,download})
+  } else {
+    console.warn("[Downloader] Attempt to use reporter before initialization")
   }
 }
