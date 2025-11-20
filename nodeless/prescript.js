@@ -8,7 +8,10 @@ if (!window.runtime) {
     createNewAccount: (message) => runtime.newAccount(message),
     newSession: runtime.getSession,
     logout: runtime.logout,
-    serverOnline: runtime.serverStatus
+    serverOnline: runtime.serverStatus,
+    onDownloadComplete: (callback) => document.addEventListener("note-download-complete", e => {
+        callback(e.detail)
+    })
   }
 }
 
@@ -32,7 +35,6 @@ if (!window.fs) {
 
 // Does "serviceWorker" exist
 if ("serviceWorker" in navigator && window.runtime.type() !== "node") {
-  console.log("RUntimes",window.runtime.type())
   navigator.serviceWorker.register("./../service-worker.js",{type: 'module'}).then(
     (registration) => {
       console.log("Service worker registration successful:", registration);

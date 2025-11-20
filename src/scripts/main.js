@@ -1,6 +1,7 @@
 import render from "./dashboard-elements/render.js"
 import manager from "./dashboard-elements/manager.js"
 import watcher from "./dashboard-elements/watcher.js"
+import { attemptNewLogin } from "../../nodeless/modules/server.js"
 
 const switcher = document.getElementById("switch")
 const sidepanel = document.getElementById("sidepanel")
@@ -187,5 +188,5 @@ window.runtime.onDownloadComplete((details) => {
       download_button.disabled = false
     }
   }
-  // console.log("Download: ",details)
 })
+

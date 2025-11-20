@@ -65,8 +65,10 @@ function downloadRuntime(meth,target) {
     downloadFile(downloadQueue[0])
     .then(response => {
       if (response.ok && (response.received == response.totalLength) && response.received > 0) {
+        completeDownload("complete",response.filename)
         return moveDownload(response.filename)
       } else {
+        completeDownload("failed",response.filename)
         return trashDownload(response.filename)
       }
     })
@@ -77,4 +79,12 @@ function downloadRuntime(meth,target) {
       if (downloadQueue.length > 0){downloadRuntime("start")}
     }) 
   }
+}
+
+function completeDownload(status,download) {
+  const event = new CustomEvent("note-download-complete", {
+    detail: { status,download }
+  });
+  const result = document.dispatchEvent(event);
+  console.log("Sent Download Event",result)
 }
