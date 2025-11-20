@@ -186,6 +186,6 @@ export async function fetchMonitoredDevices(sesid) {
   const message = {
     "sessid": sesid,
   }
-  console.log(simpleGet(api.getMonitorDataURL(),message))
+  //console.log(simpleGet(api.getMonitorDataURL(),message))
   return simpleGet(api.getMonitorDataURL(),message)
 }

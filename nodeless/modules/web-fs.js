@@ -66,7 +66,7 @@ export async function filesInFolderInformation(foldername,namefilter="") {
     for (let i=0;i<folder.files.length;i++) {
       const filename = folder.files[i];
       const fileObject = await request.get("files",filename)
-      console.log(fileObject)
+      //console.log(fileObject)
       //console.log("Got file object",fileObject,`Filename ${fileObject.name} Filter ${namefilter}`)
       if ((namefilter !== "" && namefilter === fileObject.name) || namefilter === "" ) {
         fileObject.filekey = filename

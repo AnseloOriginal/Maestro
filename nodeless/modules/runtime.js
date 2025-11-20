@@ -144,7 +144,7 @@ export async function getOnlineNotes(classes) {
 
 export async function getOfflineNotes() {
   const notes = await fs.notes()
-  console.log(notes)
+  //console.log(notes)
   return notes
 }
 

@@ -66,16 +66,32 @@ export function refresh_recents(rarray,hook) {
   }
 }
 
+function extract_subject_name(array,sort) {
+  const ret = []
+  array.forEach(value  => {
+    const seperated = value.split(" ")
+    if (seperated[1]) {
+      seperated[0] = ""
+      const subject_only = seperated.join(" ")
+      ret.push(subject_only)
+    }
+  })
+  return ret
+}
+
 function generate_offline_notes(barray,sort) {
   const offline = document.createElement("div")
+  const subject_only = extract_subject_name(barray)
+  let datalist = ""
+  subject_only.forEach( subject => {
+    datalist = datalist + `<option value="${subject}"></option>`
+  })
   offline.setAttribute("class","notes-offline")
   offline.innerHTML = 
   `<h3 class="notes-offline-header"> Offline </h3> 
   <div class="notes-offline-options"> 
-    <datalist id="gensubject">
-      <option value="Maths"></option>
-      <option value="English"></option>
-      <option value="Science"></option>
+    <datalist id="gensubject"> 
+      ${datalist}
     </datalist>
     <input type="search" class="notes-offline-options-sort" list="gensubject" placeholder="Search Notes" value="${sort}" inputmode="search">
     <button class="notes-offline-options-online notes-classic-button"> Browse Online Notes </button>
