@@ -86,5 +86,5 @@ function completeDownload(status,download) {
     detail: { status,download }
   });
   const result = document.dispatchEvent(event);
-  console.log("Sent Download Event",result)
+  //console.log("Sent Download Event",result)
 }
