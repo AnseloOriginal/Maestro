@@ -26,6 +26,7 @@ function ping() {
       const nowHasSession = await window.runtime.newSession()
       hasSession = nowHasSession
       if (nowHasSession) {await manager.getUserInfo()}
+      console.log("After session",currentScreen)
       changeScreen(currentScreen)
       //console.log(`PingID: ${pingID} Server: ${pingResults}`)
     }
@@ -37,7 +38,7 @@ function ping() {
     lastPingResults = pingResults
     pingID = setTimeout(ping, 2000)
   })
-  if (currentScreen==="monitor" || watcher.enabled() && manager.cache.server) {
+  if (currentScreen==="monitor" && watcher.enabled() && manager.cache.server) {
     window.server.serverMonitorData()
     .then((users) =>{
       render.monitor.generate_monitor(content,users,handle)
@@ -66,6 +67,7 @@ const toggle_panel = () => {
 }
 
 switcher.onclick = () => toggle_panel()
+
 async function changeScreen(screen,...extras) {
   refresh_alert()
   content.innerHTML = ""
@@ -76,6 +78,7 @@ async function changeScreen(screen,...extras) {
       } else {render.dashboard.generate_main_dashboard(content,"worker")}
     } else {render.dashboard.generate_main_dashboard(content,"offline")}
   } else if(screen === "notes") {
+    console.log("Before session",currentScreen)
     const recents = await window.fs.recents()
     recents.forEach((note,i,a) =>{
       a[i] = manager.pretify(note)
@@ -87,12 +90,16 @@ async function changeScreen(screen,...extras) {
     const group = manager.getOnlineNotesGroups()
     render.notes.generate_notes_pages(content,notes,[],"online","",group,handle)
   } else if(screen === "monitor") {
-    const fake = {
-      "Uzebu Ansel": [{"device_name":"ABA13","app":"msedge"},{"device_name":"A1A13","app":"electron"}],
-      "Esohe Uzebu": [{"device_name":"ABA14","app":"mastro"},{"device_name":"A1C13","app":"cod"}]
+    if (manager.cache.server) {
+      const guide = {
+        "Uzebu Ansel": [{"device_name":"ABA13","app":"msedge"},{"device_name":"A1A13","app":"electron"}],
+        "Esohe Uzebu": [{"device_name":"ABA14","app":"mastro"},{"device_name":"A1C13","app":"cod"}]
+      }
+      const devices = await window.server.serverMonitorData()
+      render.monitor.generate_monitor(content,devices,handle)
+    } else {
+      render.general.offile(content)
     }
-    const devices = await window.server.serverMonitorData()
-    render.monitor.generate_monitor(content,devices,handle)
   }
   currentScreen = screen
 }
