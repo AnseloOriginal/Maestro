@@ -9,6 +9,7 @@ if (!window.runtime) {
     newSession: runtime.getSession,
     logout: runtime.logout,
     serverOnline: runtime.serverStatus,
+    submitServerAction: runtime.submitServerAction,
     onDownloadComplete: (callback) => document.addEventListener("note-download-complete", e => {
         callback(e.detail)
     })

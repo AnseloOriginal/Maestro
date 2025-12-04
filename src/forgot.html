@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title> Forgot Password | Maestro </title>
+    <link rel="manifest" href="./../manifestv2.json" />
+    <script src="../nodeless/prescript.js" type="module" fetchpriority="high"></script>
+    <script src="scripts/forgot-password.js" type="module"></script>
+  <link rel="stylesheet" type="text/css" href="styles/loading.css">
+  <link rel="stylesheet" type="text/css" href="styles/general-form.css">
+  </head>
+  <body>
+    <div class="panel"></div>
+    <div class="form-body">
+    <p class="form-header"> Forgot Your Password</p>
+    <div class="user-info">
+      <label class="form-label" for="username-input">Username:</label>
+      <input class="form-input" id="username-input" type="text"></input>
+    </div>
+    <div class="password">
+      <label class="form-label" for="password-input">New Password:</label>
+      <input class="form-input" id="password-input" type="password"></input>
+    </div>
+    <div class="login-actions">
+      <button class="form-button" id="submit-button" style="margin-top: 20px;" >Submit</button>
+      <p class="form-fake-link"><a onclick="history.back()" > Return Back </a></p>
+    </div>
+    <dialog id="form-dialog-process" class="form-dialog-process">
+      <img id="form-dialog-process-img" class="form-dialog-process-text" src="">
+      <p id="form-dialog-process-text" class="form-dialog-process-text"> Please wait!!</p>
+      <button id="form-dialog-process-button" class="form-button">Close</button>
+    </dialog>
+    </div>
+  </body>
+</html>

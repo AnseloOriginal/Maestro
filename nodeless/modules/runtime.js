@@ -217,3 +217,9 @@ export async function addRecentNote(name) {
   }
   localStorage.setItem("Recents",JSON.stringify(recents))
 }
+
+export async function submitServerAction(type,...param) {
+  if (type == "fgp") {
+    console.log(param)
+  }
+}
