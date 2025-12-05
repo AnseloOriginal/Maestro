@@ -11,8 +11,8 @@ const serverPrivateDataSpace = "private/index.php"
 const serverNewAccountSpace = "account/index.php"
 const serverNewMonitorIDSpace = "keypair/monitor.php"
 const loginSpace = "login/index.php"
-const serverFilesContentSpace = "content.php"
-const serverFilesDownloadSpace = "get.php"
+const serverFilesContentSpace = "list.php" //Previously content.phpcontent.php"
+const serverFilesDownloadSpace = "download.php"
 const serverGetMonitorDataSpace = "get.php"
 
 const apiJoin = (...parts) => parts.join("/");

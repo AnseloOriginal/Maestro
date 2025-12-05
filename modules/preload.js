@@ -14,7 +14,7 @@ contextBridge.exposeInMainWorld('runtime', {
 
 contextBridge.exposeInMainWorld('server', {
   serverUserInfo: () => ipcRenderer.invoke('Server User Info'),
-  serverNotesInfo: (classes) => ipcRenderer.invoke('Server Notes Info',classes),
+  serverNotesInfo: (classes,term) => ipcRenderer.invoke('Server Notes Info',classes,term),
   serverMonitorData: () => ipcRenderer.invoke("Server Monitor Data")
 })
 

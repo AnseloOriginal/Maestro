@@ -36,12 +36,32 @@ async function downloadFile(filename) {
   }
 }
 
+function convertToServerName(filename) {
+  const Map = {
+    "jss1": 7,
+    "jss2": 8,
+    "jss3": 9,
+    "sss1": 10,
+    "sss2": 11,
+    "sss3": 12,
+  }
+  const csv = filename.split(" ")
+  const term = csv[0]
+  const subclass = Map[csv[1].toLowerCase()]
+  csv.shift()
+  csv.shift()
+  const rem = csv.join(" ")
+  return `notes,${term},${subclass},${rem}.aba`
+}
+
 async function getDownloadResource(name) {
-  const message = {file: name}
+  const serverFileName = convertToServerName(name)
+  const message = {file: serverFileName}
   const result = await fetch(api.getFilesDownload(), {
     method: "POST",
     body: new URLSearchParams(message)
   })
+  console.log(result.status)
   return result
 }
 

@@ -83,12 +83,14 @@ async function changeScreen(screen,...extras) {
     recents.forEach((note,i,a) =>{
       a[i] = manager.pretify(note)
     })
-    const notes = await manager.getFormatedDownloadedNotes()
-    render.notes.generate_notes_pages(content,notes,recents,"main","",[],handle)
+    const term = "firstterm" //This is a default value
+    const notes = await manager.getFormatedDownloadedNotes() //gets the notefrom
+    render.notes.generate_notes_pages(content,notes,recents,"main","",term,[],handle)
   } else if(screen === "notes-online") {
     const notes = await manager.getOnlineNotesAvailable()
     const group = manager.getOnlineNotesGroups()
-    render.notes.generate_notes_pages(content,notes,[],"online","",group,handle)
+    const term = "firstterm jss1" //This is a default value
+    render.notes.generate_notes_pages(content,notes,[],"online","",term,group,handle)
   } else if(screen === "monitor") {
     if (manager.cache.server) {
       const guide = {

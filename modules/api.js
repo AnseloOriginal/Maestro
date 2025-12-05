@@ -1,4 +1,4 @@
-const mainURL = "http://192.168.1.2"
+const mainURL = "http://localhost/aba"
 const serverMainSpace = "server"
 const serverStatusSpace = "status"
 const serverCreateSpace = "create"
@@ -9,8 +9,8 @@ const serverPrivateDataSpace = "private/index.php"
 const serverNewAccountSpace = "account/index.php"
 const serverNewMonitorIDSpace = "keypair/monitor.php"
 const loginSpace = "login/index.php"
-const serverFilesContentSpace = "content.php"
-const serverFilesDownloadSpace = "get.php"
+const serverFilesContentSpace = "list.php" //Previously content.php
+const serverFilesDownloadSpace = "download.php"
 const serverGetMonitorDataSpace = "get.php"
 
 export const apiJoin = (...parts) => parts.join("/");

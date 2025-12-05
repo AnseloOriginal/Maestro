@@ -23,8 +23,27 @@ async function downloadFile(filename) {
   }
 }
 
+function convertToServerName(filename) {
+  const Map = {
+    "jss1": 7,
+    "jss2": 8,
+    "jss3": 9,
+    "sss1": 10,
+    "sss2": 11,
+    "sss3": 12,
+  }
+  const csv = filename.split(" ")
+  const term = csv[0]
+  const subclass = Map[csv[1].toLowerCase()]
+  csv.shift()
+  csv.shift()
+  const rem = csv.join(" ")
+  return `notes,${term},${subclass},${rem}.aba`
+}
+
 async function getDownloadResource(name) {
-  const message = {file: name}
+  const serverFileName = convertToServerName(name)
+  const message = {file: serverFileName}
   const result = await fetch(api.getFilesDownload(), {
     method: "POST",
     body: new URLSearchParams(message)
@@ -44,10 +63,10 @@ export function addDownload(filename) {
 }
 
 async function moveDownload(filename) {
-  let desfile =  filename
-  let tempfile = downloadList.get(filename)
-  const moved = await WebFS.moveFile("temp","notes",tempfile)
-  const renamed = await WebFS.renameFile("notes",tempfile,desfile)
+  const desfile =  filename
+  const tempfile = downloadList.get(filename)//Gets temp name
+  const moved = await WebFS.moveFile("temp","notes",tempfile) //Moves the temp file to notes dest
+  const renamed = await WebFS.renameFile("notes",tempfile,desfile) //Renames to real name
   console.log(`Downloader: Attempted Moving ${tempfile}, Moved:${moved}, Renamed ${renamed}`)
   return {ok:true,filename}
 }

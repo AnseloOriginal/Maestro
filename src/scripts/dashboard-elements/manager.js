@@ -34,6 +34,7 @@ export function get(request) {
 
 export function pretify(input){
   let classes = ["jss1","jss2","jss3","sss1","sss2","sss3"]
+  let terms = ["firstterm","secondterm","thirdterm"]
   const inbuilt = (str) => {
     let strArray = str.toLowerCase().split(" ")
     strArray.forEach((word,i,a) => {
@@ -41,7 +42,11 @@ export function pretify(input){
       if (classes.includes(word)) {
         a[i] = word.toUpperCase()
       } else {
-        a[i] = word[0].toUpperCase() + word.slice(1)
+        if (terms.includes(word)) {
+          a[i] = word.toLowerCase()
+        } else {
+          a[i] = word[0].toUpperCase() + word.slice(1)
+        }
       }
     })
     return strArray.join(" ")
@@ -52,7 +57,7 @@ export function pretify(input){
 export async function getFormatedDownloadedNotes() {
   const notes = await window.fs.notes()
   notes.forEach((note,i,a) =>{
-    a[i] = pretify(note)
+    a[i] = pretify(note.toLowerCase())
   }
 )
   return notes
@@ -67,23 +72,27 @@ export function getOnlineNotesGroups() {
 }
 
 export async function getOnlineNotesAvailable() {
-  await cacheOnlineNotes()
+  await cacheOnlineNotes("firstterm")
+  await cacheOnlineNotes("secondterm")
+  await cacheOnlineNotes("thirdterm")
+  console.log(cache.onlinenotes)
   return cache.onlinenotes
 }
 
-async function cacheOnlineNotes() {
+async function cacheOnlineNotes(term) {
+  if (!cache.onlinenotes) {cache.onlinenotes = []}
   let all = []
   let group = []
   let classes = ["JSS1","JSS2","JSS3","SSS1","SSS2","SSS3"]
   for (let index = 7; index < 13; index++) {
-    const temp = await window.server.serverNotesInfo(index)
+    const temp = await window.server.serverNotesInfo(index,term)
     temp.forEach((name,i,a) => {
-      a[i] = classes[index-7] + " " + name
+      a[i] = term + " " + classes[index-7] + " " + name
     });
     if (temp.length > 0) {group.push(classes[index-7])}
     all.push(...temp)
   }
-  cache.onlinenotes = all
+  cache.onlinenotes.push(...all)
   cache.onlinegroup = group
 }
 

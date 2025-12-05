@@ -44,9 +44,6 @@ if ("serviceWorker" in navigator && window.runtime.type() !== "node") {
       console.error(`Service worker registration failed: ${error}`);
     },
   );
-  navigator.serviceWorker.ready.then((registration) => {
-    registration.showNotification("Hellos")
-  })
 } else {
   console.error("Service workers are not supported.");
 }

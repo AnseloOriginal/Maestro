@@ -69,8 +69,14 @@
 .notes-classic-button:active{
   scale: 0.9;
 }
+
 .notes-offline-options-online{
   width: 200px;
+  height: 40px;
+}
+
+.notes-offline-select-term{
+  width: 150px;
   height: 40px;
 }
 
@@ -82,14 +88,32 @@
 }
 
 .notes-online-sorter{
-  display: block;
+  display: inline-block;
   width: 200px;
   height: 40px;
-  margin-bottom: 30px;
+  margin: 10px;
 }
 
 .offline-butn-group{
   overflow-y: scroll;
   min-height: 200px;
   max-height: 400px;
+}
+
+.notes-online-control-group{
+  margin-bottom: 20px;
+}
+
+.notes-online-term-sorter{
+  display: inline-block;
+  width: 200px;
+  height: 40px;
+  margin: 10px;
+}
+
+.notes-online-text-sorter{
+  display: inline-block;
+  width: 200px;
+  height: 40px;
+  margin: 10px;
 }

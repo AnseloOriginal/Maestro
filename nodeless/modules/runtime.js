@@ -128,13 +128,13 @@ export async function getSession() {
   } 
 }
 
-export async function getOnlineNotes(classes) {
+export async function getOnlineNotes(classes,term) {
   if (await server.serverIsAvailable()) {
-    const result = await server.getAvailableNotes(classes)
+    const result = await server.getAvailableNotes(classes,term)
     if (result[0] === 0) {
       return result[1]
     } else {
-      console.log(result[1], classes)
+      console.log(result[1], classes, term)
       return []
     }
   } else {

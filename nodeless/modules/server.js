@@ -150,9 +150,10 @@ export async function attemptNewSession(loginid,deviceid) {
   }
 }
 
-export async function getAvailableNotes(classes) {
+export async function getAvailableNotes(classes,term) {
   const message = {
-    class: classes
+    path: `notes,${term},${classes}`,
+    type: "aba"
   }
   return await simpleGet(api.getFilesContent(),message)
 }
