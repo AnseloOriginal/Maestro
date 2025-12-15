@@ -11,6 +11,7 @@ const menu_butn_text = document.getElementsByName("menu-butn-text")
 const main_notes_butn = document.getElementById("main-butn-notes")
 const main_dash_butn = document.getElementById("main-butn-dashboard")
 const main_monitor_butn = document.getElementById("main-butn-monitor")
+const main_account_butn = document.getElementById("main-butn-account")
 let mode = 0
 let pingID = 0
 let lastPingResults = false
@@ -102,6 +103,9 @@ async function changeScreen(screen,...extras) {
     } else {
       render.general.offile(content)
     }
+  } else if(screen === "account") {
+    console.log(manager.cache["userinfo"])
+    render.account.render_main_page(content,handle,manager.cache["userinfo"])
   }
   currentScreen = screen
 }
@@ -135,6 +139,7 @@ toggle_panel()
 main_notes_butn.onclick = () => changeScreen("notes")
 main_dash_butn.onclick = () => changeScreen("dashboard")
 main_monitor_butn.onclick = () => changeScreen("monitor")
+main_account_butn.onclick = () => changeScreen("account")
 
 function handle(e,property,caller) {
   if (e === "screen") {
@@ -164,6 +169,9 @@ function handle(e,property,caller) {
       final.push([property.id, 0])
     }
     render.monitor.refreshUI(final)
+  } else if (e === "logout") {
+    window.runtime.logout()
+    window.location.href = "login.html"
   } else {
     console.log("Unknown handle",e)
   }

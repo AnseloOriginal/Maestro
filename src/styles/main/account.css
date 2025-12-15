@@ -1,0 +1,53 @@
+.account-user-info{
+  padding-top: 30px;
+  text-align: center;
+}
+
+.account-user-name{
+  font-weight: bold;
+  font-size: 20px;
+  margin: 0px;
+}
+
+.account-user-role{
+  margin: 0px;
+}
+
+.account-icon{
+  font-family: "Material Symbols Rounded";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 100px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "liga";
+}
+
+.account-button{
+  background-color: white;
+  color: black;
+  border: 2px solid black;
+  border-radius: 100px;
+  width: 200px;
+  height: 40px;
+  transition: color 0.15s background-color 0.15s scale 0.1s;
+}
+
+.account-button:hover{
+  background-color: black;
+  color:  white;
+  width: 200px;
+  height: 40px;
+}
+
+.account-user-tools{
+  margin-top: 10px;
+}

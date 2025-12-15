@@ -9,7 +9,7 @@ export async function getUserInfo() {
   if (typeof(userInfoResult) !== 'object'){
     throw Error("Returned something not a table")
   }
-  cache.user = userInfoResult
+  cache.userinfo = userInfoResult
 }
 
 export async function serverOnline() {
@@ -19,13 +19,13 @@ export async function serverOnline() {
 
 export function get(request) {
   if (request === "student") {
-    return cache.user.student
+    return cache.userinfo.student
   } else if (request === "disabled") {
-    return cache.user.disabled
+    return cache.userinfo.disabled
   } else if (request === "verified") {
-    return cache.user.verified
+    return cache.userinfo.verified
   } else if (request === "failed") {
-    if (!("user" in cache) || cache?.user?.failed) {return true}
+    if (!("userinfo" in cache) || cache?.userinfo?.failed) {return true}
     else {return false}
   } else if (request === "server status") {
     return cache.server
