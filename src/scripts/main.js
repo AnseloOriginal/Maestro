@@ -18,6 +18,7 @@ let pingID = 0
 let lastPingResults = false
 let hasSession = false
 let currentScreen = ""
+let hasFinishedLoading = false
 startUp()
 
 function ping() {
@@ -105,7 +106,7 @@ async function changeScreen(screen,...extras) {
       render.general.offile(content)
     }
   } else if(screen === "account") {
-    console.log(await manager.cacheGet("userinfo",manager.getUserInfo))
+    const userinfo = manager.cacheGet("userinfo",manager.getUserInfo)
     render.account.render_main_page(content,handle,manager.cache["userinfo"])
   }
   currentScreen = screen
@@ -117,15 +118,23 @@ async function startUp() {
   if (hasSession) {
     if (manager.cacheHas("userinfo")) {
       revaluator.set_as("userinfo",true) // Use cached info
+      manager.cache.userinfo = await manager.cacheGet("userinfo") //Compability with < 1.9 code
+      console.log(await manager.cacheGet("userinfo"))
       manager.cacheSet("userinfo",manager.getUserInfo) //Get the latest from server
-      manager.cache.userinfo = manager.cacheGet("userinfo") //Compability with < 1.9 code
     } else {
       await manager.cacheSet("userinfo",manager.getUserInfo) //wait for info
     }
     contentProtection()
+  } else {
+    //No sessions
+    if (manager.cacheHas("userinfo")) {
+      manager.cache.userinfo = await manager.cacheGet("userinfo") //Compability with < 1.9 code
+      contentProtection() //Enables admin offline tools
+    }
   }
   changeScreen("dashboard")
   ping()
+  hasFinishedLoading = true
 }
 
 function refresh_alert() {
@@ -145,8 +154,8 @@ function refresh_alert() {
 toggle_panel()
 main_notes_butn.onclick = () => changeScreen("notes")
 main_dash_butn.onclick = () => changeScreen("dashboard")
-main_monitor_butn.onclick = () => changeScreen("monitor")
-main_account_butn.onclick = () => changeScreen("account")
+main_monitor_butn.onclick = () => {if (hasFinishedLoading) {changeScreen("monitor")}}
+main_account_butn.onclick = () => {if (hasFinishedLoading) {changeScreen("account")}}
 
 function handle(e,property,caller) {
   if (e === "screen") {

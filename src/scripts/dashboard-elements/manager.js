@@ -101,10 +101,10 @@ async function cacheOnlineNotes(term) {
 async function cacheGet(key,fallback) {
   const cacheKey = "CACHE_"+key
   if (localStorage.getItem(cacheKey) !== null && revaluator.is_safe(key)) {
-    return localStorage.getItem(cacheKey)
+    return JSON.parse(localStorage.getItem(cacheKey))
   } else {
     const result = await fallback()
-    localStorage.setItem(cacheKey,result)
+    JSON.stringify(localStorage.setItem(cacheKey,result))
     revaluator.set_as(key,true)
   }
 }
@@ -113,10 +113,9 @@ async function cacheSet(key,data) {
   const cacheKey = "CACHE_"+key
   if (typeof data === "function") {
     const result = await data()
-    localStorage.setItem(cacheKey,result)
-    
+    localStorage.setItem(cacheKey,JSON.stringify(result))
   } else {
-    localStorage.setItem(cacheKey,data)
+    localStorage.setItem(cacheKey,JSON.stringify(data))
   }
 }
 

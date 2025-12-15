@@ -1,4 +1,5 @@
 export function render_main_page(content,handle,userinfo) {
+  content.replaceChildren()
   const heading = document.createElement("div")
   heading.innerHTML = `
   <h1> Account Settings </h1>
