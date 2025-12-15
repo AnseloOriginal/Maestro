@@ -2,6 +2,7 @@ import render from "./dashboard-elements/render.js"
 import manager from "./dashboard-elements/manager.js"
 import watcher from "./dashboard-elements/watcher.js"
 import { attemptNewLogin } from "../../nodeless/modules/server.js"
+import revaluator from "./dashboard-elements/revaluator.js"
 
 const switcher = document.getElementById("switch")
 const sidepanel = document.getElementById("sidepanel")
@@ -104,7 +105,7 @@ async function changeScreen(screen,...extras) {
       render.general.offile(content)
     }
   } else if(screen === "account") {
-    console.log(manager.cache["userinfo"])
+    console.log(await manager.cacheGet("userinfo",manager.getUserInfo))
     render.account.render_main_page(content,handle,manager.cache["userinfo"])
   }
   currentScreen = screen
@@ -114,9 +115,15 @@ async function startUp() {
   contentProtection()
   hasSession = await window.runtime.newSession() //Starts new session
   if (hasSession) {
-    await manager.getUserInfo()
+    if (manager.cacheHas("userinfo")) {
+      revaluator.set_as("userinfo",true) // Use cached info
+      manager.cacheSet("userinfo",manager.getUserInfo) //Get the latest from server
+      manager.cache.userinfo = manager.cacheGet("userinfo") //Compability with < 1.9 code
+    } else {
+      await manager.cacheSet("userinfo",manager.getUserInfo) //wait for info
+    }
     contentProtection()
-  } //Caches info
+  }
   changeScreen("dashboard")
   ping()
 }
@@ -172,6 +179,7 @@ function handle(e,property,caller) {
   } else if (e === "logout") {
     window.runtime.logout()
     window.location.href = "login.html"
+    sessionStorage.clear()
   } else {
     console.log("Unknown handle",e)
   }

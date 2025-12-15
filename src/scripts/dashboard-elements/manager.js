@@ -1,3 +1,4 @@
+import revaluator from './revaluator.js';
 //Returns if a user is a worker/student and usernames. Authorization levels and if use user's account is enabled
 const cache = {}
 
@@ -10,6 +11,7 @@ export async function getUserInfo() {
     throw Error("Returned something not a table")
   }
   cache.userinfo = userInfoResult
+  return userInfoResult
 }
 
 export async function serverOnline() {
@@ -96,6 +98,32 @@ async function cacheOnlineNotes(term) {
   cache.onlinegroup = group
 }
 
+async function cacheGet(key,fallback) {
+  const cacheKey = "CACHE_"+key
+  if (localStorage.getItem(cacheKey) !== null && revaluator.is_safe(key)) {
+    return localStorage.getItem(cacheKey)
+  } else {
+    const result = await fallback()
+    localStorage.setItem(cacheKey,result)
+    revaluator.set_as(key,true)
+  }
+}
+
+async function cacheSet(key,data) {
+  const cacheKey = "CACHE_"+key
+  if (typeof data === "function") {
+    const result = await data()
+    localStorage.setItem(cacheKey,result)
+    
+  } else {
+    localStorage.setItem(cacheKey,data)
+  }
+}
+
+function cacheHas(key) {
+  const cacheKey = "CACHE_"+key
+  return localStorage.getItem(cacheKey) !== null
+}
 export default {
   getUserInfo,
   cache,
@@ -104,5 +132,8 @@ export default {
   getOnlineNotesGroups,
   getOnlineNotesAvailable,
   serverOnline,
-  pretify
+  pretify,
+  cacheGet,
+  cacheSet,
+  cacheHas
 }
