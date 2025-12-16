@@ -103,9 +103,13 @@ async function cacheGet(key,fallback) {
   if (localStorage.getItem(cacheKey) !== null && revaluator.is_safe(key)) {
     return JSON.parse(localStorage.getItem(cacheKey))
   } else {
-    const result = await fallback()
-    JSON.stringify(localStorage.setItem(cacheKey,result))
-    revaluator.set_as(key,true)
+    if (typeof fallback === "function") {
+      const result = await fallback()
+      JSON.stringify(localStorage.setItem(cacheKey,result))
+      revaluator.set_as(key,true)
+    } else {
+      return fallback
+    }
   }
 }
 

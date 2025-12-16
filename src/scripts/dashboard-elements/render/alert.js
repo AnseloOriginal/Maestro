@@ -10,7 +10,7 @@ export function generate_alert(page,type,textCSS) {
     `
   } else if((type === "failed")) {
     page.innerHTML = `
-    <p class="${textCSS}">No Session, Log out</h1>
+    <p class="${textCSS}">No Session, Contact Support</h1>
     `
   } else if((type === "offline")) {
     page.innerHTML = `

@@ -7,6 +7,7 @@
     <script src="../nodeless/prescript.js" type="module" fetchpriority="high"></script>
     <title> Maestro  </title>
     <link rel="stylesheet" type="text/css" href="styles/main/alert.css">
+    <link rel="stylesheet" type="text/css" href="styles/main/testing.css">
     <link rel="stylesheet" type="text/css" href="styles/main/account.css">
     <link rel="stylesheet" type="text/css" href="styles/main/general.css">
     <link rel="stylesheet" type="text/css" href="styles/slider.css">
@@ -32,6 +33,10 @@
         <span class="material-symbols-outlined menu-butn-icon" title="Monitor Students">monitor</span>
         <p class="menu-butn-text" name="menu-butn-text"> Monitor </p>
       </div>
+      <div class="menu-butn" id="main-butn-test">
+        <span class="material-symbols-outlined menu-butn-icon" title="Monitor Students">star</span>
+        <p class="menu-butn-text" name="menu-butn-text"> Tests </p>
+      </div>      
       <div class="menu-butn" id="main-butn-account">
         <span class="material-symbols-outlined menu-butn-icon" title="Monitor Students">settings_account_box</span>
         <p class="menu-butn-text" name="menu-butn-text"> Account </p>
@@ -41,6 +46,7 @@
       <div class="alert" id="alert"></div>
       <div class="content2" id="content2"></div>
     </div>
+    <iframe id="external" style="display: none; left: 0px; top: 100px; width: 100%; border: none;"></iframe>
   </body>
   <script src="scripts/main.js" type="module"></script>
 </html>

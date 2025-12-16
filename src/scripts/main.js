@@ -7,12 +7,15 @@ import revaluator from "./dashboard-elements/revaluator.js"
 const switcher = document.getElementById("switch")
 const sidepanel = document.getElementById("sidepanel")
 const alert = document.getElementById("alert")
+const fullspace = document.getElementById("content")
 const content = document.getElementById("content2")
 const menu_butn_text = document.getElementsByName("menu-butn-text")
 const main_notes_butn = document.getElementById("main-butn-notes")
 const main_dash_butn = document.getElementById("main-butn-dashboard")
 const main_monitor_butn = document.getElementById("main-butn-monitor")
 const main_account_butn = document.getElementById("main-butn-account")
+const external_content = document.getElementById("external")
+const main_test_butn = document.getElementById("main-butn-test")
 let mode = 0
 let pingID = 0
 let lastPingResults = false
@@ -31,7 +34,6 @@ function ping() {
       if (nowHasSession) {await manager.getUserInfo()}
       console.log("After session",currentScreen)
       changeScreen(currentScreen)
-      //console.log(`PingID: ${pingID} Server: ${pingResults}`)
     }
     if (pingResults !== lastPingResults) {
       changeScreen(currentScreen)
@@ -106,8 +108,32 @@ async function changeScreen(screen,...extras) {
       render.general.offile(content)
     }
   } else if(screen === "account") {
-    const userinfo = manager.cacheGet("userinfo",manager.getUserInfo)
     render.account.render_main_page(content,handle,manager.cache["userinfo"])
+  } else if(screen === "test") {
+    fullspace.classList.add("content-fullscreen")
+    sidepanel.style.display = "none"
+    content.setAttribute("class","topbar")
+    external_content.style.display = "block"
+    external_content.style.position = "absolute"
+    external_content.src = "./external/testing.html"
+    render.testing.generate_test_topbar(content,manager.cache["userinfo"],1200)
+    window.sys.fullscreen(true)
+    sessionStorage.setItem("testdata",JSON.stringify({
+      targetbank: 0,
+      targetquestion: 0,
+      banks: [
+        {
+          name: "Chemisty",
+          questions: [
+            {
+              type: "obj",
+              textcontent: "This is a question",
+              options: ["Option1","Option2","Option3"]
+            }
+          ]
+        }
+      ]
+    }))
   }
   currentScreen = screen
 }
@@ -119,7 +145,6 @@ async function startUp() {
     if (manager.cacheHas("userinfo")) {
       revaluator.set_as("userinfo",true) // Use cached info
       manager.cache.userinfo = await manager.cacheGet("userinfo") //Compability with < 1.9 code
-      console.log(await manager.cacheGet("userinfo"))
       manager.cacheSet("userinfo",manager.getUserInfo) //Get the latest from server
     } else {
       await manager.cacheSet("userinfo",manager.getUserInfo) //wait for info
@@ -128,6 +153,7 @@ async function startUp() {
   } else {
     //No sessions
     if (manager.cacheHas("userinfo")) {
+      revaluator.set_as("userinfo",true) // Use cached info
       manager.cache.userinfo = await manager.cacheGet("userinfo") //Compability with < 1.9 code
       contentProtection() //Enables admin offline tools
     }
@@ -140,7 +166,7 @@ async function startUp() {
 function refresh_alert() {
   if (!(manager.get("server status"))) {
     render.alert.generate_alert(alert,"offline","alert-text")
-  } else if (manager.get("failed")) {
+  } else if (!hasSession) {
     render.alert.generate_alert(alert,"failed","alert-text")
   } else if (manager.get("disabled")) {
     render.alert.generate_alert(alert,"disabled","alert-text")
@@ -154,6 +180,7 @@ function refresh_alert() {
 toggle_panel()
 main_notes_butn.onclick = () => changeScreen("notes")
 main_dash_butn.onclick = () => changeScreen("dashboard")
+main_test_butn.onclick = () => changeScreen("test")
 main_monitor_butn.onclick = () => {if (hasFinishedLoading) {changeScreen("monitor")}}
 main_account_butn.onclick = () => {if (hasFinishedLoading) {changeScreen("account")}}
 

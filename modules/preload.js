@@ -24,3 +24,7 @@ contextBridge.exposeInMainWorld('fs', {
   open: (file) => ipcRenderer.invoke("Open File",file),
   recents: () => ipcRenderer.invoke("System Recents Note")
 })
+
+contextBridge.exposeInMainWorld('sys', {
+  fullscreen: (bol) => ipcRenderer.invoke("System Fullscreen",bol)
+})

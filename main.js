@@ -1,10 +1,9 @@
-const { app, BrowserWindow, ipcMain } = require('electron/main')
+const { app, BrowserWindow, ipcMain, Menu } = require('electron/main')
 const path = require('node:path')
 const Runtime = require("./modules/main")
 const rmSync = require("node:fs").rmSync
 const rmDirSync = require("node:fs").rmdirSync
 const isDev = require("electron-is-dev");
-
 
 const openFile = async (file) => {
   Runtime.addRecentNote(file)
@@ -50,6 +49,9 @@ const createFileViewer = (filepath,filename) => {
 
 let mainApp;
 let reporter;
+if (!isDev) {
+  Menu.setApplicationMenu(null)
+}
 app.whenReady().then(() => {
   mainApp = createWindow(),
   reporter = (status,report) => mainApp.webContents.send(status,report),
@@ -66,5 +68,6 @@ app.whenReady().then(() => {
   ipcMain.handle('Open File', async (event, file) => openFile(file)),
   ipcMain.handle('Server Monitor Data', async () => Runtime.getMonitorNotes()),
   ipcMain.handle('System Recents Note', async () => Runtime.getRecentNotes())
+  ipcMain.handle('System Fullscreen', async (event,bol) => mainApp.setFullScreen(bol))
 })
 
