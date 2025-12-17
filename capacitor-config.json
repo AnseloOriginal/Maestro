@@ -1,0 +1,6 @@
+{
+  "appId": "com.maestro.aba",
+  "appName": "Maestro",
+  "webDir": "dist",    // <-- adjust to your Electron build output folder
+  "bundledWebRuntime": false
+}

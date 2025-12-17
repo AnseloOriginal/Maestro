@@ -1,1 +1,10 @@
 node_modules
+
+# Build outputs
+dist/
+build/
+
+# Capacitor
+android/app/build/
+android/build/
+android/.gradle/

@@ -21,6 +21,9 @@
     "mocha": "^11.7.2"
   },
   "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
     "docx-preview": "^0.3.6",
     "electron-is-dev": "^3.0.1",
     "electron-store": "^10.1.0",
@@ -32,12 +35,17 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
-"build": {
-  "linux": {
-    "target": ["deb", "AppImage"]
-  },
-  "win": {
-    "target": ["portable"]
+  "build": {
+    "linux": {
+      "target": [
+        "deb",
+        "AppImage"
+      ]
+    },
+    "win": {
+      "target": [
+        "portable"
+      ]
+    }
   }
-}
 }
