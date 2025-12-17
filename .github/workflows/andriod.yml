@@ -1,5 +1,6 @@
 name: Build Android APK
 
+
 on:
   push:
     branches:
@@ -18,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'   # match your local Node version
+          node-version: '22'   # match your local Node version
 
       # 3. Install project dependencies
       - run: npm install
