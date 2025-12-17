@@ -1,16 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    compileSdk 34  // <-- required, see next error
     compileOptions {
+
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
+        kotlinOptions {
+            jvmTarget = "17"
+        }
     }
     namespace = "com.maestro.aba"
-    compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "com.maestro.aba"
         minSdkVersion rootProject.ext.minSdkVersion
