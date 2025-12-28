@@ -1,3 +1,4 @@
+import { type } from "node:os";
 import * as api from "./api.js"
 
 async function simpleGet(url,post,debug){
@@ -188,4 +189,12 @@ export async function fetchMonitoredDevices(sesid) {
     "sessid": sesid,
   }
   return simpleGet(api.getMonitorDataURL(),message)
+}
+
+export async function testNameData(type,sesid) {
+  const message = {
+    type,
+    "sid": sesid
+  }
+  return simpleGet(api.getTestNameDataURL(),message)
 }

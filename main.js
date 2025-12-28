@@ -67,7 +67,8 @@ app.whenReady().then(() => {
   ipcMain.handle('Download Files', async (event, file) => Runtime.addDownload(file)),
   ipcMain.handle('Open File', async (event, file) => openFile(file)),
   ipcMain.handle('Server Monitor Data', async () => Runtime.getMonitorNotes()),
-  ipcMain.handle('System Recents Note', async () => Runtime.getRecentNotes())
-  ipcMain.handle('System Fullscreen', async (event,bol) => mainApp.setFullScreen(bol))
+  ipcMain.handle('System Recents Note', async () => Runtime.getRecentNotes()),
+  ipcMain.handle('System Fullscreen', async (event,bol) => mainApp.setFullScreen(bol)),
+  ipcMain.handle('Test Names', async (event,type) => Runtime.getTestNameData(type))
 })
 

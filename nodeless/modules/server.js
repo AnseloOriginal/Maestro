@@ -190,3 +190,11 @@ export async function fetchMonitoredDevices(sesid) {
   //console.log(simpleGet(api.getMonitorDataURL(),message))
   return simpleGet(api.getMonitorDataURL(),message)
 }
+
+export async function testNameData(type,sesid) {
+  const message = {
+    type,
+    "sid": sesid
+  }
+  return simpleGet(api.getTestNameDataURL(),message)
+}

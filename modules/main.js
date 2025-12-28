@@ -178,3 +178,17 @@ export async function addRecentNote(name) {
     fs.saveRecentJson(JSON.stringify(recents));
   }
 }
+
+export async function getTestNameData(type) {
+  if (await server.serverIsAvailable() && sessionID) {
+    const response = await server.testNameData(type,sessionID)
+    if (response[0] === 0) {
+      return response[1]
+    } else {
+      console.log(response)
+      return []
+    }
+  } else {
+    return []
+  }
+}

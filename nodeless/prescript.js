@@ -34,6 +34,12 @@ if (!window.fs) {
   }
 }
 
+if (!window.test) {
+  window.test = {
+    names: async (type) => runtime.getTestNameData(type)
+  }
+}
+
 // Does "serviceWorker" exist
 if ("serviceWorker" in navigator && window.runtime.type() !== "node") {
   navigator.serviceWorker.register("./../service-worker.js",{type: 'module'}).then(

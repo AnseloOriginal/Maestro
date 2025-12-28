@@ -109,6 +109,16 @@ async function changeScreen(screen,...extras) {
     }
   } else if(screen === "account") {
     render.account.render_main_page(content,handle,manager.cache["userinfo"])
+  } else if(screen === "test-mainpage") {
+    const scheduled = await window.test.names("scheduled")
+    const special = await window.test.names("special")
+    render.testing.generate_test_mainpage(
+      content,
+      scheduled,
+      ["Exam 1","Exam 2","Exam 3"],
+      special
+    )
+
   } else if(screen === "test") {
     fullspace.classList.add("content-fullscreen")
     sidepanel.style.display = "none"
@@ -180,7 +190,7 @@ function refresh_alert() {
 toggle_panel()
 main_notes_butn.onclick = () => changeScreen("notes")
 main_dash_butn.onclick = () => changeScreen("dashboard")
-main_test_butn.onclick = () => changeScreen("test")
+main_test_butn.onclick = () => changeScreen("test-mainpage")
 main_monitor_butn.onclick = () => {if (hasFinishedLoading) {changeScreen("monitor")}}
 main_account_butn.onclick = () => {if (hasFinishedLoading) {changeScreen("account")}}
 

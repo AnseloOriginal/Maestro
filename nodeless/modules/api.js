@@ -14,6 +14,8 @@ const loginSpace = "login/index.php"
 const serverFilesContentSpace = "list.php" //Previously content.phpcontent.php"
 const serverFilesDownloadSpace = "download.php"
 const serverGetMonitorDataSpace = "get.php"
+const serverTestDataSpace = "banks"
+const serverTestNameSpace = "name.php"
 
 const apiJoin = (...parts) => parts.join("/");
 
@@ -47,4 +49,8 @@ export function getFilesDownload() {
 
 export function getMonitorDataURL() {
   return apiJoin(mainURL,serverMainSpace, serverMonitorSpace, serverGetMonitorDataSpace)
+}
+
+export function getTestNameDataURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestDataSpace, serverTestNameSpace)
 }

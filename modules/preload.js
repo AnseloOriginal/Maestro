@@ -28,3 +28,7 @@ contextBridge.exposeInMainWorld('fs', {
 contextBridge.exposeInMainWorld('sys', {
   fullscreen: (bol) => ipcRenderer.invoke("System Fullscreen",bol)
 })
+
+contextBridge.exposeInMainWorld('test', {
+  names: (type) => ipcRenderer.invoke("Test Names",type)
+})
