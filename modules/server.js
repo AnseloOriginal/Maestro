@@ -198,3 +198,37 @@ export async function testNameData(type,sesid) {
   }
   return simpleGet(api.getTestNameDataURL(),message)
 }
+
+export async function publicDataConfig(data) {
+  const message = {
+    data
+  }
+  return simpleGet(api.getPublicDataConfigURL(),message)
+}
+
+export async function testAccessData(type,sesid) {
+  const message = {
+    type,
+    "sess_id": sesid
+  }
+  return simpleGet(api.getTestAccessDataURL(),message)
+}
+
+export async function testInfoData(type,uuid) {
+  const message = {
+    type,
+    uuid
+  }
+  return simpleGet(api.getTestInfoDataURL(),message)
+}
+
+export async function testEditData(method,uuid,sess_id,uuid_location,target) {
+  const message = {
+    method,
+    uuid,
+    sess_id,
+    uuid_location,
+    "target": JSON.stringify(target)
+  }
+  return simpleGet(api.getTestEditDataURL(),message)
+}

@@ -6,6 +6,7 @@ const serverDataSpace = "data"
 const serverFilesSpace = "files"
 const serverMonitorSpace = "monitor"
 const serverPrivateDataSpace = "private/index.php"
+const serverPublicConfigSpace = "public/config.php"
 const serverNewAccountSpace = "account/index.php"
 const serverNewMonitorIDSpace = "keypair/monitor.php"
 const loginSpace = "login/index.php"
@@ -14,6 +15,9 @@ const serverFilesDownloadSpace = "download.php"
 const serverGetMonitorDataSpace = "get.php"
 const serverTestDataSpace = "banks"
 const serverTestNameSpace = "name.php"
+const serverTestAccesSpace = "access.php"
+const serverTestInfoSpace = "info.php"
+const serverTestEditSpace = "edit.php"
 
 export const apiJoin = (...parts) => parts.join("/");
 
@@ -51,4 +55,20 @@ export function getMonitorDataURL() {
 
 export function getTestNameDataURL() {
   return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestDataSpace, serverTestNameSpace)
+}
+
+export function getTestAccessDataURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestDataSpace, serverTestAccesSpace)
+}
+
+export function getTestInfoDataURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestDataSpace, serverTestInfoSpace)
+}
+
+export function getTestEditDataURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestDataSpace, serverTestEditSpace)
+}
+
+export function getPublicDataConfigURL() {
+  return apiJoin(mainURL,serverMainSpace,serverDataSpace,serverPublicConfigSpace)
 }

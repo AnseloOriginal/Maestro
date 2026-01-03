@@ -20,7 +20,8 @@ if (!window.server) {
   window.server = {
     serverUserInfo: runtime.getServerInfo,
     serverNotesInfo: runtime.getOnlineNotes,
-    serverMonitorData: runtime.getMonitorNotes
+    serverMonitorData: runtime.getMonitorNotes,
+    publicConfig: runtime.getPublicConfigData
   }
 }
 
@@ -36,7 +37,10 @@ if (!window.fs) {
 
 if (!window.test) {
   window.test = {
-    names: async (type) => runtime.getTestNameData(type)
+    names: runtime.getTestNameData,
+    access: runtime.getTestAccessData,
+    info: runtime.getTestInfoData,
+    add: runtime.addNewTestData
   }
 }
 

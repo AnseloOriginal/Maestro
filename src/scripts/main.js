@@ -1,8 +1,10 @@
 import render from "./dashboard-elements/render.js"
 import manager from "./dashboard-elements/manager.js"
 import watcher from "./dashboard-elements/watcher.js"
+import api from "./apis/api.js"
 import { attemptNewLogin } from "../../nodeless/modules/server.js"
 import revaluator from "./dashboard-elements/revaluator.js"
+import * as time from "./dashboard-elements/time.js"
 
 const switcher = document.getElementById("switch")
 const sidepanel = document.getElementById("sidepanel")
@@ -13,6 +15,7 @@ const menu_butn_text = document.getElementsByName("menu-butn-text")
 const main_notes_butn = document.getElementById("main-butn-notes")
 const main_dash_butn = document.getElementById("main-butn-dashboard")
 const main_monitor_butn = document.getElementById("main-butn-monitor")
+const main_testmanager_butn = document.getElementById("main-butn-testmanager")
 const main_account_butn = document.getElementById("main-butn-account")
 const external_content = document.getElementById("external")
 const main_test_butn = document.getElementById("main-butn-test")
@@ -118,7 +121,73 @@ async function changeScreen(screen,...extras) {
       ["Exam 1","Exam 2","Exam 3"],
       special
     )
-
+  } else if(screen === "test-manager") {
+    if (!manager.cacheHas("test_manager_bank_info")) {
+      render.testmanager.render_mainpage(
+        content,
+        true
+      )
+      const percentageBar = document.getElementById("testmanager-body-cicle-focus-textl1")
+      const percentageLabel = document.getElementById("testmanager-body-cicle-focus-labell1")
+      const accessList = await window.test.access()
+      if (accessList) {
+        percentageBar.innerText = "5%"
+        let percetage = 5
+        const finalData = {}
+        for(let i=1;i<accessList.length;i++) {
+          const uuid = accessList[i]
+          const data = await window.test.info("private",uuid)
+          percentageBar.innerText = (Math.floor(((i+1) / accessList.length) * 95) +5) + "%"
+          finalData[uuid] = data
+          if (i === (accessList.length-1)) {
+            manager.cacheSet("test_manager_bank_info",finalData)
+            changeScreen("test-manager")
+          }  
+        }
+        console.log(finalData)
+      } else {
+        percentageBar.innerText = "Error"
+        percentageBar.style.color = "red";
+        percentageLabel.innerText = "No Access"
+        percentageLabel.style.color = "red";
+      }
+    } else {
+      const teacher_weekly_quota = await manager.cacheGet("teacher_weekly_quota",5)
+      revaluator.set_as("test_manager_bank_info",true)
+      const banks = await manager.cacheGet("test_manager_bank_info")
+      const isNewWeek = time.isNewWeek()
+      const week_quota = {}
+      Object.keys(banks).forEach((key) => {
+        const name = "week_count_"+key
+        let data;
+        if (!isNewWeek) {
+          data = localStorage.getItem(name) || 0
+        } else {
+          data = 0
+          localStorage.setItem(name,0)
+        }
+        week_quota[key] = data
+      })
+      render.testmanager.render_mainpage(
+        content,
+        false,
+        teacher_weekly_quota,
+        week_quota,
+        banks,
+        handle
+      )
+      handle("uploadnotes")
+      window.test.access().then(async list => {
+        const finalData = {}
+        for(let i=1;i<list.length;i++) {
+          const uuid = list[i]
+          const data = await window.test.info("private",uuid)
+          finalData[uuid] = data
+        }
+        manager.cacheSet("test_manager_bank_info",finalData)
+        console.log("New Bank Info loaded")
+      })
+    }
   } else if(screen === "test") {
     fullspace.classList.add("content-fullscreen")
     sidepanel.style.display = "none"
@@ -151,6 +220,8 @@ async function changeScreen(screen,...extras) {
 async function startUp() {
   contentProtection()
   hasSession = await window.runtime.newSession() //Starts new session
+  //Cache important info just in case
+  manager.cacheSet("teacher_weekly_quota",server.publicConfig,"teacher_weekly_quota")
   if (hasSession) {
     if (manager.cacheHas("userinfo")) {
       revaluator.set_as("userinfo",true) // Use cached info
@@ -192,17 +263,23 @@ main_notes_butn.onclick = () => changeScreen("notes")
 main_dash_butn.onclick = () => changeScreen("dashboard")
 main_test_butn.onclick = () => changeScreen("test-mainpage")
 main_monitor_butn.onclick = () => {if (hasFinishedLoading) {changeScreen("monitor")}}
+main_testmanager_butn.onclick = () => {if (hasFinishedLoading) {
+  changeScreen("test-manager")
+}}
 main_account_butn.onclick = () => {if (hasFinishedLoading) {changeScreen("account")}}
+
 
 function handle(e,property,caller) {
   if (e === "screen") {
     changeScreen(property)
+
   } else if (e === "download") {
     const temp = window.fs.download(property)
     .then((queue)=>{
       console.log(queue)
       render.notes.disable_download_buttons(queue)
     })
+
   } else if (e === "file open") {
     window.fs.open(property)
     window.fs.recents()
@@ -212,6 +289,7 @@ function handle(e,property,caller) {
       })
       render.notes.refresh_recents(rarray,handle)
     })
+
   } else if (e === "monitor-shuffle") {
     const final = [...watcher.watched()]
     if (!watcher.beingWatched(property.id)) {
@@ -222,10 +300,95 @@ function handle(e,property,caller) {
       final.push([property.id, 0])
     }
     render.monitor.refreshUI(final)
+
   } else if (e === "logout") {
     window.runtime.logout()
     window.location.href = "login.html"
     sessionStorage.clear()
+
+  } else if (e === "addquestions") {
+    manager.cacheGet("test_manager_bank_info",false).then(bank => {
+      if (bank) {
+        let store;
+        if (localStorage.getItem("teacher_temporary_store")) {
+          store = JSON.parse(localStorage.getItem("teacher_temporary_store"))
+        } else {
+          store = {}
+        }
+        const info = bank[property]
+        if (info) {
+          render.testmanager.rerender_create_page(info,store[info.uuid],handle)
+        }
+      }
+    })
+  } else if (e === "changescreen") {
+    changeScreen(property)
+  } else if (e === "uploadnotes") {
+    const text = document.getElementById("testmanager-body-topdisplay")
+    const storage = localStorage.getItem("teacher_temporary_store")
+    let finishedCount=0,draftCount=0;
+    if (storage) {
+      let boo = true
+      const store = JSON.parse(storage)
+      for (const [uuid, questions] of Object.entries(store)) {
+        questions.forEach(question => {
+          if (!question) {return}
+          if (boo) {
+            //console.log(window.test.add("9b8d90ae-3892-49ca-b493-a422d2c8eeae",questions))
+            boo = false
+          }
+          if (question.finished) {
+            finishedCount++
+          } else {
+            draftCount++
+          }
+        })
+      }
+      if (text) {text.innerText = `You have ${finishedCount} questions completed and ${draftCount} still in writing`}
+
+      async function uploadnotes(store,text,total) {
+        let uploaded = 0
+        const cache = await manager.cacheGet("test_manager_bank_info",{})
+        for (const [uuid, questions] of Object.entries(store)) {
+          for(let i=1;i<questions.length;i++) {
+            const question = questions[i]
+            if (question && question.finished) {
+              const result = await window.test.add(uuid,question)
+              if (result) {
+                let week_count = localStorage.getItem("week_count_"+uuid)
+                if (week_count) {
+                  week_count = parseInt(week_count)
+                } else {
+                  week_count = 0
+                }
+                week_count++
+                localStorage.setItem("week_count_"+uuid,week_count)
+                uploaded++
+                questions[i] = undefined
+              }
+            }
+            if (text) {
+              text.innerText = `Uploaded ${uploaded} / ${total}`
+            }
+          }
+          const bankinfo = await window.test.info("private",uuid)
+          localStorage.setItem("teacher_temporary_store",JSON.stringify(store))
+          cache[uuid] = bankinfo
+        }
+        manager.cacheSet("test_manager_bank_info",cache)
+        return uploaded
+      }
+      if (hasSession) {
+        if (finishedCount>0) {
+          uploadnotes(store,text,finishedCount).then(count => {
+            finishedCount = finishedCount - count
+            if (text) {text.innerText = `You have ${finishedCount} questions completed and ${draftCount} still in writing (Uploaded ${count})`}
+          })
+        }
+      } else {
+        if (text) {text.innerText = `You have ${finishedCount} questions completed and ${draftCount} still in writing (Try again when in School))`}
+      }
+    }
   } else {
     console.log("Unknown handle",e)
   }
@@ -236,11 +399,14 @@ function contentProtection() {
   if (hasSession) {
     if(manager.get("student") || !manager.get("verified")) {
       main_monitor_butn.style.display = "none"
+      main_testmanager_butn.style.display = "none"
     } else {
       main_monitor_butn.style.display = ""
+      main_testmanager_butn.style.display = ""
     }
   } else {
     main_monitor_butn.style.display = "none"
+    main_testmanager_butn.style.display = "none"
   }
 }
 
@@ -260,4 +426,3 @@ window.runtime.onDownloadComplete((details) => {
     }
   }
 })
-

@@ -98,13 +98,13 @@ async function cacheOnlineNotes(term) {
   cache.onlinegroup = group
 }
 
-async function cacheGet(key,fallback) {
+async function cacheGet(key,fallback,...params) {
   const cacheKey = "CACHE_"+key
   if (localStorage.getItem(cacheKey) !== null && revaluator.is_safe(key)) {
     return JSON.parse(localStorage.getItem(cacheKey))
   } else {
     if (typeof fallback === "function") {
-      const result = await fallback()
+      const result = await fallback(...pretify)
       JSON.stringify(localStorage.setItem(cacheKey,result))
       revaluator.set_as(key,true)
     } else {
@@ -113,10 +113,10 @@ async function cacheGet(key,fallback) {
   }
 }
 
-async function cacheSet(key,data) {
+async function cacheSet(key,data,...params) {
   const cacheKey = "CACHE_"+key
   if (typeof data === "function") {
-    const result = await data()
+    const result = await data(...params)
     localStorage.setItem(cacheKey,JSON.stringify(result))
   } else {
     localStorage.setItem(cacheKey,JSON.stringify(data))

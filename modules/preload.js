@@ -15,7 +15,8 @@ contextBridge.exposeInMainWorld('runtime', {
 contextBridge.exposeInMainWorld('server', {
   serverUserInfo: () => ipcRenderer.invoke('Server User Info'),
   serverNotesInfo: (classes,term) => ipcRenderer.invoke('Server Notes Info',classes,term),
-  serverMonitorData: () => ipcRenderer.invoke("Server Monitor Data")
+  serverMonitorData: () => ipcRenderer.invoke("Server Monitor Data"),
+  publicConfig: (data) => ipcRenderer.invoke('Public Server Data Config',data)
 })
 
 contextBridge.exposeInMainWorld('fs', {
@@ -30,5 +31,8 @@ contextBridge.exposeInMainWorld('sys', {
 })
 
 contextBridge.exposeInMainWorld('test', {
-  names: (type) => ipcRenderer.invoke("Test Names",type)
+  names: (type) => ipcRenderer.invoke("Test Names",type),
+  access: () => ipcRenderer.invoke("Test Access"),
+  info: (type,uuid) => ipcRenderer.invoke("Test Info",type,uuid),
+  add: (uuid,data) => ipcRenderer.invoke("Add Test Question",uuid,data)
 })

@@ -1,0 +1,238 @@
+:root{
+  --option: "Create";
+}
+
+.testmanager-topbar{
+  position: relative;
+  top: 5px;
+  left: 0;
+  right: 0;
+  max-width: 200px;
+  margin: auto;
+  height: 30px;
+  background-color: white;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 2px;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.testmanager-body{
+  position: relative;
+  top: 45px;
+  left: 0;
+  right: 0;
+  max-width: 1000px;
+  margin: auto;
+  min-height: 50px;
+  background-color: rgb(254, 254, 254);
+  padding: 2px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 2px solid black;
+  border-radius: 10px;
+}
+
+.testmanager-topbar-option{
+  background-color: rgb(199, 199, 199);
+  border: none;
+}
+
+.testmanager-topbar-option:hover:not([selection="I am Selected"]) {
+  background-color: rgb(146, 146, 146);
+}
+
+[selection="I am Selected"] {
+  background-color: white;
+  border: none;
+}
+
+.testmanager-body-progressdisplay{
+  vertical-align: middle;
+  text-align: center;
+}
+
+.testmanager-body-cicle-focus{
+  width: 200px;
+  height: 200px;
+  border-radius: 100px;
+  border: 2px solid black;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.testmanager-body-cicle-focus-text{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 3em;
+  margin-bottom: 0px;
+}
+
+.testmanager-body-group{
+  display: inline-block;
+  margin-left: 20px;
+  margin-right: 30px;
+  border: 0.5px solid rgb(200, 182, 204);
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  border-radius: 20px;
+  background-color: rgb(251, 247, 255);
+  margin-bottom: 20px;
+
+  .testmanager-body-group-name{
+    vertical-align: middle;
+    text-align: center;
+    font-size: 1em;
+  }
+
+  .testmanager-body-cicle-focus{
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .testmanager-body-cicle-focus-text{
+    font-size: 1.5em;
+  }
+  .testmanager-body-cicle-focus-label{
+    margin-top: 2px;
+  }
+  .testmanager-body-group-buttondisplay{
+    margin-top: 5px;
+    text-align: center;
+    margin-bottom: 10px;
+    button {
+      margin-left: 5px;
+      margin-right: 5px;
+      background-color: #c8b6cc;
+      color: rgb(0, 0, 0);
+      border: 1px solid black;
+      border-radius: 5px;
+      height: 20px;
+      transition: background-color 0.15s color 0.15s ;
+      margin-left: 5px;
+    }
+    button:hover{
+      background-color: rgb(110, 84, 102);
+      color: rgb(184, 184, 184);
+    }
+  }
+}
+
+.testmanager-body-add-question{
+  border-top: 1px dotted black;
+  /* border-bottom: 1px dotted black; */
+  margin-bottom: 10px;
+}
+
+.testmanager-body-add-buttongroup-delete{
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+  border-radius: 2px;
+  transition: background-color 0.15s color 0.15s;
+}
+
+.testmanager-body-add-buttongroup-delete:hover{
+  background-color: rgb(119, 0, 0);
+  color: white;
+}
+
+.testmanager-body-add-id{
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0px;
+  margin-top: 5px;
+}
+
+.testmanager-body-add-namegroup{
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  vertical-align: top;
+  margin-bottom: 10px;
+}
+.testmanager-body-add-namelabel{
+  display: inline-block;
+  margin: 0px;
+  margin-top: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.testmanager-body-add-name{
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.testmanager-body-add-optiongroup{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.testmanager-body-add-optionlabel{
+  margin: 0px;
+  margin-left: 10px;
+  margin-right: 10px;
+
+}
+
+.testmanager-body-add-optionline{
+  padding-left: 10px;
+
+  .testmanager-body-add-optiontextbox {
+    margin-left: 5px;
+    /* margin-right: 5px; */
+  }
+
+  .testmanager-body-add-optionradio {
+    
+  }
+}
+
+.testmanager-body-add-buttongroup{
+  margin-top: 5px;
+  text-align: center;
+}
+
+.testmanager-body-buttongroup{
+  border-top: 1px dotted black;
+  padding-top: 2px;
+  margin-top: 10px;
+  padding-left: 20px;
+  button {
+    width: 100px;
+    height: 30px;
+    background-color: black;
+    color: white;
+    border: 1px double black;
+    border-radius: 2px;
+    transition: background-color 0.15s color 0.15s;
+    margin-right: 20px;
+  }
+  button:hover{
+    background-color: white;
+    color: black;
+  }
+}
+
+.testmanager-body-add-name-error{
+  color: rgb(156, 0, 0);
+  margin-left: 10px;
+  margin-top: 0px;
+}
+
+.testmanager-body-topdisplay{
+  border-radius: 2px;
+  background-color: rgb(223, 236, 240);
+  padding-top: 2px;
+  padding-bottom: 2px;
+  vertical-align: middle;
+  text-align: center;
+  margin-left: 10px;
+  margin-right: 10px;
+  border: 1px solid rgb(132, 148, 190);
+}

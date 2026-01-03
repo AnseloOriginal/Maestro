@@ -192,3 +192,56 @@ export async function getTestNameData(type) {
     return []
   }
 }
+
+export async function getTestAccessData() {
+  if (await server.serverIsAvailable() && sessionID) {
+    const response = await server.testAccessData("private",sessionID)
+    if (response[0] === 0) {
+      return response[1]
+    } else {
+      console.log(response[1],response[2])
+      return []
+    }
+  } else {
+    return []
+  }
+}
+
+export async function getTestInfoData(type,uuid) {
+  if (await server.serverIsAvailable()) {
+    const response = await server.testInfoData(type,uuid)
+    if (response[0] === 0) {
+      return response[1]
+    } else {
+      console.log(response[1],response[2])
+      return {}
+    }
+  } else {
+    return {}
+  }
+}
+
+export async function getPublicConfigData(data) {
+  if (await server.serverIsAvailable()) {
+    const response = await server.publicDataConfig(data)
+    if (response[0] === 0) {
+      return response[1]
+    } else {
+      return undefined
+    }
+  }
+}
+
+export async function addNewTestData(uuid,data) {
+  if (await server.serverIsAvailable() && sessionID) {
+    const response = await server.testEditData("add",uuid,sessionID,"private",data)
+    if (response[0] === 0) {
+      return true
+    } else {
+      console.log(response)
+      return false
+    }
+  } else {
+    return false
+  }
+}

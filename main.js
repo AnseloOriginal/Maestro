@@ -69,6 +69,10 @@ app.whenReady().then(() => {
   ipcMain.handle('Server Monitor Data', async () => Runtime.getMonitorNotes()),
   ipcMain.handle('System Recents Note', async () => Runtime.getRecentNotes()),
   ipcMain.handle('System Fullscreen', async (event,bol) => mainApp.setFullScreen(bol)),
-  ipcMain.handle('Test Names', async (event,type) => Runtime.getTestNameData(type))
+  ipcMain.handle('Test Names', async (event,type) => Runtime.getTestNameData(type)),
+  ipcMain.handle('Public Server Data Config', async (event,data) => Runtime.getPublicConfigData(data)),
+  ipcMain.handle('Test Access', async () => Runtime.getTestAccessData()),
+  ipcMain.handle('Test Info', async (event, type,uuid) => Runtime.getTestInfoData(type,uuid)),
+  ipcMain.handle('Add Test Question', async (event, uuid,data) => Runtime.addNewTestData(uuid,data))
 })
 
