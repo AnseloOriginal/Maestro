@@ -27,12 +27,12 @@ export  function generate_test_topbar(content,userinfo,duration) {
   `
 }
 
-export function generate_test_mainpage(content,schedule,old,special,bankinfo) {
+export function generate_test_mainpage(content,schedule,old,special,setupButnClick) {
   const maincontainer = document.createElement("div")
   const subcontainer1 = document.createElement("div")
   maincontainer.setAttribute("class","test-mainpage-maincontainer")
   const scheduled = generate_test_scheduled(schedule)
-  const config = generate_test_config()
+  const config = generate_test_config(setupButnClick)
   const oldtest = generate_test_oldtests(old,special)
   maincontainer.append(scheduled, config, oldtest)
   content.append(maincontainer)
@@ -60,7 +60,7 @@ function generate_test_scheduled(scheduled) {
   return maindiv
 }
 
-function generate_test_config() {
+function generate_test_config(setupButnClick) {
   const maindiv = document.createElement("div")
   maindiv.setAttribute("class","test-mainpage-config test-mainpage-maindiv")
   const header = generate_test_maindiv_header("New Test")
@@ -74,7 +74,12 @@ function generate_test_config() {
   buttonDiv.innerHTML = `
   <button> Reset </button>
   <button> Start </button>
-  <button> Setup </button>`
+  <button id='testmainpage-setup-button'> Setup </button>`
+  const button = buttonDiv.querySelector("#testmainpage-setup-button")
+  if (button) {
+    button.onclick = setupButnClick
+  }
+  console.log(button)
   maindiv.append(header, contentDiv, buttonDiv)
   return maindiv
 }

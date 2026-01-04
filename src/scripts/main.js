@@ -115,11 +115,15 @@ async function changeScreen(screen,...extras) {
   } else if(screen === "test-mainpage") {
     const scheduled = await window.test.names("scheduled")
     const special = await window.test.names("special")
+    const setupButnClick = (evt) => {
+      console.log(evt)
+    }
     render.testing.generate_test_mainpage(
       content,
       scheduled,
-      ["Exam 1","Exam 2","Exam 3"],
-      special
+      [["Exam 1","2"],["Exam 2","2"],["Exam 3","2"]],
+      special,
+      setupButnClick
     )
   } else if(screen === "test-manager") {
     if (!manager.cacheHas("test_manager_bank_info")) {
