@@ -21,6 +21,7 @@ contextBridge.exposeInMainWorld('server', {
 
 contextBridge.exposeInMainWorld('fs', {
   notes: () => ipcRenderer.invoke('School Notes'),
+  banks: () => ipcRenderer.invoke('School Banks'),
   download: (file) => ipcRenderer.invoke("Download Files",file),
   open: (file) => ipcRenderer.invoke("Open File",file),
   recents: () => ipcRenderer.invoke("System Recents Note")
@@ -34,5 +35,11 @@ contextBridge.exposeInMainWorld('test', {
   names: (type) => ipcRenderer.invoke("Test Names",type),
   access: () => ipcRenderer.invoke("Test Access"),
   info: (type,uuid) => ipcRenderer.invoke("Test Info",type,uuid),
-  add: (uuid,data) => ipcRenderer.invoke("Add Test Question",uuid,data)
+  add: (uuid,data) => ipcRenderer.invoke("Add Test Question",uuid,data),
+  questions: (uuid,location) => ipcRenderer.invoke("Get Test Questions",uuid,location),
+  results: (uuid,section,subsection,question,answer) => 
+    ipcRenderer.invoke("Send Test Results",uuid,section,subsection,question,answer),
+  submit: (uuid) => ipcRenderer.invoke("Finish Test",uuid),
+  details: (uuid,location) => ipcRenderer.invoke("Get Test Details",uuid,location),
+  variable: (action,uuid,name,content) => ipcRenderer.invoke("Test Variable",action,uuid,name,content)
 })

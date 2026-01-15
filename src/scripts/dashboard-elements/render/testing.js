@@ -23,22 +23,35 @@ export  function generate_test_topbar(content,userinfo,duration) {
       <p> ${time(duration,"second")} </p>
     </div>
     </div>
+    <dialog class="test-interface-dialog">
+      <button> SS </button>
+    </dialog>
   </div>
   `
 }
 
-export function generate_test_mainpage(content,schedule,old,special,setupButnClick) {
+export function regenerate_time_display(duration) {
+  const obj = document.querySelector(".test-interface-time")
+  if (obj) {
+    obj.innerHTML = `
+      <p> ${time(duration,"hour")} </p>:
+      <p> ${time(duration,"minute")} </p>:
+      <p> ${time(duration,"second")} </p>
+    `
+  }
+}
+export function generate_test_mainpage(content,schedule,old,special,setupButnClick,startButnClick) {
   const maincontainer = document.createElement("div")
   const subcontainer1 = document.createElement("div")
   maincontainer.setAttribute("class","test-mainpage-maincontainer")
-  const scheduled = generate_test_scheduled(schedule)
+  const scheduled = generate_test_scheduled(schedule,startButnClick)
   const config = generate_test_config(setupButnClick)
-  const oldtest = generate_test_oldtests(old,special)
+  const oldtest = generate_test_oldtests(old,special,startButnClick)
   maincontainer.append(scheduled, config, oldtest)
   content.append(maincontainer)
 }
 
-function generate_test_scheduled(scheduled) {
+function generate_test_scheduled(scheduled,startButnClick) {
   const maindiv = document.createElement("div")
   maindiv.setAttribute("class","test-mainpage-scheduled test-mainpage-maindiv")
   const header = generate_test_maindiv_header("Scheduled")
@@ -49,6 +62,7 @@ function generate_test_scheduled(scheduled) {
       const p = document.createElement("p")
       p.innerText = test[0]
       const butn = document.createElement("button")
+      butn.onclick = (evt) => startButnClick(evt,test[1],test[0],"scheduled",false)
       butn.innerText = "Start"
       div.append(p,butn)
       contentDiv.append(div)
@@ -79,12 +93,12 @@ function generate_test_config(setupButnClick) {
   if (button) {
     button.onclick = setupButnClick
   }
-  console.log(button)
+  
   maindiv.append(header, contentDiv, buttonDiv)
   return maindiv
 }
 
-function generate_test_oldtests(old,special) {
+function generate_test_oldtests(old,special,startButnClick) {
   const maindiv = document.createElement("div")
   maindiv.setAttribute("class","test-mainpage-oldtest test-mainpage-maindiv")
   const header = generate_test_maindiv_header("Previous Test")
@@ -99,6 +113,7 @@ function generate_test_oldtests(old,special) {
       const p = document.createElement("p")
       p.innerText = test[0]
       const butn = document.createElement("button")
+      butn.onclick = (evt) => startButnClick(evt,test[1],test[0],"special",false)
       butn.innerText = "Start"
       div.append(p,butn)
       specialDiv.append(div)      
@@ -117,6 +132,7 @@ function generate_test_oldtests(old,special) {
       p.innerText = test[0]
       const butn = document.createElement("button")
       butn.innerText = "Continue"
+      butn.onclick = (evt) => startButnClick(evt,test[1],test[0],"old",true)
       const butn2 = document.createElement("button")
       butn2.innerText = "Discard"
       div.append(p,butn,butn2)
@@ -145,6 +161,59 @@ function generate_test_maindiv_subheader(name) {
   header.innerText = name
   return header
 }
+
+export function rerender_test_config(existing,all,deleteFunc,installFunc) {
+  const configDiv = document.querySelector(".test-mainpage-config")
+  if (configDiv) {
+    configDiv.innerHTML = ""
+    const existDiv = generateConfigContainer(existing,"Downloaded","Delete",deleteFunc)
+    const existUUIDs = extractUUIDs(existing)
+    const allUUIDs = extractUUIDs(all)
+    const notExisting = []
+    
+    allUUIDs.forEach((uuid,i) => {
+      if (!existUUIDs.includes(uuid)) {
+        notExisting.push(all[i])
+      }
+    })
+    const notExistingDiv = generateConfigContainer(notExisting,"Available","Install",installFunc)
+    configDiv.append(existDiv,notExistingDiv)
+  }
+}
+
+function generateConfigContainer(list,headername,butnname,func) {
+  const existDiv = document.createElement('div')
+  const header = document.createElement('p')
+  header.className = "test-mainpage-config-container-header"
+  header.innerText = headername || "Header"
+  existDiv.append(header)
+  list.forEach(data => {
+    const line = document.createElement('div')
+    line.className = "test-mainpage-config-container"
+    const text = document.createElement('p')
+    text.innerText = data[0]
+    text.className = "test-mainpage-config-text"
+    const button = document.createElement('button')
+    button.innerText = butnname || "button"
+    button.className = "test-mainpage-config-butn"
+    if (func) {
+      button.onclick = (evt) => func(evt,data[1])
+    }
+    line.append(text, button)
+    existDiv.append(line)
+  })
+  return existDiv
+}
+
+function extractUUIDs(array) {
+  const list = []
+  array.forEach(data => {
+    if (data[1]) {
+      list.push(data[1])
+    }
+  })
+  return list
+}
 function time(duration,target) {
   let result = 0
   if (target === "second") {
@@ -159,4 +228,22 @@ function time(duration,target) {
   } else {
     return "0"+result //This is bad but needed
   }
+}
+
+export function render_confirm_submit_test(dialog) {
+  dialog.innerHTML = `
+  <p> Do you want to finish the exam <p>
+  <div>
+    <button class=testing-dialog-yes> Yes </button>
+    <button class=testing-dialog-no> Return Back </button>
+  </div>`
+}
+
+export function render_confirm_end_test(dialog) {
+  dialog.innerHTML = `
+  <p> Do you want to end the exam (irreversible)<p>
+  <div>
+    <button class=testing-dialog-yes> Yes </button>
+    <button class=testing-dialog-no> Return Back </button>
+  </div>`
 }

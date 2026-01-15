@@ -3,7 +3,12 @@ import type { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'com.maestro.aba',
   appName: 'Maestro',
-  webDir: 'src'
+  webDir: 'webbuild/src',
+  plugins: {
+    CapacitorHttp: {
+      enabled: true,
+   }
+  }
 };
 
 export default config;

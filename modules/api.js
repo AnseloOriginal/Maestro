@@ -1,4 +1,4 @@
-const mainURL = "http://localhost/aba"
+const mainURL = "http://192.168.1.2"
 const serverMainSpace = "server"
 const serverStatusSpace = "status"
 const serverCreateSpace = "create"
@@ -18,6 +18,12 @@ const serverTestNameSpace = "name.php"
 const serverTestAccesSpace = "access.php"
 const serverTestInfoSpace = "info.php"
 const serverTestEditSpace = "edit.php"
+const serverTestSpace = "tests"
+const serverGetTestQuestionsSpace = "get.php"
+const serverSendTestResultsSpace = "result.php"
+const serverSendTestFinishSpace = "finish.php"
+const serverTestDetailsSpace = "details.php"
+const serverTestVariableSpace = "variable.php"
 
 export const apiJoin = (...parts) => parts.join("/");
 
@@ -71,4 +77,24 @@ export function getTestEditDataURL() {
 
 export function getPublicDataConfigURL() {
   return apiJoin(mainURL,serverMainSpace,serverDataSpace,serverPublicConfigSpace)
+}
+
+export function getTestQuestionURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverGetTestQuestionsSpace)
+}
+
+export function getTestResultsURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverSendTestResultsSpace)
+}
+
+export function getTestFinishSignalURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverSendTestFinishSpace)
+}
+
+export function getTestDetailsURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverTestDetailsSpace)
+}
+
+export function getTestVariableURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverTestVariableSpace)
 }

@@ -6,5 +6,6 @@ import * as general  from "./render/general.js"
 import * as account  from "./render/account.js"
 import * as testing  from "./render/testing.js"
 import * as testmanager from "./render/testmanager.js"
+import * as testloader from "./render/testloader.js"
 
-export default {dashboard,alert,notes,monitor,general,account,testing,testmanager}
+export default {dashboard,alert,notes,monitor,general,account,testing,testmanager,testloader}

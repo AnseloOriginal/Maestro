@@ -22,8 +22,8 @@ export async function serverStatus() {
   return await server.serverIsAvailable()
 }
 
-export function Initialization() {
-  fs.init()
+ export async function Initialization() {
+  await fs.init()
   //return 0
   //deviceID.deleteID()
   if (InitAllowed) {
@@ -178,9 +178,11 @@ export async function getMonitorNotes() { //Typpo in function name
   }
 }
 
-export async function openFile(file) {
-  localStorage.setItem("file",file)
-  window.document.location.href = "fileviewer.html"
+export async function openFile(file,redirect) {
+  if (redirect) {
+    localStorage.setItem("file",file)
+    window.document.location.href = "fileviewer.html"
+  }
   addRecentNote(file)
 }
 

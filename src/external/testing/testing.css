@@ -1,0 +1,87 @@
+body {
+  display: grid;
+  grid-template-rows: 20px 1fr 1fr;
+}
+
+.subjectlist{
+  border-bottom: 2px solid black;
+
+  button {
+    border-top: 2px solid black;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    border-bottom: 0px;
+    margin-left: 5px;
+    background-color: white;
+    border-radius: 0px;
+    max-width: 200px;
+    min-width: 50px;
+    transition: background-color 0.15s color 0.15s
+  }
+
+  button:hover {
+    background-color: gray;
+  }
+
+  button:active {
+    background-color: black;
+    color: white;
+  }
+
+  button[selected="yes"] {
+    background-color: black;
+    color: white;
+  }
+}
+
+
+#testarea-question{
+  font-size: 1.1em;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.OptionsRadio{
+  display: block;
+  vertical-align: middle;
+
+  input {
+    width: 15px;
+    height: 15px;
+  }
+  p {
+    display: inline-block;
+  }
+}
+
+.numberarea{
+  border: 1px solid black;
+  padding: 16px;
+  
+  button {
+    width: 32px;
+    height: 32px;
+    margin-left: 8px;
+    color: black;
+    background-color: white;
+    border: 2px solid black;
+  }
+
+  button:hover{
+    color: black;
+    background-color: gray;
+  }
+
+  button:active{
+    color: white;
+    background-color: black;
+  }
+
+  button[selected="true"] {
+    color: white;
+    background-color: black;
+  }
+  button[answered="true"]:not(button[selected="true"]) {
+    color: black;
+    background-color: lightgreen;
+  }
+}

@@ -1,3 +1,6 @@
+async function getFileURL(filename) {
+  
+}
 async function generate() {
   if (window.runtime.type() === "node") {
     let filepath = await window.fs.file().replace("--fvfilepath=","")
@@ -11,6 +14,10 @@ async function generate() {
       document.body.innerHTML = `<p> Error getting file. Please restart.`
     }
     document.title = filename
+  } else if (window.runtime.type() === "capacitor") {
+    const filename = localStorage.getItem("file")
+    const fileurl = await window.urls.notes(filename)
+    // document.body.innerHTML = `<iframe id="frame" src="scripts/pdfjs/web/viewer.html?file=${fileurl}" width="100%" height="100%"></iframe>`;
   } else {
     const filename = localStorage.getItem("file")
       document.body.innerHTML = 

@@ -128,6 +128,11 @@ export function getOfflineNotes() {
   return notes
 }
 
+export function getOfflineBanks() {
+  const notes = fs.getBanks()
+  return notes
+}
+
 export function addDownload(request) {
   download.addDownload(request)
   return download.downloadQueue
@@ -237,6 +242,77 @@ export async function addNewTestData(uuid,data) {
     const response = await server.testEditData("add",uuid,sessionID,"private",data)
     if (response[0] === 0) {
       return true
+    } else {
+      console.log(response)
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
+export async function getTestQuestions(uuid,location) {
+  if (await server.serverIsAvailable() && sessionID) {
+    const response = await server.getQuestionData(uuid,sessionID,location)
+    if (response[0] === 0) {
+      return response[1]
+    } else {
+      console.log(response)
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
+export async function sendTestResult(uuid,section,subsection,question,answer) {
+  if (await server.serverIsAvailable() && sessionID) {
+    const response = await server.sendResultData(uuid,section,subsection,question,answer,sessionID)
+    if (response[0] === 0) {
+      return true
+    } else {
+      console.log(response)
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
+export async function finishTest(uuid) {
+  if (await server.serverIsAvailable() && sessionID) {
+    const response = await server.sendFinishSignal(uuid,sessionID)
+    if (response[0] === 0) {
+      return true
+    } else {
+      console.log(response)
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
+export async function getTestDetails(uuid,location) {
+  if (await server.serverIsAvailable()) {
+    const response = await server.getTestDetails(uuid,location)
+    if (response[0] === 0) {
+      return response[1]
+    } else {
+      console.log(response)
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
+
+export async function TestVariable(action,uuid,name,content) {
+  if (await server.serverIsAvailable() && sessionID) {
+    const response = await server.TestVariable(action,uuid,name,content,sessionID)
+    if (response[0] === 0) {
+      return response[1]
     } else {
       console.log(response)
       return false

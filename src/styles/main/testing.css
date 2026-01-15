@@ -88,6 +88,13 @@
   grid-template-columns: 90px 1fr 120px;
 }
 
+.test-mainpage-config-container-header{
+  border-bottom: 1px solid black;
+  font-size: initial;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
 .test-mainpage-maincontainer{
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -95,7 +102,6 @@
   background-color: rgb(235, 235, 235);
   padding: 10px;
 }
-
 
 
 .test-mainpage-subcontainer1{
@@ -182,3 +188,4 @@
     margin-left: 0px;
   }
 }
+

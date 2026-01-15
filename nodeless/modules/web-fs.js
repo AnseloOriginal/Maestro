@@ -164,3 +164,35 @@ export async function moveFile(source,dest,filename) {
     return false
   }
 }
+
+
+/**
+ * @param {string} currentPath - e.g., 'temp/file.txt'
+ * @param {string} destinationPath - e.g., 'archive/file.txt'
+ */
+const GenMoveFile = async (currentPath, destinationPath) => {
+  try {
+    // 1. Ensure the destination folder exists first!
+    const folder = destinationPath.substring(0, destinationPath.lastIndexOf('/'));
+    if (folder) {
+      await Filesystem.mkdir({
+        path: folder,
+        directory: Directory.Data,
+        recursive: true
+      });
+    }
+
+    // 2. Perform the move
+    await Filesystem.rename({
+      from: currentPath,
+      to: destinationPath,
+      directory: Directory.Data,
+      // toDirectory is optional if it's the same, but safer to include
+      toDirectory: Directory.Data 
+    });
+    
+    console.log('File moved successfully');
+  } catch (e) {
+    console.error('Move failed', e);
+  }
+};

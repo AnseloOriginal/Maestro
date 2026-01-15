@@ -8,3 +8,6 @@ build/
 android/app/build/
 android/build/
 android/.gradle/
+
+webbuild/
+capacitortest/

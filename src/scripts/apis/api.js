@@ -1,3 +1,3 @@
-import * as testmanager  from "./tests.js"
+import * as testing  from "./tests.js"
 
-export default {testmanager}
+export default {testing}

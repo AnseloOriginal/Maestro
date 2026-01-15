@@ -10,6 +10,8 @@ import crypto from "crypto";
 const basePath = path.join(os.homedir(),"Appdata","Roaming","ABA")
 const baseFilesPath = path.join(os.homedir(),"Appdata","Roaming","ABA","files")
 const baseNotesPath = path.join(os.homedir(),"Appdata","Roaming","ABA","files","notes")
+const baseUnknownPath = path.join(os.homedir(),"Appdata","Roaming","ABA","files","unknown")
+const baseBanksPath = path.join(os.homedir(),"Appdata","Roaming","ABA","files","banks")
 const TempPath = path.join(os.homedir(),"Appdata","Roaming","ABA","temp")
 const abacFile = path.join(basePath,"abamc.config")
 const recentsJSON = path.join(basePath,"recents.json")
@@ -21,7 +23,13 @@ export function init() {
   mkdir(baseFilesPath, { recursive: true }, (err) => {
     if (err) throw err;
   });
+  mkdir(baseUnknownPath, { recursive: true }, (err) => {
+    if (err) throw err;
+  });
   mkdir(baseNotesPath, { recursive: true }, (err) => {
+    if (err) throw err;
+  });
+  mkdir(baseBanksPath, { recursive: true }, (err) => {
     if (err) throw err;
   });
   //rmdir(TempPath, { recursive: false });
@@ -43,6 +51,7 @@ export function setABAMC(text) {
 
 }
 
+
 export function getNotes() {
   let notes = readdirSync(baseNotesPath)
   notes.forEach( (filename,i,a)=> {
@@ -51,6 +60,13 @@ export function getNotes() {
   return notes
 }
 
+export function getBanks() {
+  let banks = readdirSync(baseBanksPath)
+  banks.forEach( (filename,i,a)=> {
+    a[i] = filename.replaceAll(".ababank","")
+  })
+  return banks
+}
 
 function decrypt(buffer, password) {
   // buffer is a Node.js Buffer containing the file

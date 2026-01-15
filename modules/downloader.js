@@ -9,6 +9,7 @@ const downloadList = new Map()
 export const downloadQueue = []
 let process = "idle"
 const TempPath = path.join(os.homedir(),"Appdata","Roaming","ABA","temp")
+const baseFilePath = path.join(os.homedir(),"Appdata","Roaming","ABA","files")
 const baseNotesPath = path.join(os.homedir(),"Appdata","Roaming","ABA","files","notes")
 
 export function setReporter(method) {
@@ -27,12 +28,15 @@ async function downloadFile(filename) {
     received += chunk.length;
     fileStream.write(chunk);
   }
+  const type = response.headers.get("aba-filetype") || ""
+
   fileStream.end();
   return {
     ok: response.ok,
     filename,
     totalLength,
-    received
+    received,
+    type
   }
 }
 
@@ -55,7 +59,8 @@ function convertToServerName(filename) {
 }
 
 async function getDownloadResource(name) {
-  const serverFileName = convertToServerName(name)
+  let serverFileName = name.substr(1)
+  if (name[0] !== "#") {serverFileName = convertToServerName(name)}
   const message = {file: serverFileName}
   const result = await fetch(api.getFilesDownload(), {
     method: "POST",
@@ -75,11 +80,23 @@ export function addDownload(filename) {
   return true
 }
 
-async function moveDownload(filename) {
-  let desfile =  filename + ".aba"
+async function moveDownload(filename,type) {
+  const known = ["note","bank"]
+  if (!known.includes(type)) {type = "unknown"}
+  const extesions = {
+    note: ".aba",
+    bank: ".ababank",
+    unknown: ""
+  }
+  let desfile =  filename + extesions[type]
   let tempfile = downloadList.get(filename)
   tempfile = path.join(TempPath,tempfile)
-  desfile = path.join(baseNotesPath,desfile)
+  const locations = {
+    note: "notes",
+    bank: "banks",
+    unknown: "unknown"
+  }
+  desfile = path.join(baseFilePath,locations[type],cleanfilename(desfile))
   try {
     await writeFile(desfile,"Write")
     await copyFile(tempfile, desfile)
@@ -112,7 +129,7 @@ function downloadRuntime(meth,target) {
     .then(response => {
       if (response.ok && (response.received == response.totalLength) && response.received > 0) {
         completeDownload("complete",response.filename)
-        return moveDownload(response.filename)
+        return moveDownload(response.filename,response.type)
       } else {
         completeDownload("failed",response.filename)
         return trashDownload(response.filename)
@@ -133,4 +150,14 @@ function completeDownload(status,download) {
   } else {
     console.warn("[Downloader] Attempt to use reporter before initialization")
   }
+}
+
+function cleanfilename(str) {
+  const dirt = ["#securebanks,"]
+  dirt.forEach(e => {
+    if (str.includes(e)) {
+      str = str.replaceAll(e, "")
+    }
+  })
+  return str
 }

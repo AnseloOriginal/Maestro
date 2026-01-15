@@ -115,16 +115,88 @@ async function changeScreen(screen,...extras) {
   } else if(screen === "test-mainpage") {
     const scheduled = await window.test.names("scheduled")
     const special = await window.test.names("special")
-    const setupButnClick = (evt) => {
-      console.log(evt)
+    const getBanks = async () => {
+      revaluator.set_as("public_banks_names",true)
+      const files = await window.fs.banks()
+      const all = await manager.cacheGet("public_banks_names")
+      if (all) {
+        const exist = []
+        console.log(all)
+        all.forEach(entry => {
+          if (files.includes(entry[1])) {
+            exist.push(entry)
+          }
+        })
+        return exist
+      } else {
+        return []
+      }
+      
+    }
+    const setupButnClick = async (evt) => {
+      evt.target.disabled = true
+      // const existingOfflineTests = [
+      //   ["Jamb - Maths","andaundundand"]
+      // ]
+    
+      const serverOfflineTests = await window.test.names("public")
+      if (serverOfflineTests.length > 0) {
+        await manager.cacheSet("public_banks_names",serverOfflineTests)
+      }
+      console.log(await window.test.names("public"))
+      const existingOfflineTests = await getBanks()
+      render.testing.rerender_test_config(
+        existingOfflineTests,serverOfflineTests,deleteBankFunc,
+        installBankFunc
+      )
+      evt.target.disabled = false
+    }
+
+    const deleteBankFunc = async (evt,uuid) => {
+      evt.target.disabled = true
+      console.log(`Deleting ${uuid}`)
+      evt.target.disabled = false
+    }
+
+    const installBankFunc = async (evt,uuid) => {
+      evt.target.disabled = true
+      console.log(`Install ${uuid}`)
+      handle("download",`#securebanks,${uuid}`)
+      evt.target.disabled = false
+    }
+
+    const startTestFunc = async (evt,uuid,name,location,isLocal) => {
+      evt.target.disabled = true
+      localStorage.setItem("load-test-target",uuid)
+      changeScreen("test-loader",name,location)
+      evt.target.disabled = false
     }
     render.testing.generate_test_mainpage(
       content,
       scheduled,
       [["Exam 1","2"],["Exam 2","2"],["Exam 3","2"]],
       special,
-      setupButnClick
+      setupButnClick,
+      startTestFunc
     )
+  } else if(screen === "test-loader") {
+    const loadingTest = localStorage.getItem("load-test-target") || ""
+    const continueFunc = async () => {
+      const progress = render.testloader.render_loading(content);
+      const data = await window.test.questions(loadingTest,extras[1])
+      const details = await window.test.details(loadingTest,extras[1])
+      const elasped = parseInt(await window.test.variable("get",loadingTest,"elasped")) || 0
+      const currentLoadingTest = localStorage.getItem("load-test-target")
+      if (currentLoadingTest === loadingTest) {
+        if (data) {
+          changeScreen("test",data,currentLoadingTest,details,elasped)
+        } else {
+          progress.innerText = "We've encountered an error why loading tests."
+        }
+      }
+    }
+    //Expects extras[0] = name of test; extrans[1] = location
+    render.testloader.render_confirmation(content,extras[0],continueFunc)
   } else if(screen === "test-manager") {
     if (!manager.cacheHas("test_manager_bank_info")) {
       render.testmanager.render_mainpage(
@@ -193,31 +265,129 @@ async function changeScreen(screen,...extras) {
       })
     }
   } else if(screen === "test") {
+    async function  finishExam() {
+      const dialog = document.querySelector('.test-interface-dialog')
+      dialog.addEventListener("cancel", (evt) => {
+        evt.preventDefault()
+      })
+      dialog.innerHTML = ''
+      const warning =  document.createElement('p');
+      warning.innerText = "Do not close the app. (Uploading test)"
+      dialog.append(warning)
+      const stage1 = document.createElement('p')
+      stage1.innerText = "[TASK1] Checking for connection"
+      dialog.append(stage1)
+      let isOffline = true
+      while (isOffline) {
+        const data = await window.runtime.serverOnline()
+        isOffline = !data
+      }
+      stage1.innerText = "[TASK1] Server connection successful"
+      let sync = sessionStorage.getItem("testsync") || "{}"
+      sync = JSON.parse(sync)
+      let data = sessionStorage.getItem("testdata") || "{}"
+      let uuid = sessionStorage.getItem("testuuid") || "{}"
+      uuid = JSON.parse(uuid)
+      data = JSON.parse(data)
+      let stillRem = true
+      const stage2 = document.createElement('p')
+      dialog.append(stage2)
+      const PRE_PART = "[TASK2] Starting important tasks "
+      stage2.innerText = PRE_PART
+      while (stillRem) {
+        let ranCount = 0
+        let failureCount = 0
+        for( const [key,status] of Object.entries(sync)) {
+          if (!status) {
+            const parts = key.split("-")
+            const section = parts[0]
+            const sub = parseInt(parts[1])
+            const ques = parseInt(parts[2])
+            const quesdata = data[section]?.[sub]?.[ques]
+            //console.log(key,parts,quesdata)
+            if (!quesdata) {
+              console.warn(`[TASK2] Cannot find tesdata for Section: ${section},sub:${sub},ques:${ques}`)
+            }
+            let answer = quesdata?.preanswer || 0
+            answer = parseInt(answer);
+            if (answer === 0) {
+              console.warn(`[TASK2] Eending 0 as answer: ${section},sub:${sub},ques:${ques}`)
+            }
+            const result = await window.test.results(uuid,section,sub,ques,answer)
+            if (!result) {
+              failureCount++
+            } else {
+              sync[key] = true
+            }
+            ranCount++
+            stage2.innerText = PRE_PART + `(Ran: ${ranCount}, Failed: ${failureCount})`
+          }
+        }
+        if (failureCount===0) {stillRem = false}
+      }
+      const stage3 = document.createElement('p')
+      dialog.append(stage3)
+      stage3.innerText = "[TASK3] Finilizing"
+      let sendFinginishSignal = true
+      while (sendFinginishSignal) {
+        const data =  window.test.submit(uuid)
+        sendFinginishSignal = !data
+      }
+      stage3.innerText = "[TASK3] Done"
+      changeScreen("test-cleanup")
+    }
+    const duration =  extras[2]?.duration || 10
+    let TimerID = 0
+    let currentTime = 0
+    let lastSynced = 0
+    let start = extras[3]
+    function timerLoop(uuid,start) {
+      clearTimeout(TimerID)
+      let current = sessionStorage.getItem("testuuid")
+      if (!current) {return}
+      current = JSON.parse(current)
+      if (uuid === current) {
+        if (start) {
+          currentTime =  start
+          lastSynced =  start
+        } else {
+          currentTime++
+        }
+        if ((currentTime - lastSynced) > 5) {
+          window.test.variable("set",uuid,"elasped",currentTime)
+          lastSynced =  currentTime
+        }
+        render.testing.regenerate_time_display(duration-currentTime)
+        TimerID =  setTimeout(() => timerLoop(uuid),1000)
+      } else {
+        console.warn("[TEST] Invalid Timer with uuid "+uuid)
+      }
+    }
     fullspace.classList.add("content-fullscreen")
     sidepanel.style.display = "none"
     content.setAttribute("class","topbar")
     external_content.style.display = "block"
     external_content.style.position = "absolute"
-    external_content.src = "./external/testing.html"
-    render.testing.generate_test_topbar(content,manager.cache["userinfo"],1200)
+    external_content.style.height = `${window.innerHeight - 100}px`
+    external_content.src = "./external/testing/testing.html"
+    render.testing.generate_test_topbar(content,manager.cache["userinfo"],duration)
     window.sys.fullscreen(true)
-    sessionStorage.setItem("testdata",JSON.stringify({
-      targetbank: 0,
-      targetquestion: 0,
-      banks: [
-        {
-          name: "Chemisty",
-          questions: [
-            {
-              type: "obj",
-              textcontent: "This is a question",
-              options: ["Option1","Option2","Option3"]
-            }
-          ]
-        }
-      ]
-    }))
+    sessionStorage.setItem("testdata",JSON.stringify(extras[0]))
+    sessionStorage.setItem("testuuid",JSON.stringify(extras[1]))
+    timerLoop(extras[1],start)
+    api.testing.manageButns(render.testing,finishExam)
+  } else if(screen === "test-cleanup") {
+    fullspace.classList.remove("content-fullscreen")
+    sidepanel.style.display = "block"
+    content.setAttribute("class","content2")
+    external_content.style.display = "none"
+    window.sys.fullscreen(false)
+    sessionStorage.removeItem("testdata")
+    sessionStorage.removeItem("testuuid")
+    sessionStorage.removeItem("testsync")
+    changeScreen("test-mainpage")
   }
+
   currentScreen = screen
 }
 
@@ -281,7 +451,11 @@ function handle(e,property,caller) {
     const temp = window.fs.download(property)
     .then((queue)=>{
       console.log(queue)
-      render.notes.disable_download_buttons(queue)
+      if (caller !== 'public-test-download') {
+        render.notes.disable_download_buttons(queue)
+      } else {
+        
+      }
     })
 
   } else if (e === "file open") {

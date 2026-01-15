@@ -4,6 +4,28 @@ const Runtime = require("./modules/main")
 const rmSync = require("node:fs").rmSync
 const rmDirSync = require("node:fs").rmdirSync
 const isDev = require("electron-is-dev");
+const { autoUpdater } = require("electron-updater")
+const {dialog} = require('electron');
+
+autoUpdater.on('error', err => {
+  console.error('Update error', err)
+})
+
+autoUpdater.on('update-downloaded', (info) => {
+  const dialogOpts = {
+    type: 'info',
+    buttons: ['Restart', 'Update'],
+    title: 'Application Update',
+    detail: 'A new version has been downloaded. Restart the application to apply the updates.'
+  };
+
+  dialog.showMessageBox(dialogOpts, (response) => {
+    if (response === 0) { 
+      autoUpdater.quitAndInstall();
+    }
+  });
+});
+
 
 const openFile = async (file) => {
   Runtime.addRecentNote(file)
@@ -64,6 +86,7 @@ app.whenReady().then(() => {
   ipcMain.handle('Server User Info', async () => Runtime.getServerInfo("User Info")),
   ipcMain.handle('Server Notes Info', async (event, classes, term) => Runtime.getOnlineNotes(classes, term)),
   ipcMain.handle('School Notes', async () => Runtime.getOfflineNotes()),
+  ipcMain.handle('School Banks', async () => Runtime.getOfflineBanks()),
   ipcMain.handle('Download Files', async (event, file) => Runtime.addDownload(file)),
   ipcMain.handle('Open File', async (event, file) => openFile(file)),
   ipcMain.handle('Server Monitor Data', async () => Runtime.getMonitorNotes()),
@@ -73,6 +96,12 @@ app.whenReady().then(() => {
   ipcMain.handle('Public Server Data Config', async (event,data) => Runtime.getPublicConfigData(data)),
   ipcMain.handle('Test Access', async () => Runtime.getTestAccessData()),
   ipcMain.handle('Test Info', async (event, type,uuid) => Runtime.getTestInfoData(type,uuid)),
-  ipcMain.handle('Add Test Question', async (event, uuid,data) => Runtime.addNewTestData(uuid,data))
+  ipcMain.handle('Add Test Question', async (event, uuid,data) => Runtime.addNewTestData(uuid,data)),
+  ipcMain.handle('Get Test Questions', async (event, uuid,location) => Runtime.getTestQuestions(uuid,location)),
+  ipcMain.handle('Send Test Results', async (event, uuid,section,subsection,question,answer) => Runtime.sendTestResult(uuid,section,subsection,question,answer)),
+  ipcMain.handle('Finish Test', async (event, uuid,location) => Runtime.finishTest(uuid,location)),
+  ipcMain.handle('Get Test Details', async (event, uuid,location) => Runtime.getTestDetails(uuid,location)),
+  ipcMain.handle('Test Variable', async (event, action,uuid,name,content) => Runtime.TestVariable(action,uuid,name,content)),
+  autoUpdater.checkForUpdates()
 })
 
