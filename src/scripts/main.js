@@ -357,6 +357,9 @@ async function changeScreen(screen,...extras) {
           window.test.variable("set",uuid,"elasped",currentTime)
           lastSynced =  currentTime
         }
+        if ((duration-currentTime) < 0) {
+          finishExam()
+        }
         render.testing.regenerate_time_display(duration-currentTime)
         TimerID =  setTimeout(() => timerLoop(uuid),1000)
       } else {
