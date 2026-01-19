@@ -14,17 +14,14 @@ autoUpdater.on('error', err => {
 autoUpdater.on('update-downloaded', (info) => {
   const dialogOpts = {
     type: 'info',
-    buttons: ['Restart', 'Update'],
     title: 'Application Update',
-    detail: 'A new version has been downloaded. Restart the application to apply the updates.'
+    detail: 'A new version has been downloaded. It will be installed automatically.'
   };
 
-  dialog.showMessageBox(dialogOpts, (response) => {
-    if (response === 0) { 
-      autoUpdater.quitAndInstall();
-    }
-  });
+  dialog.showMessageBox(dialogOpts)
 });
+
+autoUpdater.autoInstallOnAppQuit = true
 
 
 const openFile = async (file) => {
@@ -102,6 +99,41 @@ app.whenReady().then(() => {
   ipcMain.handle('Finish Test', async (event, uuid,location) => Runtime.finishTest(uuid,location)),
   ipcMain.handle('Get Test Details', async (event, uuid,location) => Runtime.getTestDetails(uuid,location)),
   ipcMain.handle('Test Variable', async (event, action,uuid,name,content) => Runtime.TestVariable(action,uuid,name,content)),
+  ipcMain.handle('System Lock', async (event) => setLock(event.sender)),
+  ipcMain.handle('System Unlock', async (event) => removeLock()),
   autoUpdater.checkForUpdates()
 })
 
+let isLocked = false
+let lockTarget = false
+
+const setLock = (content) => {
+  if (isLocked) {return false}
+  const window = BrowserWindow.fromWebContents(content)
+  isLocked =  true
+  lockTarget = content
+  window.setAlwaysOnTop(true)
+  window.on("blur", () => {
+    if (!isLocked || lockTarget !== content) {return false}
+    console.log("Refocused")
+    window.maximize()
+    window.focus()
+    
+  })
+  return true
+}
+
+const removeLock = () => {
+  if (!isLocked) {return false}
+  const window = BrowserWindow.fromWebContents(lockTarget)
+  lockTarget = undefined
+  isLocked = false
+  window.setAlwaysOnTop(false)
+  return true
+}
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})

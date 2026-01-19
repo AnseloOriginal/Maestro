@@ -47,12 +47,6 @@
   "build": {
     "appId": "com.maestro.aba",
     "copyright": "Copyright © 2026 Uzebu Ansel",
-    "linux": {
-      "target": [
-        "deb",
-        "AppImage"
-      ]
-    },
     "win": {
       "target": [
         "nsis",

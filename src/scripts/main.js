@@ -375,6 +375,7 @@ async function changeScreen(screen,...extras) {
     external_content.src = "./external/testing/testing.html"
     render.testing.generate_test_topbar(content,manager.cache["userinfo"],duration)
     window.sys.fullscreen(true)
+    window.sys.requestLock()
     sessionStorage.setItem("testdata",JSON.stringify(extras[0]))
     sessionStorage.setItem("testuuid",JSON.stringify(extras[1]))
     timerLoop(extras[1],start)
@@ -385,6 +386,7 @@ async function changeScreen(screen,...extras) {
     content.setAttribute("class","content2")
     external_content.style.display = "none"
     window.sys.fullscreen(false)
+    window.sys.requestUnlock()
     sessionStorage.removeItem("testdata")
     sessionStorage.removeItem("testuuid")
     sessionStorage.removeItem("testsync")
