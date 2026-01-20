@@ -15,6 +15,10 @@ export function Initialization(reporter) {
   fs.init()
   server.tests()
   download.setReporter(reporter)
+  if (!deviceID.test()) {
+    deviceID.deleteID()
+    Login.clearLoginDetails()
+  }
   //deviceID.deleteID()
   if (InitAllowed) {
     //console.log(deviceID.hasID())

@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, Menu } = require('electron/main')
 const path = require('node:path')
-const Runtime = require("./modules/main")
+const Runtime = require("./modules/main.js")
 const rmSync = require("node:fs").rmSync
 const rmDirSync = require("node:fs").rmdirSync
 const isDev = require("electron-is-dev");

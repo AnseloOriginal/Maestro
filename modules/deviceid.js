@@ -32,3 +32,17 @@ export function getID() {
 export function deleteID() {
   store.delete("deviceID")
 }
+
+export function test() {
+  if (store.has("deviceID")) {
+    try {
+      const osKey = store.get("deviceID");
+      const key = safeStorage.decryptString(Buffer.from(osKey))
+      return true
+    } catch {
+      return false
+    }
+  } else {
+    return true
+  }
+}
