@@ -214,6 +214,14 @@ export async function testAccessData(type,sesid) {
   return simpleGet(api.getTestAccessDataURL(),message)
 }
 
+export async function getBankDetails(type,sesid) {
+  const message = {
+    type,
+    "sid": sesid
+  }
+  return simpleGet(api.getBankDetailsDataURL(),message)
+}
+
 export async function testInfoData(type,uuid) {
   const message = {
     type,
@@ -278,4 +286,20 @@ export async function TestVariable(action,uuid,name,content,sessid) {
     sessid
   }
   return simpleGet(api.getTestVariableURL(),message)
+}
+
+export async function getChangelog(version) {
+  const message = {
+    version
+  }
+  return simpleGet(api.getAppChangelogURL(),message)
+}
+
+export async function TestFinalResult(uuid,sid) {
+  const message = {
+    uuid,
+    sid
+  }
+  console.log(uuid,sid)
+  return simpleGet(api.getTestFinalResultURL(),message)
 }

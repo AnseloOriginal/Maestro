@@ -66,6 +66,21 @@ const createFileViewer = (filepath,filename) => {
   })
 }
 
+const openResult = async (uuid,location,data) => {
+  const finalResult = await Runtime.getFinalTestResult(uuid,location)
+   const resultView = new BrowserWindow({
+    width: 800,
+    height: 400,
+    webPreferences: {
+      preload: path.join(__dirname, "modules", "result_preload.js"),
+      additionalArguments: [`--result=${JSON.stringify(finalResult)}`,`--data=${JSON.stringify(data)}`],
+      webSecurity: true,
+      devTools: isDev
+    }
+  })
+  resultView.loadFile('src/result.html') 
+}
+
 let mainApp;
 let reporter;
 if (!isDev) {
@@ -79,7 +94,7 @@ app.whenReady().then(() => {
   ipcMain.handle('Runtime Create Account', async (event, message) => Runtime.newAccount(message)),
   ipcMain.handle('Runtime New Session', async () => Runtime.getSession()),
   ipcMain.handle('Runtime Logout', async () => Runtime.logout()),
-  ipcMain.handle('Runtime Server Status', async () => Runtime.serverStatus()),
+  ipcMain.handle('Runtime Server Status', async (event,mode) => Runtime.serverStatus(mode)),
   ipcMain.handle('Server User Info', async () => Runtime.getServerInfo("User Info")),
   ipcMain.handle('Server Notes Info', async (event, classes, term) => Runtime.getOnlineNotes(classes, term)),
   ipcMain.handle('School Notes', async () => Runtime.getOfflineNotes()),
@@ -91,16 +106,23 @@ app.whenReady().then(() => {
   ipcMain.handle('System Fullscreen', async (event,bol) => mainApp.setFullScreen(bol)),
   ipcMain.handle('Test Names', async (event,type) => Runtime.getTestNameData(type)),
   ipcMain.handle('Public Server Data Config', async (event,data) => Runtime.getPublicConfigData(data)),
+  ipcMain.handle('Get Bank Details', async () => Runtime.getBankDetailsData()),
   ipcMain.handle('Test Access', async () => Runtime.getTestAccessData()),
   ipcMain.handle('Test Info', async (event, type,uuid) => Runtime.getTestInfoData(type,uuid)),
   ipcMain.handle('Add Test Question', async (event, uuid,data) => Runtime.addNewTestData(uuid,data)),
   ipcMain.handle('Get Test Questions', async (event, uuid,location) => Runtime.getTestQuestions(uuid,location)),
-  ipcMain.handle('Send Test Results', async (event, uuid,section,subsection,question,answer) => Runtime.sendTestResult(uuid,section,subsection,question,answer)),
+  ipcMain.handle('Send Test Results', async (event, uuid,section,subsection,question,answer,testlocation) => Runtime.sendTestResult(uuid,section,subsection,question,answer,testlocation)),
   ipcMain.handle('Finish Test', async (event, uuid,location) => Runtime.finishTest(uuid,location)),
   ipcMain.handle('Get Test Details', async (event, uuid,location) => Runtime.getTestDetails(uuid,location)),
-  ipcMain.handle('Test Variable', async (event, action,uuid,name,content) => Runtime.TestVariable(action,uuid,name,content)),
+  ipcMain.handle('Test Variable', async (event, action,uuid,name,content,location) => Runtime.TestVariable(action,uuid,name,content,location)),
   ipcMain.handle('System Lock', async (event) => setLock(event.sender)),
   ipcMain.handle('System Unlock', async (event) => removeLock()),
+  ipcMain.handle('App Version', async (event) => app.getVersion()),
+  ipcMain.handle('Get Changelog', async (event) => Runtime.getChangelog(app.getVersion())),
+  ipcMain.handle('Test Mode', async (event,newmode) => Runtime.SetTestMode(newmode)),
+  ipcMain.handle('Test Generate', async (event,uuid,no,list,type,duration) => Runtime.generateNewTest(uuid,no,list,type,duration)),
+  ipcMain.handle('Offline Tests', async () => Runtime.getOfflineTests()),
+  ipcMain.handle('Test Final Results', async (event,uuid,location,data) =>  openResult(uuid,location,data)),
   autoUpdater.checkForUpdates()
 })
 

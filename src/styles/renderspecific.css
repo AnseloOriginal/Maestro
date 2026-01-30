@@ -1,0 +1,50 @@
+.maindisplay {
+  border-bottom: 2px solid black;
+  text-align: center;
+  padding: 20px;
+}
+
+
+.result-body-cicle-focus{
+  width: 200px;
+  height: 200px;
+  border-radius: 100px;
+  border: 2px solid black;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.result-body-cicle-focus-text{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 3em;
+  margin-bottom: 0px;
+}
+
+.result-body-cicle-focus-label {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.5em; 
+}
+
+.button-display{
+  margin-top: 20px;
+}
+
+button{
+  background-color: white;
+  color: black;
+  border: 2px solid black;
+  border-radius: 100px;
+  width: 200px;
+  height: 40px;
+  transition: color 0.15s background-color 0.15s scale 0.1s;
+}
+
+button:hover{
+  background-color: black;
+  color:  white;
+  width: 200px;
+  height: 40px;
+}

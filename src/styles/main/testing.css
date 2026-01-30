@@ -123,6 +123,7 @@
   border: 1px solid rgb(109, 109, 109);
   border-radius: 5px;
   padding: 5px;
+  overflow: scroll;
   p {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     display: inline-block;
@@ -165,17 +166,21 @@
 
 .test-mainpage-scheduled{
   margin-bottom: 10px;
+  overflow: scroll;
 }
 
 .test-mainpage-oldtest{
   margin-top: 10px;
   margin-bottom: 10px;
-
+  overflow: scroll;
+  p {
+    width: 50%;
+  }
 }
 
 .test-mainpage-config{
   margin-left: 10px;
-
+  overflow: scroll;
 }
 
 @media (width <= 600px) {

@@ -6,9 +6,14 @@ import * as download from "./downloader.js"
 
 let InitAllowed = true
 let sessionID = 0
+let testMode = "online"
 
-export async function serverStatus() {
-  return await server.serverIsAvailable()
+export async function serverStatus(mode) {
+  if (mode === "test" && testMode === "offline") {
+    return true
+  } else {
+    return await server.serverIsAvailable()
+  }
 }
 
 export function Initialization(reporter) {
@@ -216,7 +221,31 @@ export async function getTestAccessData() {
   }
 }
 
-export async function getTestInfoData(type,uuid) {
+export async function getBankDetailsData() {
+  if (testMode === "online") {
+    if (await server.serverIsAvailable() && sessionID) {
+      const response = await server.getBankDetails("public",sessionID)
+      if (response[0] === 0) {
+        return response[1]
+      } else {
+        console.log(response[1],response[2])
+        return {}
+      }
+    } else {
+      return {}
+    }
+  } else if (testMode === "offline"){
+    const quesString = await fs.getTestQuestion(uuid,location)
+    if (quesString) {
+      const data = JSON.parse(quesString)
+      return data.Details
+    } else {
+      return {}
+    }
+  }
+}
+
+  export async function getTestInfoData(type,uuid) {
   if (await server.serverIsAvailable()) {
     const response = await server.testInfoData(type,uuid)
     if (response[0] === 0) {
@@ -255,51 +284,155 @@ export async function addNewTestData(uuid,data) {
   }
 }
 
-export async function getTestQuestions(uuid,location) {
-  if (await server.serverIsAvailable() && sessionID) {
-    const response = await server.getQuestionData(uuid,sessionID,location)
-    if (response[0] === 0) {
-      return response[1]
+export async function getTestQuestions(uuid,location,includeAnswers) {
+  if (testMode === "online") {
+    if (await server.serverIsAvailable() && sessionID) {
+      const response = await server.getQuestionData(uuid,sessionID,location)
+      if (response[0] === 0) {
+        return response[1]
+      } else {
+        console.log(response)
+        return false
+      }
     } else {
-      console.log(response)
       return false
     }
-  } else {
-    return false
+  } else if (testMode === "offline") {
+    const bank = await fs.loadBankData(uuid)
+    const quesString = await fs.getTestQuestion(uuid,location)
+    if (bank && quesString) {
+      const source = JSON.parse(quesString)?.Data || {}
+      const final = {}
+      for(const [section,data] of Object.entries(source)) {
+        if (!final[section]) {final[section] = []}
+        data.forEach((sub,subi) => {
+          if (!final[section][subi]) {final[section][subi] = []}
+          sub.forEach((ques,i) => {
+            const ret = {}
+            if (bank[ques]) {
+              ret.question = bank[ques].question
+              ret.options = bank[ques].options
+              if (includeAnswers) {
+                ret.answer = bank[ques].answer
+              }
+              final[section][subi][i] = ret
+            }
+          }) 
+        })
+      }
+      return final
+    } else {
+      return false
+    }
   }
 }
 
-export async function sendTestResult(uuid,section,subsection,question,answer) {
-  if (await server.serverIsAvailable() && sessionID) {
-    const response = await server.sendResultData(uuid,section,subsection,question,answer,sessionID)
-    if (response[0] === 0) {
-      return true
+export async function sendTestResult(uuid,section,subsection,question,answer,testlocation) {
+  if (testMode === "online") {
+    if (await server.serverIsAvailable() && sessionID) {
+      const response = await server.sendResultData(uuid,section,subsection,question,answer,sessionID)
+      if (response[0] === 0) {
+        return true
+      } else {
+        console.log(response)
+        return false
+      }
     } else {
-      console.log(response)
       return false
     }
-  } else {
-    return false
+  } else if (testMode === "offline")  {
+    const existingStr = fs.getTestResult(uuid,testlocation) || "{}"
+    const existing = JSON.parse(existingStr)
+    if (!existing[section]) {existing[section] = []}
+    if (!existing[section][subsection]) {existing[section][subsection] = []}
+    existing[section][subsection][question] = answer
+    return fs.writeTestResult(uuid,testlocation,JSON.stringify(existing))
   }
 }
 
-export async function finishTest(uuid) {
-  if (await server.serverIsAvailable() && sessionID) {
-    const response = await server.sendFinishSignal(uuid,sessionID)
-    if (response[0] === 0) {
-      return true
+export async function finishTest(uuid,location) {
+  if (testMode === "online") {
+    if (await server.serverIsAvailable() && sessionID) {
+      const response = await server.sendFinishSignal(uuid,sessionID)
+      if (response[0] === 0) {
+        return true
+      } else {
+        console.log(response)
+        return false
+      }
     } else {
-      console.log(response)
       return false
     }
-  } else {
-    return false
+  } else if (testMode === "offline") {
+    const timeStamp = Date.now()
+    const data = {}
+    data.time = timeStamp.toString()
+    await markTest(uuid,location)
+    return fs.writeTestSubmission(uuid,location,JSON.stringify(data))
   }
 }
 
 export async function getTestDetails(uuid,location) {
+  if (testMode === "online") {
+    if (await server.serverIsAvailable()) {
+      const response = await server.getTestDetails(uuid,location)
+      if (response[0] === 0) {
+        return response[1]
+      } else {
+        console.log(response)
+        return false
+      }
+    } else {
+      return false
+    }
+  } else if (testMode === "offline"){
+    const quesString = await fs.getTestQuestion(uuid,location)
+    if (quesString) {
+      const data = JSON.parse(quesString)
+      if (data.Details) {
+        return data.Details
+      } else {
+        return {}
+      }
+    } else {
+      return {}
+    }
+  }
+}
+
+
+export async function TestVariable(action,uuid,name,content,location) {
+  if (testMode === "online") {
+    if (await server.serverIsAvailable() && sessionID) {
+      const response = await server.TestVariable(action,uuid,name,content,sessionID)
+      if (response[0] === 0) {
+        return response[1]
+      } else {
+        console.log(response)
+        return false
+      }
+    } else {
+      return false
+    }
+  } else if (testMode === "offline") {
+    if (action === "get") {
+      return fs.readTestVariable(uuid,location,name)
+    } else if (action === "set") {
+      fs.writeTestVariable(uuid,location,name,content)
+    }
+  }
+
+}
+
+export async function SetTestMode(newmode) {
+  if (typeof newmode === "string") {
+    testMode = newmode
+  }  
+}
+
+export async function getChangelog(version) {
   if (await server.serverIsAvailable()) {
-    const response = await server.getTestDetails(uuid,location)
+    const response = await server.getChangelog(version)
     if (response[0] === 0) {
       return response[1]
     } else {
@@ -311,17 +444,154 @@ export async function getTestDetails(uuid,location) {
   }
 }
 
-
-export async function TestVariable(action,uuid,name,content) {
-  if (await server.serverIsAvailable() && sessionID) {
-    const response = await server.TestVariable(action,uuid,name,content,sessionID)
-    if (response[0] === 0) {
-      return response[1]
+function getAvaiableQuestions(strlist,no) {
+  const avaiable = []
+  const list = strlist.split(",")
+  list.forEach(item => {
+    if (item.includes("-")) {
+      const num1 = parseInt(item.substring(0,item.indexOf("-")))
+      const num2 = parseInt(item.substring(item.indexOf("-")+1))
+      for(let i=num1;i<=num2;i++) {
+        if (i < no && !avaiable.includes(i)) {
+          avaiable.push(i)
+        }
+      }
     } else {
-      console.log(response)
+      const num = parseInt(item)
+      if (num < no && !avaiable.includes(num)) {
+        avaiable.push(num)
+      }
+    }
+  });
+  return avaiable
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+export async function generateNewTest(uuid,no,queslist,type,duration) {
+  no = parseInt(no)
+  const bank = await fs.loadBankData(uuid)
+  if (bank) {
+    let available ;
+    if (queslist === "-1") {
+      available = []
+      for(let i=0;i<bank.length;i++) {
+        available.push(i)
+      }
+    } else {
+      available = getAvaiableQuestions(queslist,bank.length);
+    }
+    if (available.length<1) {
+      return
+    }
+    const test = {}
+    test.Data = {}
+    const preTest = [];
+    while (preTest.length < no && available.length > 0) {
+      if (type === "order") {
+        preTest.push(available[0])
+        available.shift()
+      } else if (type === "random") {
+        const index = getRandomInt(available.length)-1
+        preTest.push(available[index])
+        available.splice(index,1)
+      }
+    }
+    test.Data["Main Test"] = []
+    test.Data["Main Test"][0] = preTest;
+    test.Details = {}
+    test.Details.duration = parseInt(duration) * 60 //Save in seconds
+    const finalData = JSON.stringify(test)
+    const timeStamp = Date.now()
+    await fs.writeTestToDisk(uuid,timeStamp,finalData)
+    return timeStamp.toString()
+  }
+}
+
+export async function getOfflineTests() {
+  return fs.getAllOfflineTest()
+}
+
+export async function markTest(uuid,location)  {
+  const generatedTime = Date.now()
+  const bank = await fs.loadBankData(uuid)
+  const selectionStr = fs.getTestResult(uuid,location) || "{}"
+  const selection = JSON.parse(selectionStr)
+  const questions = await getTestQuestions(uuid,location,true)
+
+  const finalData = {};
+  finalData.scores = {}
+  finalData.scores.total = 0;
+  finalData.scores.total_score = 0;
+  finalData.scores.sections_total = {};
+  finalData.scores.sections_scores = {};
+  const testData = {}
+  for(const [sectionname,section] of Object.entries(questions)) {
+    if (!testData[sectionname]) {testData[sectionname] = []}
+    section.forEach((sub,subi) => {
+      if (!testData[sectionname][subi]) {testData[sectionname][subi] = []}
+      sub.forEach((data,i) => {
+        finalData.scores.total++
+        const userAnswer = selection[sectionname]?.[subi]?.[i] || 0
+        const realAnswer = data.answer  
+        if (finalData.scores.sections_total[sectionname]) {
+              finalData.scores.sections_total[sectionname]++
+        }  else {
+              finalData.scores.sections_total[sectionname] = 1
+        }
+        const test = {
+          answer: realAnswer,
+          question: data.question,
+          selection: userAnswer || 0,
+          options: data.options
+        }
+        testData[sectionname][subi][i] = test
+        //5 stands for Bonus
+        if (userAnswer == realAnswer || realAnswer == 5) {
+            finalData.scores.total_score++
+            if (finalData.scores.sections_scores[sectionname]) {
+              finalData.scores.sections_scores[sectionname]++
+            }  else {
+              finalData.scores.sections_scores[sectionname] = 1
+            }
+        }
+      })
+    })
+  }
+  const variables = fs.getAllTestVariables(uuid,location)
+  finalData.test = testData 
+  finalData.variables = variables
+  fs.saveFinalTestResult(uuid,location,JSON.stringify(finalData))
+  const s = 1
+}
+
+export async function getFinalTestResult(uuid,location) {
+  if (testMode === "online") {
+    if (await server.serverIsAvailable() && sessionID) {
+      const response = await server.TestFinalResult(uuid,sessionID)
+      if (response[0] === 0) {
+        const res = response[1]
+        for(const [name,section] of Object.entries(res.test)) {
+          section.forEach((data,i) => {
+            section[i] = Object.values(data)
+          })
+        }
+        return res
+      } else {
+        console.log(response)
+        return false
+      }
+    } else {
       return false
     }
-  } else {
-    return false
+  } else if (testMode === "offline") {
+    const data = fs.getFinalTestResult(uuid,location)
+    if (data) {
+      return JSON.parse(data)
+    } else {
+      return false
+    }
   }
 }

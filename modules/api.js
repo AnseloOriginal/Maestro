@@ -7,6 +7,7 @@ const serverFilesSpace = "files"
 const serverMonitorSpace = "monitor"
 const serverPrivateDataSpace = "private/index.php"
 const serverPublicConfigSpace = "public/config.php"
+const serverPublicChangelogSpace = "public/changelog.php"
 const serverNewAccountSpace = "account/index.php"
 const serverNewMonitorIDSpace = "keypair/monitor.php"
 const loginSpace = "login/index.php"
@@ -16,6 +17,7 @@ const serverGetMonitorDataSpace = "get.php"
 const serverTestDataSpace = "banks"
 const serverTestNameSpace = "name.php"
 const serverTestAccesSpace = "access.php"
+const serverBankDetailsSpace = "bankdetails.php"
 const serverTestInfoSpace = "info.php"
 const serverTestEditSpace = "edit.php"
 const serverTestSpace = "tests"
@@ -24,6 +26,7 @@ const serverSendTestResultsSpace = "result.php"
 const serverSendTestFinishSpace = "finish.php"
 const serverTestDetailsSpace = "details.php"
 const serverTestVariableSpace = "variable.php"
+const serverTestFinalResultSpace = "finalresult.php"
 
 export const apiJoin = (...parts) => parts.join("/");
 
@@ -67,6 +70,10 @@ export function getTestAccessDataURL() {
   return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestDataSpace, serverTestAccesSpace)
 }
 
+export function getBankDetailsDataURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestDataSpace, serverBankDetailsSpace)
+}
+
 export function getTestInfoDataURL() {
   return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestDataSpace, serverTestInfoSpace)
 }
@@ -97,4 +104,12 @@ export function getTestDetailsURL() {
 
 export function getTestVariableURL() {
   return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverTestVariableSpace)
+}
+
+export function getAppChangelogURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverPublicChangelogSpace)
+}
+
+export function getTestFinalResultURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverTestFinalResultSpace)
 }

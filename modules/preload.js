@@ -7,7 +7,7 @@ contextBridge.exposeInMainWorld('runtime', {
   createNewAccount: (message) => ipcRenderer.invoke('Runtime Create Account',message),
   newSession: () => ipcRenderer.invoke('Runtime New Session'),
   logout: () => ipcRenderer.invoke('Runtime Logout'),
-  serverOnline: () => ipcRenderer.invoke('Runtime Server Status'),
+  serverOnline: (mode) => ipcRenderer.invoke('Runtime Server Status',mode),
   onDownloadComplete: (callback) => ipcRenderer.on('note-download-complete', 
     (_event,details) => callback(details))
 })
@@ -16,7 +16,8 @@ contextBridge.exposeInMainWorld('server', {
   serverUserInfo: () => ipcRenderer.invoke('Server User Info'),
   serverNotesInfo: (classes,term) => ipcRenderer.invoke('Server Notes Info',classes,term),
   serverMonitorData: () => ipcRenderer.invoke("Server Monitor Data"),
-  publicConfig: (data) => ipcRenderer.invoke('Public Server Data Config',data)
+  publicConfig: (data) => ipcRenderer.invoke('Public Server Data Config',data),
+  getAppChangelog: () => ipcRenderer.invoke('Get Changelog')
 })
 
 contextBridge.exposeInMainWorld('fs', {
@@ -30,18 +31,24 @@ contextBridge.exposeInMainWorld('fs', {
 contextBridge.exposeInMainWorld('sys', {
   fullscreen: (bol) => ipcRenderer.invoke("System Fullscreen",bol),
   requestLock: () => ipcRenderer.invoke("System Lock"),
-  requestUnlock: () => ipcRenderer.invoke("System Unlock")
+  requestUnlock: () => ipcRenderer.invoke("System Unlock"),
+  appVersion: () => ipcRenderer.invoke("App Version")
 })
 
 contextBridge.exposeInMainWorld('test', {
   names: (type) => ipcRenderer.invoke("Test Names",type),
   access: () => ipcRenderer.invoke("Test Access"),
+  bankDetails: () => ipcRenderer.invoke("Get Bank Details"),
   info: (type,uuid) => ipcRenderer.invoke("Test Info",type,uuid),
   add: (uuid,data) => ipcRenderer.invoke("Add Test Question",uuid,data),
   questions: (uuid,location) => ipcRenderer.invoke("Get Test Questions",uuid,location),
-  results: (uuid,section,subsection,question,answer) => 
-    ipcRenderer.invoke("Send Test Results",uuid,section,subsection,question,answer),
-  submit: (uuid) => ipcRenderer.invoke("Finish Test",uuid),
+  results: (uuid,section,subsection,question,answer,testlocation) => 
+    ipcRenderer.invoke("Send Test Results",uuid,section,subsection,question,answer,testlocation),
+  submit: (uuid,location) => ipcRenderer.invoke("Finish Test",uuid,location),
   details: (uuid,location) => ipcRenderer.invoke("Get Test Details",uuid,location),
-  variable: (action,uuid,name,content) => ipcRenderer.invoke("Test Variable",action,uuid,name,content)
+  variable: (action,uuid,name,content,location) => ipcRenderer.invoke("Test Variable",action,uuid,name,content,location),
+  mode: (newmode) => ipcRenderer.invoke("Test Mode",newmode),
+  generate: (uuid,no,list,type,duration) => ipcRenderer.invoke("Test Generate",uuid,no,list,type,duration),
+  offline: () => ipcRenderer.invoke("Offline Tests"),
+  displayResult: (uuid,location,data)  => ipcRenderer.invoke("Test Final Results",uuid,location,data)
 })

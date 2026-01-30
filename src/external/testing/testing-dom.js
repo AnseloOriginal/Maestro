@@ -6,11 +6,14 @@ export function newSubjectHeader(name) {
   return button
 }
 
-export function regularOption(id,name,func,selected) {
+export function regularOption(id,name,func,selected,highlight,unSelectable,) {
   const label = document.createElement('label')
   const radio = document.createElement('input')
   radio.type = "radio"
   radio.name = "OptionsRadio"
+  if (unSelectable) {
+    radio.disabled = true
+  }
   radio.value = id
   radio.oninput = func
   if (selected) {
@@ -19,6 +22,9 @@ export function regularOption(id,name,func,selected) {
   radio.id = `option-${id}`
   const text = document.createElement('p')
   text.innerText = name
+  if (highlight) {
+    text.classList.add("highlight")
+  }
   label.append(radio,text)
   label.className = 'OptionsRadio'
   return label

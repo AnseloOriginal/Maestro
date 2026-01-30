@@ -80,8 +80,23 @@ body {
     color: white;
     background-color: black;
   }
+  
   button[answered="true"]:not(button[selected="true"]) {
     color: black;
     background-color: lightgreen;
   }
+
+  button[correct="true"]:not(button[selected="true"]) {
+    color: black;
+    background-color: lightgreen;
+  }
+
+  button[correct="false"]:not(button[selected="true"]) {
+    color: black;
+    background-color: rgb(214, 5, 5);
+  }
+}
+
+.highlight{
+  background-color: rgb(208, 250, 208);
 }

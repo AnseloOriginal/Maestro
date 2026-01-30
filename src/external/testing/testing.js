@@ -1,11 +1,25 @@
 import * as dom from "./testing-dom.js"
 const tempdata = sessionStorage.getItem("testdata")
+const testlocation = sessionStorage.getItem("testlocation") || ""
+const mode = sessionStorage.getItem("testmode") || "testing"
 const numberarea = document.getElementById("numberarea")
 const testarea = document.getElementById("testarea")
 const testAreaQuestions = document.getElementById("testarea-question")
 const testAreaOptions = document.getElementById("testarea-options")
 const subjectlist = document.getElementById("subjectlist")
 let uuid = sessionStorage.getItem("testuuid")
+
+const renderMath = () => {
+    renderMathInElement(document.body, {
+        delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+        ],
+        throwOnError: false
+    });
+    console.log("Ran")
+};
+
 if (uuid) {
   uuid = JSON.parse(uuid)
 } else {
@@ -117,25 +131,46 @@ function buildFirstUI(data,testarea,numberarea,subjectlist) {
 }
 
 function displayQuestion(data) {
-  testAreaQuestions.innerText = data.question
+  if (mode === "testing") {
+    testAreaQuestions.innerHTML = data.question
+  } else if (mode === "correction") {
+    if (data.answer === 5) {
+      testAreaQuestions.innerHTML = "<b>(Bonus) </b>" +  data.question
+    } else {
+      testAreaQuestions.innerHTML = data.question
+    }
+    
+  }
+  
   testAreaOptions.innerHTML = ""
   data.options.forEach((option,i) => {
-    const selected = (i+1) == data.preanswer
-    const optionDom = dom.regularOption(i+1,option,onOptionSelection,selected);
-    testAreaOptions.append(optionDom)
+    if (mode === "testing") {
+      const selected = (i+1) == data.preanswer
+      const optionDom = dom.regularOption(i+1,option,onOptionSelection,selected);
+      testAreaOptions.append(optionDom)
+    } else if (mode === "correction") {
+      const isAnswer = (i+1) == data.answer
+      const isUserAnswer = (i+1) == data.selection
+      const optionDom = dom.regularOption(i+1,option,onOptionSelection,
+        isUserAnswer,isAnswer,true);
+      testAreaOptions.append(optionDom)
+    }
   });
+  renderMath()
 }
 
 function onOptionSelection(evt,num) {
-  const i = evt?.target?.value || num || 0
-  console.log(i)
-  if (data[currentSection]?.[currentSubsection]?.[currentQuestion]) {
-    data[currentSection][currentSubsection][currentQuestion].preanswer = parseInt(i)
-    syncResult(currentSection,currentSubsection,currentQuestion) //Must be called first
-  }
-  const option = document.getElementById(`option-${i}`)
-  if (option) {
-    option.checked = true
+  if (mode === "testing") {
+    const i = evt?.target?.value || num || 0
+    console.log(i)
+    if (data[currentSection]?.[currentSubsection]?.[currentQuestion]) {
+      data[currentSection][currentSubsection][currentQuestion].preanswer = parseInt(i)
+      syncResult(currentSection,currentSubsection,currentQuestion) //Must be called first
+    }
+    const option = document.getElementById(`option-${i}`)
+    if (option) {
+      option.checked = true
+    }
   }
 }
 
@@ -185,32 +220,55 @@ document.onkeydown = (evt) => {
 }
 
 function syncResult(section,sub,ques) {
-  const key = `${section}-${sub}-${ques}`
-  const answer = data[currentSection]?.[currentSubsection]?.[currentQuestion]?.preanswer || 0
-  syncResultData[key] = false
-  window.parent.test.results(uuid,section,sub,ques,answer).then(result => {
-    syncResultData[key] = result
+  if (mode === "testing") {
+    const key = `${section}-${sub}-${ques}`
+    const answer = data[currentSection]?.[currentSubsection]?.[currentQuestion]?.preanswer || 0
+    syncResultData[key] = false
+    window.parent.test.results(uuid,section,sub,ques,answer,testlocation).then(result => {
+      syncResultData[key] = result
+      sessionStorage.setItem("testsync",JSON.stringify(syncResultData))
+    })
+    sessionStorage.setItem("testdata",JSON.stringify(data))
     sessionStorage.setItem("testsync",JSON.stringify(syncResultData))
-  })
-  sessionStorage.setItem("testdata",JSON.stringify(data))
-  sessionStorage.setItem("testsync",JSON.stringify(syncResultData))
+  }
 }
 
 function refreshNumberBarThumbnail() {
-  const section = data[currentSection]
-  if (section) {
-    let count = 1
-    section.forEach(sub => {
-      sub.forEach(ques => {
-        let i = 0
-        if (ques.preanswer) {i = parseInt(ques.preanswer)}
-        if (i) {
-          document.getElementById(`NumberAreaButn-${count}`)?.setAttribute("answered","true")
-        } else {
-          document.getElementById(`NumberAreaButn-${count}`)?.setAttribute("answered","false")
-        }
-        count++
+  if (mode === "testing") {
+    const section = data[currentSection]
+    if (section) {
+      let count = 1
+      section.forEach(sub => {
+        sub.forEach(ques => {
+          let i = 0
+          if (ques.preanswer) {i = parseInt(ques.preanswer)}
+          if (i) {
+            document.getElementById(`NumberAreaButn-${count}`)?.setAttribute("answered","true")
+          } else {
+            document.getElementById(`NumberAreaButn-${count}`)?.setAttribute("answered","false")
+          }
+          count++
+        })
       })
-    })
+    }
+  } else if (mode === "correction")  {
+    const section = data[currentSection]
+    if (section) {
+      let count = 1
+      section.forEach(sub => {
+        sub.forEach(ques => {
+          if (ques.selection == ques.answer || ques.answer == 5) {
+            document.getElementById(`NumberAreaButn-${count}`)?.setAttribute("correct","true")
+          } else {
+            document.getElementById(`NumberAreaButn-${count}`)?.setAttribute("correct","false")
+          }
+          count++
+        })
+      })
+    }
   }
 }
+
+
+
+document.addEventListener("DOMContentLoaded", renderMath)

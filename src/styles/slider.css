@@ -86,3 +86,25 @@
   from { transform: translateX(-100%); opacity: 0; }
   to   { transform: translateX(0); opacity: 1; }
 }
+
+#main-dialog{
+  width: 500px;
+  height: 200px;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.dialog-header{
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  /* overflow: scroll; */
+}
+
+.dialog-miniheader{
+  font-size: 1.1em;
+}
+
+.dialog-text{
+  padding-left: 20px;
+}

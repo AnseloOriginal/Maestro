@@ -6,9 +6,10 @@
     "start": "electron .",
     "nodeless": "www.activebrains.com/app/src",
     "test": "mocha",
-    "package": "@electron-packager . --arch=x64 --asar --electron-version=22.3.27 --electron-zip-dir=D:\\Dev\\Electron --platform=win32 --tempdir=\"D:\\Dev\\Auto Apps\\Brain Power\\Export\\\" --no-tmpdir --icon=logo.ico",
+    "package": "@electron-packager . --arch=x64 --asar --electron-version=24.8.8 --electron-zip-dir=D:\\Dev\\Electron --platform=win32 --tempdir=\"D:\\Dev\\Auto Apps\\Brain Power\\Export\\\" --no-tmpdir --icon=logo.ico",
     "package-linux": "@electron-packager . --arch=x64 --asar --electron-version=22.3.27 --electron-zip-dir=D:\\Dev\\Electron --platform=linux --tempdir=\"D:\\Dev\\Auto Apps\\Brain Power\\Export\\\" --no-tmpdir --icon=logo.ico",
-    "build": "echo 'Nothing to build; copy files manually if needed'",
+    "build": "npx electron-builder",
+    "build-win7": "npx electron-builder --electron-version=24.8.8  --win",
     "build-web": "node build-web.js && npx cap sync",
     "cap-test": "node build-web-test.js && cd capacitortest/src && npx serve"
   },

@@ -40,12 +40,15 @@ export function regenerate_time_display(duration) {
     `
   }
 }
-export function generate_test_mainpage(content,schedule,old,special,setupButnClick,startButnClick) {
+export function generate_test_mainpage(
+  content,schedule,old,special,setupButnClick,startButnClick,
+  offlineTestData
+) {
   const maincontainer = document.createElement("div")
   const subcontainer1 = document.createElement("div")
   maincontainer.setAttribute("class","test-mainpage-maincontainer")
   const scheduled = generate_test_scheduled(schedule,startButnClick)
-  const config = generate_test_config(setupButnClick)
+  const config = generate_test_config(setupButnClick,offlineTestData,startButnClick)
   const oldtest = generate_test_oldtests(old,special,startButnClick)
   maincontainer.append(scheduled, config, oldtest)
   content.append(maincontainer)
@@ -74,30 +77,75 @@ function generate_test_scheduled(scheduled,startButnClick) {
   return maindiv
 }
 
-function generate_test_config(setupButnClick) {
+function generate_test_config(setupButnClick,testdata,startButnClick) {
   const maindiv = document.createElement("div")
   maindiv.setAttribute("class","test-mainpage-config test-mainpage-maindiv")
   const header = generate_test_maindiv_header("New Test")
   const contentDiv = document.createElement('div')
   contentDiv.innerHTML = `
-  <div> <p> Select Subject </p> <select> </select> </div>
-  <div> <p> Select Bank </p> <select> </select> </div>
-  <div> <p> Exam Type </p> <select> </select> </div>
+  <div> <p> Exam Source </p> <select id="configbankselection"> </select> </div>
+  <div> <p> Category </p> <select id="configcategoriesselection"> </select> </div>
+  <div> <p> Arrangement </p> <select id="configarrangementselection">
+    <option value="order" >Ordered</option>
+    <option value="random" >Random</option>
+  </select></div>
+  <div> <p> No of Questions </p> <input type='number' min="1" id="confignoofquestions" value="10"> </div>
+  <div> <p> Duration </p> <input type='number' min="1" max="600" placeholder='Minutes' id="configduration" value="5"> </div>
   `
+  prepare_config_options(contentDiv,testdata)
   const buttonDiv = document.createElement('div')
   buttonDiv.innerHTML = `
   <button> Reset </button>
-  <button> Start </button>
+  <button id='testmainpage-start-button'> Start </button>
   <button id='testmainpage-setup-button'> Setup </button>`
   const button = buttonDiv.querySelector("#testmainpage-setup-button")
   if (button) {
     button.onclick = setupButnClick
   }
-  
+  const button2 = buttonDiv.querySelector("#testmainpage-start-button")
+   if (button2) {
+
+    button2.onclick = (evt) => startButnClick(evt,0,0,0,true)
+   }
+
   maindiv.append(header, contentDiv, buttonDiv)
   return maindiv
 }
 
+function prepare_config_options(container,data) {
+  const bankSelection = container.querySelector("#configbankselection")
+  const bankCategories = container.querySelector("#configcategoriesselection")
+  if (data) {
+    let isFirst = true
+    for(const [uuid,bank] of Object.entries(data)) {
+      const option = document.createElement("option")
+      option.label = bank[0]
+      option.value = bank[1]
+      bankSelection.add(option)
+      bankSelection.onchange = (evt) => helper_config_options_categories(data,bankCategories,evt.target.value)
+      if (isFirst) {
+        helper_config_options_categories(data,bankCategories,uuid)
+        isFirst = false
+      }
+    }
+  }
+}
+
+function helper_config_options_categories(data,categories,uuid) {
+  if (data[uuid][2]?.categories) {
+    categories.innerHTML = ""
+    const option = document.createElement("option")
+    option.label = "All"
+    option.value = "-1"
+    categories.add(option)
+    data[uuid][2].categories.forEach(category => {
+      const option = document.createElement("option")
+      option.label = category[0]
+      option.value = category[1]
+      categories.add(option)
+    })
+  }
+}
 function generate_test_oldtests(old,special,startButnClick) {
   const maindiv = document.createElement("div")
   maindiv.setAttribute("class","test-mainpage-oldtest test-mainpage-maindiv")
@@ -132,7 +180,7 @@ function generate_test_oldtests(old,special,startButnClick) {
       p.innerText = test[0]
       const butn = document.createElement("button")
       butn.innerText = "Continue"
-      butn.onclick = (evt) => startButnClick(evt,test[1],test[0],"old",true)
+      butn.onclick = (evt) => startButnClick(evt,test[1],test[3],test[2],true,true)
       const butn2 = document.createElement("button")
       butn2.innerText = "Discard"
       div.append(p,butn,butn2)

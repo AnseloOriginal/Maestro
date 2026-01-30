@@ -19,6 +19,7 @@ const main_testmanager_butn = document.getElementById("main-butn-testmanager")
 const main_account_butn = document.getElementById("main-butn-account")
 const external_content = document.getElementById("external")
 const main_test_butn = document.getElementById("main-butn-test")
+const dialog = document.getElementById("main-dialog")
 let mode = 0
 let pingID = 0
 let lastPingResults = false
@@ -113,8 +114,31 @@ async function changeScreen(screen,...extras) {
   } else if(screen === "account") {
     render.account.render_main_page(content,handle,manager.cache["userinfo"])
   } else if(screen === "test-mainpage") {
+    
     const scheduled = await window.test.names("scheduled")
     const special = await window.test.names("special")
+    const all = await manager.cacheGet("public_banks_names")
+    
+
+    const getOfflineTests = async () => {
+      revaluator.set_as("public_banks_names",true)
+      const tests = []
+      const available = await window.test.offline()
+      const all = await manager.cacheGet("public_banks_names") || []
+      all.forEach(bank => {
+        if (available[bank[1]]) {
+          available[bank[1]].forEach(test => {
+            const date = new Date(parseInt(test))
+            const dateString = `${date.getHours()}:${date.getMinutes()} ${date.toDateString()}`
+            const name = `${bank[0]} (${dateString})`
+            const data = new Array(name,bank[1],test,bank[0])
+            tests.push(data)
+          })
+        }
+      })
+      return tests
+    }
+
     const getBanks = async () => {
       revaluator.set_as("public_banks_names",true)
       const files = await window.fs.banks()
@@ -133,6 +157,24 @@ async function changeScreen(screen,...extras) {
       }
       
     }
+
+    const getOfflineTestData = async () => {
+      revaluator.set_as("public_banks_names",true)
+      const files = await window.fs.banks()
+      const bankdata = await manager.cacheGet("public_banks_names")
+      if (bankdata) {
+        const exist = {}
+        bankdata.forEach(bank => {
+          if (files.includes(bank[1])) {
+            exist[bank[1]] = (bank)
+          }
+        })
+        return exist
+      } else {
+        return undefined
+      }
+      
+    }
     const setupButnClick = async (evt) => {
       evt.target.disabled = true
       // const existingOfflineTests = [
@@ -140,6 +182,14 @@ async function changeScreen(screen,...extras) {
       // ]
     
       const serverOfflineTests = await window.test.names("public")
+      const serverOfflineBankDetails = await window.test.bankDetails("public") //Currently always details
+      for( const [uuid,data] of Object.entries(serverOfflineBankDetails)) {
+        serverOfflineTests.forEach(bank => {
+          if (bank[1] === uuid) {
+            bank[2] = data
+          }
+        });
+      }
       if (serverOfflineTests.length > 0) {
         await manager.cacheSet("public_banks_names",serverOfflineTests)
       }
@@ -151,7 +201,6 @@ async function changeScreen(screen,...extras) {
       )
       evt.target.disabled = false
     }
-
     const deleteBankFunc = async (evt,uuid) => {
       evt.target.disabled = true
       console.log(`Deleting ${uuid}`)
@@ -164,38 +213,83 @@ async function changeScreen(screen,...extras) {
       handle("download",`#securebanks,${uuid}`)
       evt.target.disabled = false
     }
-
-    const startTestFunc = async (evt,uuid,name,location,isLocal) => {
+    
+    const startTestFunc = async (evt,uuid,name,location,isLocal,isExisting) => {
       evt.target.disabled = true
-      localStorage.setItem("load-test-target",uuid)
-      changeScreen("test-loader",name,location)
+      if (isLocal) {
+        if (isExisting) {
+          localStorage.setItem("load-test-target",uuid)
+          sessionStorage.setItem("testname",name)
+          changeScreen("test-loader",name,location,false)
+        } else {
+          const bankDiv = document.getElementById("configbankselection")
+          const uuid = bankDiv?.value || false
+          if (uuid) {
+            const name = bankDiv.selectedOptions[0].label //Normal label didn't work. Seems like a bug
+            let category = document.getElementById("configcategoriesselection")?.value || "-1"
+            // category = parseInt(category)
+            const arrangement = document.getElementById("configarrangementselection")?.value || "random"
+            const no = document.getElementById("confignoofquestions")?.value || 10
+            const duration = document.getElementById("configduration")?.value || 5
+            localStorage.setItem("load-test-target",uuid)
+            sessionStorage.setItem("testname",name)
+            changeScreen("test-loader",name,"newofflinetest",false,no,category,arrangement,duration)
+          }
+        }
+      } else {
+        sessionStorage.setItem("testname",name)
+        localStorage.setItem("load-test-target",uuid)
+        changeScreen("test-loader",name,location,true)
+      }
       evt.target.disabled = false
     }
+
+    const offline = await getOfflineTests()
+    console.log(offline)
+    const testdata = await getOfflineTestData()
+
     render.testing.generate_test_mainpage(
       content,
       scheduled,
-      [["Exam 1","2"],["Exam 2","2"],["Exam 3","2"]],
+      offline,
       special,
       setupButnClick,
-      startTestFunc
+      startTestFunc,
+      testdata
     )
   } else if(screen === "test-loader") {
     const loadingTest = localStorage.getItem("load-test-target") || ""
     const continueFunc = async () => {
       const progress = render.testloader.render_loading(content);
-      const data = await window.test.questions(loadingTest,extras[1])
-      const details = await window.test.details(loadingTest,extras[1])
-      const elasped = parseInt(await window.test.variable("get",loadingTest,"elasped")) || 0
-      const currentLoadingTest = localStorage.getItem("load-test-target")
-      if (currentLoadingTest === loadingTest) {
-        if (data) {
-          changeScreen("test",data,currentLoadingTest,details,elasped)
+      let testLocation = "";
+      if (extras[2]) {
+        window.test.mode("online")
+        testLocation = extras[1]  
+      } else {
+        window.test.mode("offline")
+        if (extras[1] === "newofflinetest") {
+          testLocation = await window.test.generate(loadingTest,extras[3],extras[4],extras[5],extras[6])
         } else {
-          progress.innerText = "We've encountered an error why loading tests."
+          testLocation = extras[1]
         }
       }
+        const data = await window.test.questions(loadingTest,testLocation)
+        const details = await window.test.details(loadingTest,testLocation)
+        const elasped = parseInt(await window.test.variable("get",loadingTest,"elasped",null,testLocation)) || 0
+        const currentLoadingTest = localStorage.getItem("load-test-target")
+        if (currentLoadingTest === loadingTest) {
+          if (data) {
+            changeScreen("test",data,currentLoadingTest,details,elasped,testLocation)
+          } else {
+            progress.innerText = "We've encountered an error why loading tests. (Written/Error)"
+            const name = sessionStorage.getItem("testname")
+            window.test.displayResult(loadingTest,testLocation,name)
+          }
+        }
+        // const data = await
     }
-    //Expects extras[0] = name of test; extrans[1] = location
+    //Expects extras[0] = name of test; extrans[1] = location, extras[2] = isOnline
+    //extras[3] = no of questions, extras[4] = list of questions, extras[5] = category, extras[6]= duration
     render.testloader.render_confirmation(content,extras[0],continueFunc)
   } else if(screen === "test-manager") {
     if (!manager.cacheHas("test_manager_bank_info")) {
@@ -279,7 +373,7 @@ async function changeScreen(screen,...extras) {
       dialog.append(stage1)
       let isOffline = true
       while (isOffline) {
-        const data = await window.runtime.serverOnline()
+        const data = await window.runtime.serverOnline("test")
         isOffline = !data
       }
       stage1.innerText = "[TASK1] Server connection successful"
@@ -287,6 +381,7 @@ async function changeScreen(screen,...extras) {
       sync = JSON.parse(sync)
       let data = sessionStorage.getItem("testdata") || "{}"
       let uuid = sessionStorage.getItem("testuuid") || "{}"
+      const location = sessionStorage.getItem("testlocation") || ""
       uuid = JSON.parse(uuid)
       data = JSON.parse(data)
       let stillRem = true
@@ -313,7 +408,7 @@ async function changeScreen(screen,...extras) {
             if (answer === 0) {
               console.warn(`[TASK2] Eending 0 as answer: ${section},sub:${sub},ques:${ques}`)
             }
-            const result = await window.test.results(uuid,section,sub,ques,answer)
+            const result = await window.test.results(uuid,section,sub,ques,answer,location)
             if (!result) {
               failureCount++
             } else {
@@ -330,7 +425,7 @@ async function changeScreen(screen,...extras) {
       stage3.innerText = "[TASK3] Finilizing"
       let sendFinginishSignal = true
       while (sendFinginishSignal) {
-        const data =  window.test.submit(uuid)
+        const data =  window.test.submit(uuid,location)
         sendFinginishSignal = !data
       }
       stage3.innerText = "[TASK3] Done"
@@ -354,7 +449,7 @@ async function changeScreen(screen,...extras) {
           currentTime++
         }
         if ((currentTime - lastSynced) > 5) {
-          window.test.variable("set",uuid,"elasped",currentTime)
+          window.test.variable("set",uuid,"elasped",currentTime,extras[4])
           lastSynced =  currentTime
         }
         if ((duration-currentTime) < 0) {
@@ -378,6 +473,7 @@ async function changeScreen(screen,...extras) {
     window.sys.requestLock()
     sessionStorage.setItem("testdata",JSON.stringify(extras[0]))
     sessionStorage.setItem("testuuid",JSON.stringify(extras[1]))
+    sessionStorage.setItem("testlocation",extras[4])
     timerLoop(extras[1],start)
     api.testing.manageButns(render.testing,finishExam)
   } else if(screen === "test-cleanup") {
@@ -387,12 +483,22 @@ async function changeScreen(screen,...extras) {
     external_content.style.display = "none"
     window.sys.fullscreen(false)
     window.sys.requestUnlock()
+    let location = sessionStorage.getItem("testlocation")
+    let name = sessionStorage.getItem("testname")
+    revaluator.set_as("public_banks_names",true)
+    let uuid = sessionStorage.getItem("testuuid")
+    if (uuid && location) {
+      uuid =  JSON.parse(uuid)
+      location =  JSON.parse(location)
+      console.log(uuid,location,name)
+      window.test.displayResult(uuid,location,name);
+    }
     sessionStorage.removeItem("testdata")
     sessionStorage.removeItem("testuuid")
     sessionStorage.removeItem("testsync")
+    sessionStorage.removeItem("testname")
     changeScreen("test-mainpage")
   }
-
   currentScreen = screen
 }
 
@@ -420,6 +526,7 @@ async function startUp() {
   }
   changeScreen("dashboard")
   ping()
+  changelogCheck()
   hasFinishedLoading = true
 }
 
@@ -609,3 +716,27 @@ window.runtime.onDownloadComplete((details) => {
     }
   }
 })
+
+async function changelogCheck() {
+  const appVersion = await window.sys.appVersion()
+  const currentVersion = await localStorage.getItem("Last-Known-Version")
+
+  if (!currentVersion || appVersion !== currentVersion) {
+    const text = await window.server.getAppChangelog()
+    if (!text) {return}
+    dialog.showModal()
+    dialog.closeBy = "any"
+    
+    const partText = text.split("\n")
+
+    dialog.innerHTML = `<p class="dialog-header"> What's new in version ${appVersion} </p>`
+    partText.forEach(part => {
+      if (part.includes("+header+")) {
+        dialog.innerHTML += `<p class='dialog-miniheader'> -${part.replace("+header+","")} </p>`
+      } else {
+        dialog.innerHTML += `<p class='dialog-text'> ${part} </p>`
+      }
+    })
+    localStorage.setItem("Last-Known-Version",appVersion) 
+  }
+}
