@@ -292,3 +292,134 @@ export async function addNewTestData(uuid,data) {
     return false
   }
 }
+
+export async function getChangelog(version) {
+  if (await server.serverIsAvailable()) {
+    const response = await server.getChangelog(version)
+    if (response[0] === 0) {
+      return response[1]
+    } else {
+      console.log(response)
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
+export async function requestFullscreen(bol) {
+  if (bol) {
+    document.documentElement.requestFullscreen()
+  } else {
+    await document.exitFullscreen()
+  }
+}
+
+export async function getBankDetails() {
+  if (await server.serverIsAvailable() && sessionID) {
+    const response = await server.getBankDetails("public",sessionID)
+    if (response[0] === 0) {
+      return response[1]
+    } else {
+      console.log(response[1],response[2])
+      return {}
+    }
+  } else {
+    return {}
+  } 
+}
+
+export async function getTestQuestions(uuid,location) {
+  if (await server.serverIsAvailable() && sessionID) {
+    const response = await server.getQuestionData(uuid,sessionID,location)
+    if (response[0] === 0) {
+      return response[1]
+    } else {
+      console.log(response)
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
+export async function sendTestResult(uuid,section,subsection,question,answer) {
+  if (await server.serverIsAvailable() && sessionID) {
+    const response = await server.sendResultData(uuid,section,subsection,question,answer,sessionID)
+    if (response[0] === 0) {
+      return true
+    } else {
+      console.log(response)
+      return false
+    }
+  } else {
+    return false
+  }  
+}
+
+export async function finishTest(uuid) {
+  if (await server.serverIsAvailable() && sessionID) {
+    const response = await server.sendFinishSignal(uuid,sessionID)
+    if (response[0] === 0) {
+      return true
+    } else {
+      console.log(response)
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
+
+export async function TestVariable(action,uuid,name,content) {
+  if (await server.serverIsAvailable() && sessionID) {
+    const response = await server.TestVariable(action,uuid,name,content,sessionID)
+    if (response[0] === 0) {
+      return response[1]
+    } else {
+      console.log(response)
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
+export async function SetTestMode() {
+  console.warn("[MODE SYSTEM] Only online mode supported")
+}
+
+export async function getFinalTestResult(uuid) {
+  if (await server.serverIsAvailable() && sessionID) {
+    const response = await server.TestFinalResult(uuid,sessionID)
+    if (response[0] === 0) {
+      const res = response[1]
+      for(const [name,section] of Object.entries(res.test)) {
+        section.forEach((data,i) => {
+          section[i] = Object.values(data)
+        })
+      }
+      return res
+    } else {
+      console.log(response)
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
+export async function getTestDetails(uuid,location) {
+  if (await server.serverIsAvailable()) {
+    const response = await server.getTestDetails(uuid,location)
+    if (response[0] === 0) {
+      return response[1]
+    } else {
+      console.log(response)
+      return false
+    }
+  } else {
+    return false
+  }
+}

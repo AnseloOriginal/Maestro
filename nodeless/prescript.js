@@ -5,7 +5,7 @@ let type = "nodeless"
 if (isCapactior) {
   type = "capacitor"
 }
-
+const APP_VERSION = "1.9.2"
 if (!window.runtime) {
   window.runtime = {
     type: () => type,
@@ -27,7 +27,8 @@ if (!window.server) {
     serverUserInfo: runtime.getServerInfo,
     serverNotesInfo: runtime.getOnlineNotes,
     serverMonitorData: runtime.getMonitorNotes,
-    publicConfig: runtime.getPublicConfigData
+    publicConfig: runtime.getPublicConfigData,
+    getAppChangelog: () => runtime.Initialization
   }
 }
 
@@ -35,6 +36,7 @@ if (!window.fs) {
   window.fs = {
     notes: async () => runtime.getOfflineNotes(),
     download: async (file) => runtime.addDownload(file),
+    banks: () => {return []},
     open: (propety) => {
       if (isCapactior) {
         runtime.openFile(propety,false)
@@ -52,9 +54,38 @@ if (!window.test) {
   window.test = {
     names: runtime.getTestNameData,
     access: runtime.getTestAccessData,
+    bankDetails: runtime.getBankDetails,
     info: runtime.getTestInfoData,
-    add: runtime.addNewTestData
+    add: runtime.addNewTestData,
+    questions: runtime.getTestQuestions,
+    results: runtime.sendTestResult,
+    submit: runtime.finishTest,
+    details: runtime.getTestDetails,
+    variable: runtime.TestVariable,
+    mode: runtime.SetTestMode,
+    generate: () => console.warn("[TESTS] Offline test not supported"),
+    offline: () => console.warn("[TESTS] Offline test not supported"),
+    displayResult: async (uuid,location,data) => {
+      const result = await runtime.getFinalTestResult(uuid)
+      localStorage.setItem("lasttobeviewedresult",JSON.stringify(result))
+      localStorage.setItem("lasttobevieweddata",JSON.stringify(data))
+      window.open(`${
+        window.location.pathname.replace("dashboard","result")
+      }`, '_blank');
+      loca
+    },
+    result: () => localStorage.getItem("lasttobeviewedresult"),
+    data: () => localStorage.getItem("lasttobevieweddata")
   }
+}
+
+if (!window.sys) {
+  window.sys = {
+    fullscreen: (bol) => runtime.requestFullscreen(bol),
+    requestLock: () => console.warn("Lock not supported"),
+    requestUnlock: () => console.warn("Lock not supported"),
+    appVersion: () => APP_VERSION
+  }  
 }
 
 if (isCapactior) {

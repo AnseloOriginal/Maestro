@@ -232,3 +232,74 @@ export async function testEditData(method,uuid,sess_id,uuid_location,target) {
   }
   return simpleGet(api.getTestEditDataURL(),message)
 }
+
+export async function getBankDetails(type,sesid) {
+  const message = {
+    type,
+    "sid": sesid
+  }
+  return simpleGet(api.getBankDetailsDataURL(),message)
+}
+
+export async function getQuestionData(uuid,sid,location) {
+  const message = {
+    uuid,
+    sid,
+    location
+  }
+  return simpleGet(api.getTestQuestionURL(),message)
+}
+
+export async function sendResultData(uuid,section,subsection,question,answer,sid) {
+  const message = {
+  uuid,
+  section,subsection,question,answer,sid
+  }
+  console.log(uuid,section,subsection,question,answer,sid)
+  return simpleGet(api.getTestResultsURL(),message)
+}
+
+export async function sendFinishSignal(
+  uuid,sid
+) {
+  const message = {
+    uuid,
+    sid
+  }
+  return simpleGet(api.getTestFinishSignalURL(),message)
+}
+
+export async function getTestDetails(uuid,location) {
+  const message = {
+    uuid,
+    location
+  }
+  return simpleGet(api.getTestDetailsURL(),message)
+}
+
+export async function TestVariable(action,uuid,name,content,sessid) {
+  const message = {
+    action,
+    uuid,
+    target: name,
+    content,
+    sessid
+  }
+  return simpleGet(api.getTestVariableURL(),message)
+}
+
+export async function getChangelog(version) {
+  const message = {
+    version
+  }
+  return simpleGet(api.getAppChangelogURL(),message)
+}
+
+export async function TestFinalResult(uuid,sid) {
+  const message = {
+    uuid,
+    sid
+  }
+  console.log(uuid,sid)
+  return simpleGet(api.getTestFinalResultURL(),message)
+}

@@ -20,6 +20,7 @@ const main_account_butn = document.getElementById("main-butn-account")
 const external_content = document.getElementById("external")
 const main_test_butn = document.getElementById("main-butn-test")
 const dialog = document.getElementById("main-dialog")
+
 let mode = 0
 let pingID = 0
 let lastPingResults = false
@@ -430,6 +431,12 @@ async function changeScreen(screen,...extras) {
       }
       stage3.innerText = "[TASK3] Done"
       changeScreen("test-cleanup")
+    }
+    if (window.runtime.type() === "nodeless") {
+      window.addEventListener("blur", (evt) => {
+        finishExam()
+        console.log("Removed widow")
+      },{ once: true })
     }
     const duration =  extras[2]?.duration || 10
     let TimerID = 0

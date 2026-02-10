@@ -20,6 +20,15 @@ const serverTestNameSpace = "name.php"
 const serverTestAccesSpace = "access.php"
 const serverTestInfoSpace = "info.php"
 const serverTestEditSpace = "edit.php"
+const serverPublicChangelogSpace = "public/changelog.php"
+const serverBankDetailsSpace = "bankdetails.php"
+const serverTestSpace = "tests"
+const serverGetTestQuestionsSpace = "get.php"
+const serverSendTestResultsSpace = "result.php"
+const serverSendTestFinishSpace = "finish.php"
+const serverTestDetailsSpace = "details.php"
+const serverTestVariableSpace = "variable.php"
+const serverTestFinalResultSpace = "finalresult.php"
 
 const apiJoin = (...parts) => parts.join("/");
 
@@ -73,4 +82,36 @@ export function getTestEditDataURL() {
 
 export function getPublicDataConfigURL() {
   return apiJoin(mainURL,serverMainSpace,serverDataSpace,serverPublicConfigSpace)
+}
+
+export function getBankDetailsDataURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestDataSpace, serverBankDetailsSpace)
+}
+
+export function getTestQuestionURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverGetTestQuestionsSpace)
+}
+
+export function getTestResultsURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverSendTestResultsSpace)
+}
+
+export function getTestFinishSignalURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverSendTestFinishSpace)
+}
+
+export function getTestDetailsURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverTestDetailsSpace)
+}
+
+export function getTestVariableURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverTestVariableSpace)
+}
+
+export function getAppChangelogURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverPublicChangelogSpace)
+}
+
+export function getTestFinalResultURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverTestFinalResultSpace)
 }
