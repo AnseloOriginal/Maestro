@@ -48,11 +48,12 @@ function changeQuestion(section,subsection,question,id) {
   const questionData =  data[section]?.[subsection]?.[question]
   if (questionData) {
     console.log(currentSection)
-    
     if (section === currentSection) {
-      document.getElementById(`NumberAreaButn-${currentQuestionID}`)?.setAttribute("selected","false")
+      let numID = currentQuestionID 
+      if (numID === 0) {numID = 1} //Helps number bar athe the start which is 0
+      document.getElementById(`NumberAreaButn-${numID}`)?.setAttribute("selected","false")
     }
-    // console.log(document.getElementById(`NumberAreaButn-${id}`),id)
+    
     document.getElementById(`NumberAreaButn-${id}`)?.setAttribute("selected","true")
     displayQuestion(questionData)
     currentQuestionID = id
@@ -108,8 +109,7 @@ function buildFirstUI(data,testarea,numberarea,subjectlist) {
       const firstQuestion = sections[0]?.[0];
       currentSection = name;
       if (firstQuestion) {
-        changeQuestion(name,0,0,1)
-        // displayQuestion(firstQuestion,testarea)
+        changeQuestion(name,0,0,0)
       }
       let count = 1
       sections.forEach((sub,subIndex) => {
@@ -124,7 +124,7 @@ function buildFirstUI(data,testarea,numberarea,subjectlist) {
       document.getElementById(`NumberAreaButn-1`)?.setAttribute("selected","true")
       refreshNumberBarThumbnail()
       currentSection = name
-      currentQuestion = 1
+      currentQuestion = 0
       builtFirst = true
     }
   }
@@ -164,6 +164,7 @@ function onOptionSelection(evt,num) {
     const i = evt?.target?.value || num || 0
     console.log(i)
     if (data[currentSection]?.[currentSubsection]?.[currentQuestion]) {
+      console.log(data[currentSection]?.[currentSubsection]?.[currentQuestion])
       data[currentSection][currentSubsection][currentQuestion].preanswer = parseInt(i)
       syncResult(currentSection,currentSubsection,currentQuestion) //Must be called first
     }

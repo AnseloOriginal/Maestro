@@ -495,10 +495,18 @@ async function changeScreen(screen,...extras) {
     revaluator.set_as("public_banks_names",true)
     let uuid = sessionStorage.getItem("testuuid")
     if (uuid && location) {
-      uuid =  JSON.parse(uuid)
-      location =  JSON.parse(location)
-      console.log(uuid,location,name)
-      window.test.displayResult(uuid,location,name);
+      console.log(location,uuid)
+      try {
+        uuid =  JSON.parse(uuid)
+        try {
+          location =  JSON.parse(location)
+        } catch (e) {
+          
+        }
+        window.test.displayResult(uuid,location,name);
+      } catch (e) {
+        console.log(`Failed attempt to open result at UUID:${uuid}, location:${location}, name: ${name} due to`,e)
+      }
     }
     sessionStorage.removeItem("testdata")
     sessionStorage.removeItem("testuuid")
