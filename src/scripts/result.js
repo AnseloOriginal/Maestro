@@ -25,15 +25,16 @@ async function loadResult() {
       external.style.position = "absolute"
       external.style.height = `${window.innerHeight - 100}px`
       external.src = "./external/testing/testing.html"
-      render.renderTopBar(extras[1],handler,extras[0])
+      render.renderTopBar(extras[1],handler,extras[0],extras[2])
     } else if (event === "results") {
       external.style.display = "none"
-      render.renderData(extras[1],extras[0],extras[2])
+      render.renderData(extras[1],extras[0],extras[2],extras[3])
     }
   }
+  console.log(result)
   document.title = "Result - "+data
   if (result) {
-    render.renderData(content,result,handler)
+    render.renderData(content,result,handler,data)
   } else {
     render.renderNoResult(content)
   }

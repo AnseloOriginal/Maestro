@@ -1,16 +1,30 @@
-export function renderData(content,data,handler) {
+export function renderData(content,data,handler,name) {
   content.innerHTML = ""
   const mainRow = document.createElement("div")
   mainRow.className = "maindisplay"
   const scoreDisplay = createCircleElement("score",`${data.scores.total_score }/${data.scores.total}`,"Score")
   mainRow.append(scoreDisplay)
+  const properties = document.createElement("div")
+  let tempProp = `
+  <p> <span>Exam:</span> ${name} </p>
+  <p> <span>Time Used:</span> ${Math.floor((parseInt(data?.variables?.elasped) / ((data?.details?.duration || 0)))*100)}%
+  </p><table> <tr><th>Section</th> <th>Score</th> <th>Total</th> </tr>`
+
+  for(const [name,totalscore] of Object.entries(data.scores.sections_total)) {
+    const score = data.scores.sections_scores[name] || "??"
+    tempProp += `<tr><td>${name}</td><td>${score}</td><td>${totalscore}</td></tr>` 
+  }
+  tempProp += "</table>"
+  properties.innerHTML = tempProp
+  properties.className = "properties"
+  console.log(tempProp)
   const buttonRow = document.createElement("div")
   const butn = document.createElement("button")
   butn.innerText = "View Corrections"
-  butn.onclick = () => handler("corrections",data,content)
+  butn.onclick = () => handler("corrections",data,content,name)
   buttonRow.append(butn)
   buttonRow.className = "button-display"
-  content.append(mainRow,buttonRow)
+  content.append(mainRow,properties,buttonRow)
 }
 
 function createCircleElement(id,text,label) {
@@ -29,12 +43,12 @@ function createCircleElement(id,text,label) {
   return circle1
 }
 
-export function renderTopBar(content,handler,data) {
+export function renderTopBar(content,handler,data,name) {
   content.innerHTML = ""
   const buttonRow = document.createElement("div")
   const butn = document.createElement("button")
   butn.innerText = "Return"
-  butn.onclick = () => handler("results",data,content,handler)
+  butn.onclick = () => handler("results",data,content,handler,name)
   buttonRow.append(butn)
   buttonRow.className = "button-display"
   content.append(buttonRow)
