@@ -39,3 +39,10 @@ export function renderTopBar(content,handler,data) {
   buttonRow.className = "button-display"
   content.append(buttonRow)
 } 
+
+export function renderNoResult(content) {
+  const div = document.createElement("div")
+  div.className = "noresultdiv"
+  div.innerText = "Result not available at this momment"
+  content.append(div)
+}

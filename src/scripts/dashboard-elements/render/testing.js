@@ -280,18 +280,18 @@ function time(duration,target) {
 
 export function render_confirm_submit_test(dialog) {
   dialog.innerHTML = `
-  <p> Do you want to finish the exam <p>
-  <div>
-    <button class=testing-dialog-yes> Yes </button>
-    <button class=testing-dialog-no> Return Back </button>
+  <p class="testing-submit-text"> Do you want to <b>finish</b> the exam <p>
+  <div class="testing-submit-butngroup">
+    <button class="testing-dialog-yes"> Yes </button>
+    <button class="testing-dialog-no"> Return Back </button>
   </div>`
 }
 
 export function render_confirm_end_test(dialog) {
   dialog.innerHTML = `
-  <p> Do you want to end the exam (irreversible)<p>
-  <div>
-    <button class=testing-dialog-yes> Yes </button>
-    <button class=testing-dialog-no> Return Back </button>
+  <p> Do you want to end the exam (<b>irreversible</b>)<p>
+  <div class="testing-submit-butngroup">
+    <button class="testing-dialog-yes"> Yes </button>
+    <button class="testing-dialog-no"> Return Back </button>
   </div>`
 }

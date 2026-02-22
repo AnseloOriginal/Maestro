@@ -1,8 +1,12 @@
+//Pre-test confirmation
 export function render_confirmation(content,name,yesFunc,noFunc) {
   content.innerHTML = ""
   const text = document.createElement('p')
-  text.innerText = `Please confirm writing CBT test: ${name}`
+  text.innerHTML = `Please confirm writing CBT test: <span>${name}</span>`
+  text.className = "test-confirmation-text"
+  
   const butnGroup = document.createElement("div")
+  butnGroup.className = "test-confirmation-butngroup"
   const yes =  document.createElement('button')
   yes.onclick =  yesFunc
   yes.innerText = "Yes"
@@ -13,6 +17,7 @@ export function render_confirmation(content,name,yesFunc,noFunc) {
   content.append(text,butnGroup)
 }
 
+//Loading symbol
 export function render_loading(content) {
   content.innerHTML = ""
   const loading = document.createElement('p')

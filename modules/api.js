@@ -1,4 +1,4 @@
-const mainURL = "http://192.168.1.2" //"http://localhost/aba"
+const mainURL = "http://localhost/aba" //"http://192.168.1.2" //"http://localhost/aba"
 const serverMainSpace = "server"
 const serverStatusSpace = "status"
 const serverCreateSpace = "create"

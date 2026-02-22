@@ -32,8 +32,11 @@ async function loadResult() {
     }
   }
   document.title = "Result - "+data
-  console.log(result)
-  render.renderData(content,result,handler)
+  if (result) {
+    render.renderData(content,result,handler)
+  } else {
+    render.renderNoResult(content)
+  }
 }
 
 loadResult()

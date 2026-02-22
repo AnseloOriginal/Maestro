@@ -289,9 +289,10 @@ async function changeScreen(screen,...extras) {
         }
         // const data = await
     }
+    const noFunc = () => changeScreen("test-mainpage")
     //Expects extras[0] = name of test; extrans[1] = location, extras[2] = isOnline
     //extras[3] = no of questions, extras[4] = list of questions, extras[5] = category, extras[6]= duration
-    render.testloader.render_confirmation(content,extras[0],continueFunc)
+    render.testloader.render_confirmation(content,extras[0],continueFunc,noFunc)
   } else if(screen === "test-manager") {
     if (!manager.cacheHas("test_manager_bank_info")) {
       render.testmanager.render_mainpage(
@@ -432,7 +433,7 @@ async function changeScreen(screen,...extras) {
       stage3.innerText = "[TASK3] Done"
       changeScreen("test-cleanup")
     }
-    if (window.runtime.type() === "nodeless") {
+    if (window.runtime.type() === "nodeless" && false) {
       window.addEventListener("blur", (evt) => {
         finishExam()
         console.log("Removed widow")
