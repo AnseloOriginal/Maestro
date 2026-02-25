@@ -11,7 +11,13 @@ autoUpdater.on('error', err => {
   console.error('Update error', err)
 })
 
+autoUpdater.autoInstallOnAppQuit = true;
+autoUpdater.autoDownload = true;
+
+let updateReady = false;
+
 autoUpdater.on('update-downloaded', (info) => {
+  updateReady = true;
   const dialogOpts = {
     type: 'info',
     title: 'Application Update',
@@ -20,8 +26,6 @@ autoUpdater.on('update-downloaded', (info) => {
 
   dialog.showMessageBox(dialogOpts)
 });
-
-autoUpdater.autoInstallOnAppQuit = true
 
 
 const openFile = async (file) => {
@@ -154,8 +158,30 @@ const removeLock = () => {
   return true
 }
 
+let isUpdating = false;
+
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
+  if (updateReady) {
+    isUpdating = true;
+    // silent: false (show installer UI), isForceRunAfter: true (run app after finish)
+    autoUpdater.quitAndInstall(false, true); 
+  } else {
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
   }
-})
+});
+
+app.on('before-quit', (e) => {
+  if (updateReady && !isUpdating) {
+    // This handles cases where the user selects "Quit" from a menu 
+    // instead of just closing the last window.
+    isUpdating = true;
+    BrowserWindow.getAllWindows().forEach(w => w.destroy());
+    autoUpdater.quitAndInstall(false, true);
+  }
+});
+
+setInterval(() => {
+  autoUpdater.checkForUpdates();
+}, 1000 * 60 * 60); // Check every hour
