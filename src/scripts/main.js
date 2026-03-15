@@ -712,7 +712,7 @@ function contentProtection() {
       main_monitor_butn.style.display = "none"
       main_testmanager_butn.style.display = "none"
     } else {
-      main_monitor_butn.style.display = ""
+      // main_monitor_butn.style.display = "" Disable in 1.9.7
       main_testmanager_butn.style.display = ""
     }
   } else {
