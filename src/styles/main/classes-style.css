@@ -1,0 +1,16 @@
+.floating-calculator{
+ background-color: white; 
+ border-radius: 5px;
+ border: 2px solid black;
+ padding: 5px;
+ .calculator-buttons{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  button {
+    margin: 2px;
+  }
+ }
+ .calculator-text{
+  text-align: center;
+ }
+}

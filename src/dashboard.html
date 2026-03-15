@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width" />
     <link rel="manifest" href="./../manifestv2.json" />
     <script src="../nodeless/prescript.js" type="module" fetchpriority="high"></script>
+    <script src="./scripts/cdnmath.js"></script>
     <title> Maestro  </title>
+    <link rel="stylesheet" type="text/css" href="styles/main/classes-style.css">
     <link rel="stylesheet" type="text/css" href="styles/main/alert.css">
     <link rel="stylesheet" type="text/css" href="styles/main/testmanagers.css">
     <link rel="stylesheet" type="text/css" href="styles/main/testing.css">
@@ -16,6 +18,9 @@
     <link rel="stylesheet" type="text/css" href="styles/main/monitor.css">
     <link href="./images/material-symbols/outlined.css" rel="stylesheet">
     <link href="./images/material-symbols/rounded.css" rel="stylesheet">
+    <link rel="stylesheet" href="./scripts/katex/katex.min.css">
+    <script defer src="./scripts/katex/katex.min.js"></script>
+    <script defer src="./scripts/katex/contrib/auto-render.min.js"></script>
   </head>
   <body>
     <div class="sidepanel" id="sidepanel" style="opacity: 0;">
@@ -30,7 +35,8 @@
         <span class="material-symbols-outlined menu-butn-icon" title="Notes">book</span>
         <p class="menu-butn-text" name="menu-butn-text"> Notes </p>
       </div>
-      <div class="menu-butn" id="main-butn-monitor">
+      <!-- Depreciated in v1.9.6. Hidden but functionality still intact-->
+      <div class="menu-butn" id="main-butn-monitor" style="display: none;">
         <span class="material-symbols-outlined menu-butn-icon" title="Monitor Students">monitor</span>
         <p class="menu-butn-text" name="menu-butn-text"> Monitor </p>
       </div>
@@ -49,9 +55,10 @@
     </div>
     <div class="content" id="content">
       <div class="alert" id="alert"></div>
-      <div class="content2" id="content2"></div>
+      <div class="content2" id="content2"></div>  
     </div>
     <iframe id="external" style="display: none; left: 0px; top: 100px; width: 100%; border: none;"></iframe>
+    <div class="floaters" id="floaters" style="display: absolute;"></div>
     <dialog id="main-dialog" closedby="any"></dialog>
   </body>
   <script src="scripts/main.js" type="module"></script>

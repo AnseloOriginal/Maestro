@@ -13,6 +13,9 @@ export  function generate_test_topbar(content,userinfo,duration) {
       </div>
     </div>
     <div class="test-interface-usertools">
+      <button class="test-interface-butn test-interface-calculator">
+        <span class="test-interface-icon button-icon" title="user">calculate</span>
+      </button>
       <button class="test-interface-butn test-interface-submit"> Submit </button> 
       <button class="test-interface-butn test-interface-abort"> Abort </button>
     </div>

@@ -7,6 +7,7 @@ import revaluator from "./dashboard-elements/revaluator.js"
 import * as time from "./dashboard-elements/time.js"
 
 const switcher = document.getElementById("switch")
+const floaters = document.getElementById("floaters")
 const sidepanel = document.getElementById("sidepanel")
 const alert = document.getElementById("alert")
 const fullspace = document.getElementById("content")
@@ -27,6 +28,7 @@ let lastPingResults = false
 let hasSession = false
 let currentScreen = ""
 let hasFinishedLoading = false
+let allowRefresh = true
 startUp()
 
 function ping() {
@@ -38,10 +40,10 @@ function ping() {
       hasSession = nowHasSession
       if (nowHasSession) {await manager.getUserInfo()}
       console.log("After session",currentScreen)
-      changeScreen(currentScreen)
+      if (allowRefresh) { changeScreen(currentScreen) }
     }
     if (pingResults !== lastPingResults) {
-      changeScreen(currentScreen)
+      if (allowRefresh) { changeScreen(currentScreen) }
     }
     //console.log("Has Session",hasSession)
     refresh_alert()
@@ -265,7 +267,7 @@ async function changeScreen(screen,...extras) {
       let testLocation = "";
       if (extras[2]) {
         window.test.mode("online")
-        testLocation = extras[1]  
+        testLocation = extras[1]
       } else {
         window.test.mode("offline")
         if (extras[1] === "newofflinetest") {
@@ -361,6 +363,7 @@ async function changeScreen(screen,...extras) {
       })
     }
   } else if(screen === "test") {
+    allowRefresh = false
     async function  finishExam() {
       const dialog = document.querySelector('.test-interface-dialog')
       dialog.addEventListener("cancel", (evt) => {
@@ -482,9 +485,10 @@ async function changeScreen(screen,...extras) {
     sessionStorage.setItem("testdata",JSON.stringify(extras[0]))
     sessionStorage.setItem("testuuid",JSON.stringify(extras[1]))
     sessionStorage.setItem("testlocation",extras[4])
+    api.testing.calculatorLogic(extras[2].calculator,content,floaters)
     timerLoop(extras[1],start)
     api.testing.manageButns(render.testing,finishExam)
-  } else if(screen === "test-cleanup") {
+  } else if(screen === "test-cleanup") {  
     fullspace.classList.remove("content-fullscreen")
     sidepanel.style.display = "block"
     content.setAttribute("class","content2")
@@ -513,6 +517,7 @@ async function changeScreen(screen,...extras) {
     sessionStorage.removeItem("testuuid")
     sessionStorage.removeItem("testsync")
     sessionStorage.removeItem("testname")
+    allowRefresh = true
     changeScreen("test-mainpage")
   }
   currentScreen = screen

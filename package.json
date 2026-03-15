@@ -23,7 +23,10 @@
     "electron": "^37.2.4",
     "electron-builder": "^26.0.12",
     "fs-extra": "^11.3.3",
-    "mocha": "^11.7.2"
+    "mocha": "^11.7.2",
+    "nyc": "^18.0.0",
+    "sinon": "^21.0.2",
+    "sinon-chai": "^4.0.1"
   },
   "dependencies": {
     "@capacitor-community/file-opener": "^8.0.0",
