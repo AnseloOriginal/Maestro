@@ -661,9 +661,10 @@ function handle(e,property,caller) {
         let uploaded = 0
         const cache = await manager.cacheGet("test_manager_bank_info",{})
         for (const [uuid, questions] of Object.entries(store)) {
-          for(let i=1;i<questions.length;i++) {
+          //Uploads questions and removes the uploaded
+          for(let i=0;i<questions.length;i++) {
             const question = questions[i]
-            if (question && question.finished) {
+            if (question && question?.finished) {
               const result = await window.test.add(uuid,question)
               if (result) {
                 let week_count = localStorage.getItem("week_count_"+uuid)
@@ -682,6 +683,14 @@ function handle(e,property,caller) {
               text.innerText = `Uploaded ${uploaded} / ${total}`
             }
           }
+          //Deletes all undefined
+          for(let i=0;i<questions.length;i++) {
+            if (questions[i] === undefined || questions[i] === null) {
+              questions.splice(i)
+            }
+          }
+          
+          console.log(questions)
           const bankinfo = await window.test.info("private",uuid)
           localStorage.setItem("teacher_temporary_store",JSON.stringify(store))
           cache[uuid] = bankinfo
