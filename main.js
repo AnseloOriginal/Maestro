@@ -127,6 +127,9 @@ app.whenReady().then(() => {
   ipcMain.handle('Test Generate', async (event,uuid,no,list,type,duration) => Runtime.generateNewTest(uuid,no,list,type,duration)),
   ipcMain.handle('Offline Tests', async () => Runtime.getOfflineTests()),
   ipcMain.handle('Test Final Results', async (event,uuid,location,data) =>  openResult(uuid,location,data)),
+  ipcMain.handle('Media Library', async () =>  Runtime.getLibraryData())
+  ipcMain.handle('Media Video', async (event,id) =>  Runtime.convertToVideoURL(id))
+  ipcMain.handle('Media Image', async (event,id) =>  Runtime.convertToImageURL(id))
   autoUpdater.checkForUpdates()
 })
 

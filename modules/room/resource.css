@@ -1,0 +1,23 @@
+img {
+  width: 100vw;
+  height: 100vh;
+  
+  /* Key properties */
+  object-fit: contain;     /* Fits whole image without cropping */
+  object-position: center; /* Keeps it centered in the window */
+}
+
+body {
+  margin: 0;
+  background-color: black; /* Usually best to hide letterbox gaps */
+  overflow: hidden;        /* Prevents accidental scrollbars */
+}
+
+video {
+  width: 100vw;
+  height: 100vh;
+  
+  /* Key property */
+  object-fit: contain;     /* Shows the whole video, no cropping */
+  background-color: black; /* Fills gaps (letterboxing) with black */
+}

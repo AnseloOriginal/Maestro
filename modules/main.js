@@ -3,6 +3,8 @@ import * as Login from "./login.js"
 import * as server from "./server.js"
 import * as fs from "./filemanager.js"
 import * as download from "./downloader.js"
+import * as api from "./api.js"
+// import * as room from "./room.js"
 
 let InitAllowed = true
 let sessionID = 0
@@ -594,4 +596,25 @@ export async function getFinalTestResult(uuid,location) {
       return false
     }
   }
+}
+
+export async function getLibraryData() {
+  const data = await server.getLibraryData()
+  if (data[0] === 0) {
+    return data[1]
+  } else {
+    return {
+      "offline": true
+    }
+  }
+}
+
+export async function convertToVideoURL(id) {
+  const mainURL = api.getMediaVideoURL()
+  return `${mainURL}?id=${id}`
+}
+
+export async function convertToImageURL(id) {
+  const mainURL = api.getMediaImageURL()
+  return `${mainURL}?id=${id}`
 }

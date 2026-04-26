@@ -16,6 +16,7 @@ const serverFilesContentSpace = "list.php" //Previously content.php
 const serverFilesDownloadSpace = "download.php"
 const serverGetMonitorDataSpace = "get.php"
 const serverTestDataSpace = "banks"
+const serverMediaSpace = "media"
 const serverTestNameSpace = "name.php"
 const serverTestAccesSpace = "access.php"
 const serverBankDetailsSpace = "bankdetails.php"
@@ -28,6 +29,9 @@ const serverSendTestFinishSpace = "finish.php"
 const serverTestDetailsSpace = "details.php"
 const serverTestVariableSpace = "variable.php"
 const serverTestFinalResultSpace = "finalresult.php"
+const serverMediaLibrarySpace = "library.php"
+const serverMediaVideoSpace = "video.php"
+const serverMediaImageSpace = "image.php"
 
 export const apiJoin = (...parts) => parts.join("/");
 
@@ -113,4 +117,16 @@ export function getAppChangelogURL() {
 
 export function getTestFinalResultURL() {
   return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverTestFinalResultSpace)
+}
+
+export function getMediaLibraryURL() {
+  return apiJoin(mainURL,serverMainSpace, serverMediaSpace, serverMediaLibrarySpace)
+}
+
+export function getMediaVideoURL() {
+  return apiJoin(mainURL,serverMainSpace, serverMediaSpace, serverMediaVideoSpace)
+}
+
+export function getMediaImageURL() {
+  return apiJoin(mainURL,serverMainSpace, serverMediaSpace, serverMediaImageSpace)
 }

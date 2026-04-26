@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Room Control</title>
+  <link href="./control.css" rel="stylesheet">
+   <link href="./../../src/images/material-symbols/outlined.css" rel="stylesheet">
+  <link href="./../../src/images/material-symbols/outlined.css" rel="stylesheet">
+</head>
+<body>
+  <div class="menu-butn" id="main-butn-exit">
+    <span class="material-symbols-outlined menu-butn-icon" title="Dashboard">close</span>
+    <p class="menu-butn-text" name="menu-butn-text"> Exit </p>
+  </div>
+  <div id="window-spawner">
+    <form id="window-spawner-form">
+      <input type="text" id="window-spawner-input"> 
+      <select id="window-spawner-select">
+        <option value="video" >Video</option>
+        <option value="picture">Picture</option>
+        <option value="document">document</option>
+      </select>
+    </form>
+  </div>
+  <script src="control.js"></script>
+</body>
+</html>

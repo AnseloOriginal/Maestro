@@ -18,6 +18,7 @@ const main_dash_butn = document.getElementById("main-butn-dashboard")
 const main_monitor_butn = document.getElementById("main-butn-monitor")
 const main_testmanager_butn = document.getElementById("main-butn-testmanager")
 const main_account_butn = document.getElementById("main-butn-account")
+const main_video_butn = document.getElementById("main-butn-videos")
 const external_content = document.getElementById("external")
 const main_test_butn = document.getElementById("main-butn-test")
 const dialog = document.getElementById("main-dialog")
@@ -84,24 +85,30 @@ async function changeScreen(screen,...extras) {
   refresh_alert()
   content.innerHTML = ""
   if (screen === "dashboard") {
+    render.general.loadingAnimationStart(content)
+    let type = "offline"
     if (hasSession) {
-      if (manager.get("student")) {
-        render.dashboard.generate_main_dashboard(content,"student")
-      } else {render.dashboard.generate_main_dashboard(content,"worker")}
-    } else {render.dashboard.generate_main_dashboard(content,"offline")}
+      type = manager.get("student") ? "student" : "worker"
+    }
+    render.general.loadingAnimationStop(content)
+    render.dashboard.generate_main_dashboard(content,type)
+    render.dashboard.addWidgets(content)
   } else if(screen === "notes") {
-    console.log("Before session",currentScreen)
+    render.general.loadingAnimationStart(content)
     const recents = await window.fs.recents()
     recents.forEach((note,i,a) =>{
       a[i] = manager.pretify(note)
     })
     const term = "firstterm" //This is a default value
     const notes = await manager.getFormatedDownloadedNotes() //gets the notefrom
+    render.general.loadingAnimationStop(content)
     render.notes.generate_notes_pages(content,notes,recents,"main","",term,[],handle)
   } else if(screen === "notes-online") {
+    render.general.loadingAnimationStart(content)
     const notes = await manager.getOnlineNotesAvailable()
     const group = manager.getOnlineNotesGroups()
     const term = "firstterm jss1" //This is a default value
+    render.general.loadingAnimationStop(content)
     render.notes.generate_notes_pages(content,notes,[],"online","",term,group,handle)
   } else if(screen === "monitor") {
     if (manager.cache.server) {
@@ -116,13 +123,11 @@ async function changeScreen(screen,...extras) {
     }
   } else if(screen === "account") {
     render.account.render_main_page(content,handle,manager.cache["userinfo"])
-  } else if(screen === "test-mainpage") {
-    
+  } else if(screen === "test-mainpage") { 
+    render.general.loadingAnimationStart(content)
     const scheduled = await window.test.names("scheduled")
     const special = await window.test.names("special")
     const all = await manager.cacheGet("public_banks_names")
-    
-
     const getOfflineTests = async () => {
       revaluator.set_as("public_banks_names",true)
       const tests = []
@@ -250,7 +255,7 @@ async function changeScreen(screen,...extras) {
     const offline = await getOfflineTests()
     console.log(offline)
     const testdata = await getOfflineTestData()
-
+    render.general.loadingAnimationStop(content)
     render.testing.generate_test_mainpage(
       content,
       scheduled,
@@ -295,8 +300,10 @@ async function changeScreen(screen,...extras) {
     //Expects extras[0] = name of test; extrans[1] = location, extras[2] = isOnline
     //extras[3] = no of questions, extras[4] = list of questions, extras[5] = category, extras[6]= duration
     render.testloader.render_confirmation(content,extras[0],continueFunc,noFunc)
-  } else if(screen === "test-manager") {
+  } else if(screen === "test-manager") { 
+    render.general.loadingAnimationStart(content)
     if (!manager.cacheHas("test_manager_bank_info")) {
+      render.general.loadingAnimationStop(content)
       render.testmanager.render_mainpage(
         content,
         true
@@ -342,6 +349,7 @@ async function changeScreen(screen,...extras) {
         }
         week_quota[key] = data
       })
+      render.general.loadingAnimationStop(content)
       render.testmanager.render_mainpage(
         content,
         false,
@@ -519,11 +527,24 @@ async function changeScreen(screen,...extras) {
     sessionStorage.removeItem("testname")
     allowRefresh = true
     changeScreen("test-mainpage")
+  } else if(screen === "videos") {
+    render.general.loadingAnimationStart(content)
+    const onclick = (videoData)=> {
+      changeScreen("official-video-player",videoData,"videos")
+    }
+    render.general.loadingAnimationStop(content)
+    const library = await media.library()
+    console.log(library)
+
+    await render.videos.renderVideoLibrary(content,library,onclick)
+  } else if(screen === "official-video-player") {
+    await render.videos.renderVideoPlayerPage(content,extras[0])
   }
   currentScreen = screen
 }
 
 async function startUp() {
+  render.general.loadingAnimationStart(content)
   contentProtection()
   hasSession = await window.runtime.newSession() //Starts new session
   //Cache important info just in case
@@ -545,6 +566,7 @@ async function startUp() {
       contentProtection() //Enables admin offline tools
     }
   }
+  render.general.loadingAnimationStop(content)
   changeScreen("dashboard")
   ping()
   changelogCheck()
@@ -574,6 +596,7 @@ main_testmanager_butn.onclick = () => {if (hasFinishedLoading) {
   changeScreen("test-manager")
 }}
 main_account_butn.onclick = () => {if (hasFinishedLoading) {changeScreen("account")}}
+main_video_butn.onclick = () => changeScreen("videos")
 
 
 function handle(e,property,caller) {

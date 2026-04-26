@@ -300,6 +300,14 @@ export async function TestFinalResult(uuid,sid) {
     uuid,
     sid
   }
-  console.log(uuid,sid)
+  // console.log(uuid,sid)
   return simpleGet(api.getTestFinalResultURL(),message)
+}
+
+export async function getLibraryData() {
+  return simpleGet(api.getMediaLibraryURL())
+}
+
+export async function registerAvailableRoom(sid,name,url,port) {
+  
 }

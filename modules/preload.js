@@ -52,3 +52,9 @@ contextBridge.exposeInMainWorld('test', {
   offline: () => ipcRenderer.invoke("Offline Tests"),
   displayResult: (uuid,location,data)  => ipcRenderer.invoke("Test Final Results",uuid,location,data)
 })
+
+contextBridge.exposeInMainWorld('media', {
+  library: () => ipcRenderer.invoke("Media Library"),
+  toVideoURL: (id) => ipcRenderer.invoke("Media Video",id),
+  toImageURL: (id) => ipcRenderer.invoke("Media Image",id)
+})

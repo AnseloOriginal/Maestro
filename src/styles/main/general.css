@@ -8,3 +8,34 @@
   width: 100%;
   bottom: 30px;
 }
+
+.loading-container{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.widget-container {
+  margin-top: 50px;
+  padding-left: 20px;
+  padding-right: 20px;
+    div:nth-child(odd) {
+      animation: slideDownFromUp 0.5s ease-out forwards;
+    }
+
+    div:nth-child(even) {
+      animation: slideUpFromDown 0.5s ease-out forwards;
+    }
+}
+
+
+@keyframes slideDownFromUp {
+  from { transform: translateY(-100%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideUpFromDown {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}

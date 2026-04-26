@@ -22,6 +22,7 @@
     "chai": "^6.0.1",
     "electron": "^37.2.4",
     "electron-builder": "^26.0.12",
+    "electron-mocha": "^13.1.0",
     "fs-extra": "^11.3.3",
     "mocha": "^11.7.2",
     "nyc": "^18.0.0",
@@ -46,7 +47,10 @@
     "ps-list": "^8.1.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "sharp": "^0.34.5"
+    "sharp": "^0.34.5",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3",
+    "uuid": "^14.0.0"
   },
   "build": {
     "appId": "com.maestro.aba",
@@ -70,5 +74,9 @@
       "!webbuild/**",
       "!**/*.map"
     ]
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.1.0",
+    "utf-8-validate": "^5.0.10"
   }
 }
