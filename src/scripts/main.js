@@ -83,6 +83,7 @@ switcher.onclick = () => toggle_panel()
 
 async function changeScreen(screen,...extras) {
   refresh_alert()
+  allowRefresh = true
   content.innerHTML = ""
   if (screen === "dashboard") {
     render.general.loadingAnimationStart(content)
@@ -538,6 +539,7 @@ async function changeScreen(screen,...extras) {
 
     await render.videos.renderVideoLibrary(content,library,onclick)
   } else if(screen === "official-video-player") {
+    allowRefresh = false
     await render.videos.renderVideoPlayerPage(content,extras[0])
   }
   currentScreen = screen
