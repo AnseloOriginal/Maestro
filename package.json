@@ -2,6 +2,7 @@
   "name": "maestro",
   "version": "1.9.7",
   "main": "main.js",
+  "description": "Maestro Desktop Application",
   "scripts": {
     "start": "electron .",
     "nodeless": "www.activebrains.com/app/src",
@@ -16,7 +17,6 @@
   "keywords": [],
   "author": "Uzebu Ansel",
   "license": "MIT",
-  "description": "",
   "devDependencies": {
     "@electron/packager": "^18.4.4",
     "chai": "^6.0.1",
@@ -74,9 +74,5 @@
       "!webbuild/**",
       "!**/*.map"
     ]
-  },
-  "optionalDependencies": {
-    "bufferutil": "^4.1.0",
-    "utf-8-validate": "^5.0.10"
   }
 }
