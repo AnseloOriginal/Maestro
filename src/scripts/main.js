@@ -111,6 +111,10 @@ async function changeScreen(screen,...extras) {
     const term = "firstterm jss1" //This is a default value
     render.general.loadingAnimationStop(content)
     render.notes.generate_notes_pages(content,notes,[],"online","",term,group,handle)
+    
+    if (notes?.length === 0 || !notes) {
+      render.general.offlineModeDisplay(content,"Ghosted by the internet? Connect to the school Wi-Fi to get those notes.")
+    }
   } else if(screen === "monitor") {
     if (manager.cache.server) {
       const guide = {
@@ -439,7 +443,7 @@ async function changeScreen(screen,...extras) {
       stage3.innerText = "[TASK3] Finilizing"
       let sendFinginishSignal = true
       while (sendFinginishSignal) {
-        const data =  window.test.submit(uuid,location)
+        const data =  await window.test.submit(uuid,location)
         sendFinginishSignal = !data
       }
       stage3.innerText = "[TASK3] Done"
@@ -535,8 +539,9 @@ async function changeScreen(screen,...extras) {
     }
     render.general.loadingAnimationStop(content)
     const library = await media.library()
-    console.log(library)
-
+    if (library.offline) {
+      render.general.offlineModeDisplay(content,"No Wi-Fi, no show. Get back on the school network to resume.")
+    }
     await render.videos.renderVideoLibrary(content,library,onclick)
   } else if(screen === "official-video-player") {
     allowRefresh = false

@@ -34,8 +34,11 @@ export async function renderVideoLibrary(elem,data,onclick) {
   }
 }
 
-export async function createVideoPlayerElem(id,classes) {
+export async function createVideoPlayerElem(id,classes,downloads=true) {
   const videoElem = document.createElement("video")
+  if (!downloads) {
+    videoElem.setAttribute("controlsList","nodownload")
+  }
   videoElem.innerHTML = `<source src="${await media.toVideoURL(id)}" type="video/mp4" />`
   videoElem.setAttribute("controls","")
   videoElem.autoplay = true
@@ -47,7 +50,7 @@ export async function createVideoPlayerElem(id,classes) {
 export async function renderVideoPlayerPage(elem,videoData,backFunc) {
   const playingArea = document.createElement("div")
   playingArea.classList.add("main-video-playing-area")
-  const mainVideo = await createVideoPlayerElem(videoData.videoID,"main-video-elem")
+  const mainVideo = await createVideoPlayerElem(videoData.videoID,"main-video-elem",videoData.downloads)
   const title = document.createElement("p")
   title.classList.add("main-video-playing-title")
   title.innerText = videoData?.title || "No Title"

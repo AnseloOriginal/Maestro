@@ -14,7 +14,7 @@ async function load() {
     image.src = url
     body.append(image)
   } else if (resType === "video") {
-    const videoElem = await video.createVideoPlayerElem(resID)
+    const videoElem = await video.createVideoPlayerElem(resID,undefined,false)
     body.append(videoElem)
   }
 }

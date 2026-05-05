@@ -16,3 +16,12 @@ export function loadingAnimationStart(elem) {
 export function loadingAnimationStop(elem) {
   elem.innerHTML = ""
 }
+
+export function offlineModeDisplay(elem,text="Oops! Find the router") {
+  elem.innerHTML = `
+    <div class="offline-mode-container">
+      <span class="material-symbols-outlined" id="offline-mode-icon" title="Offline Icon">cloud_off</span>
+      <p class="menu-butn-text" name="offline-mode-text"> ${text} </p>
+    </div>
+  `
+}
