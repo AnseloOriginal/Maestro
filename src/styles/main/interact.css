@@ -1,0 +1,49 @@
+
+
+.interact-room-container {
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  padding: 5px;
+}
+
+.interact-room-header {
+  margin-top: 2px;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.interact-room-butn-container{
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 100px;
+  height: 100px;
+  border: 2px solid black;
+  border-radius: 5px;
+  text-align: center;
+  p {
+    font-size: 1.1em;
+    font-weight: 600;
+    padding-left: 10px;
+    text-align: left;
+  }
+  
+  button {
+    background-color: white;
+    color: black;
+    border: 2px solid black;
+    border-radius: 5px;
+    width: 50px;
+    max-width: 100px;
+    height: 20px;
+    transition: background-color 0.15s color 0.15ms ;
+    margin-left: 5px;
+  }
+
+  button:hover {
+    background-color: black;
+    color: white;
+  }
+
+  
+}

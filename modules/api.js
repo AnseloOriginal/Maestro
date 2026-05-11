@@ -6,6 +6,7 @@ const serverCreateSpace = "create"
 const serverDataSpace = "data"
 const serverFilesSpace = "files"
 const serverMonitorSpace = "monitor"
+const serverRoomSpace = "rooms"
 const serverPrivateDataSpace = "private/index.php"
 const serverPublicConfigSpace = "public/config.php"
 const serverPublicChangelogSpace = "public/changelog.php"
@@ -24,6 +25,7 @@ const serverTestInfoSpace = "info.php"
 const serverTestEditSpace = "edit.php"
 const serverTestSpace = "tests"
 const serverGetTestQuestionsSpace = "get.php"
+const serverRoomAvailableSpace = "available.php"
 const serverSendTestResultsSpace = "result.php"
 const serverSendTestFinishSpace = "finish.php"
 const serverTestDetailsSpace = "details.php"
@@ -129,4 +131,8 @@ export function getMediaVideoURL() {
 
 export function getMediaImageURL() {
   return apiJoin(mainURL,serverMainSpace, serverMediaSpace, serverMediaImageSpace)
+}
+
+export function getAvailableRoomsURL() {
+  return apiJoin(mainURL,serverMainSpace, serverRoomSpace, serverRoomAvailableSpace)
 }

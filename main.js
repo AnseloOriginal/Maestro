@@ -130,6 +130,7 @@ app.whenReady().then(() => {
   ipcMain.handle('Media Library', async () =>  Runtime.getLibraryData())
   ipcMain.handle('Media Video', async (event,id) =>  Runtime.convertToVideoURL(id))
   ipcMain.handle('Media Image', async (event,id) =>  Runtime.convertToImageURL(id))
+  ipcMain.handle('Rooms Available', async () =>  Runtime.getAvailableRoom())
   autoUpdater.checkForUpdates()
 })
 

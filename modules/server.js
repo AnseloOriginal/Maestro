@@ -311,3 +311,7 @@ export async function getLibraryData() {
 export async function registerAvailableRoom(sid,name,url,port) {
   
 }
+
+export async function getAvailableRoom() {
+  return simpleGet(api.getAvailableRoomsURL()) 
+}

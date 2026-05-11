@@ -618,3 +618,12 @@ export async function convertToImageURL(id) {
   const mainURL = api.getMediaImageURL()
   return `${mainURL}?id=${id}`
 }
+
+export async function getAvailableRoom() {
+  const data = await server.getAvailableRoom()
+  if (data[0] === 0) {
+    return data[1]
+  } else {
+    return false
+  }
+}

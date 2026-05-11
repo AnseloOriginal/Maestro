@@ -58,3 +58,7 @@ contextBridge.exposeInMainWorld('media', {
   toVideoURL: (id) => ipcRenderer.invoke("Media Video",id),
   toImageURL: (id) => ipcRenderer.invoke("Media Image",id)
 })
+
+contextBridge.exposeInMainWorld("room", {
+  available: () => ipcRenderer.invoke("Rooms Available")
+})

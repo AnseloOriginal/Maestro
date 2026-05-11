@@ -18,6 +18,7 @@ const main_dash_butn = document.getElementById("main-butn-dashboard")
 const main_monitor_butn = document.getElementById("main-butn-monitor")
 const main_testmanager_butn = document.getElementById("main-butn-testmanager")
 const main_account_butn = document.getElementById("main-butn-account")
+const main_account_interact = document.getElementById("main-butn-interact")
 const main_video_butn = document.getElementById("main-butn-videos")
 const external_content = document.getElementById("external")
 const main_test_butn = document.getElementById("main-butn-test")
@@ -546,6 +547,12 @@ async function changeScreen(screen,...extras) {
   } else if(screen === "official-video-player") {
     allowRefresh = false
     await render.videos.renderVideoPlayerPage(content,extras[0])
+  } else if(screen === "interact") {
+    render.general.loadingAnimationStart(content)
+    const roomData = await room.available()
+    render.general.loadingAnimationStop(content)
+    console.log(roomData)
+    render.interact.renderInteractPage(content,roomData,console.log)
   }
   currentScreen = screen
 }
@@ -598,6 +605,7 @@ toggle_panel()
 main_notes_butn.onclick = () => changeScreen("notes")
 main_dash_butn.onclick = () => changeScreen("dashboard")
 main_test_butn.onclick = () => changeScreen("test-mainpage")
+main_account_interact.onclick = () => changeScreen("interact")
 main_monitor_butn.onclick = () => {if (hasFinishedLoading) {changeScreen("monitor")}}
 main_testmanager_butn.onclick = () => {if (hasFinishedLoading) {
   changeScreen("test-manager")
