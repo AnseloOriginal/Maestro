@@ -652,8 +652,10 @@ function handle(e,property,caller) {
 
   } else if (e === "logout") {
     window.runtime.logout()
-    window.location.href = "login.html"
     sessionStorage.clear()
+    localStorage.removeItem("CACHE_userinfo")
+    window.location.href = "login.html"
+
 
   } else if (e === "addquestions") {
     manager.cacheGet("test_manager_bank_info",false).then(bank => {
