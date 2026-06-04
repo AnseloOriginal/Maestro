@@ -1,11 +1,16 @@
-export async function renderInteractPage(content,roomData,roomOnclick) {
+export async function renderInteractPage(content,roomData,roomOnclick,createRoomOnclick) {
   const roomBody = document.createElement("div")
   const roomButnSection = document.createElement("div")
   const roomHeader = document.createElement("p")
+  const roomCreateButn =  document.createElement("button")
   roomBody.className = "interact-room-container"
   roomButnSection.className = "interact-room-buttons"
   roomHeader.className = "interact-room-header"
   roomHeader.innerHTML = "Rooms"
+  roomCreateButn.innerText = "Create"
+  roomCreateButn.className = "interact-room-create-butn"
+  roomCreateButn.onclick = () =>  createRoomOnclick()
+  roomHeader.append(roomCreateButn)
   if (roomData?.length > 0) {
     roomData.forEach(data => {
       const div = roomButton(data,roomOnclick)
@@ -30,4 +35,17 @@ function roomButton(data,onclick) {
   button.onclick = () => onclick(data)
   div.append(p,button)
   return div
+}
+
+export function renderCreateDialog(dialog,onCreate) {
+  const name = document.createElement("p")
+  name.className = "interact-room-create-name-header"
+  name.innerHTML = "Name:"
+  const nameInput = document.createElement("input")
+  const createButn = document.createElement("button")
+  createButn.innerText = "Create"
+  const butnDiv = document.createElement("div")
+  butnDiv.append(createButn)
+  createButn.onclick = () => onCreate(nameInput.value)
+  dialog.append(name,nameInput,butnDiv)
 }

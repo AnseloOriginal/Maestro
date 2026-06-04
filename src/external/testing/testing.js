@@ -8,6 +8,7 @@ const testAreaQuestions = document.getElementById("testarea-question")
 const testAreaOptions = document.getElementById("testarea-options")
 const subjectlist = document.getElementById("subjectlist")
 let uuid = sessionStorage.getItem("testuuid")
+window.focus()
 
 const renderMath = () => {
     renderMathInElement(document.body, {
@@ -17,7 +18,6 @@ const renderMath = () => {
         ],
         throwOnError: false
     });
-    console.log("Ran")
 };
 
 if (uuid) {
@@ -96,6 +96,7 @@ function changeSection(section) {
 }
 
 function buildFirstUI(data,testarea,numberarea,subjectlist) {
+  numberarea.focus()
   let builtFirst = false //Checks if it has build the fist
   for(const [name, sections] of Object.entries(data)) {
     const subjectButn = document.createElement('button')
@@ -109,7 +110,7 @@ function buildFirstUI(data,testarea,numberarea,subjectlist) {
       const firstQuestion = sections[0]?.[0];
       currentSection = name;
       if (firstQuestion) {
-        changeQuestion(name,0,0,0)
+        changeQuestion(name,0,0,1)
       }
       let count = 1
       sections.forEach((sub,subIndex) => {
@@ -184,39 +185,10 @@ document.onkeydown = (evt) => {
     onOptionSelection(0,3)
   } else if (evt.key === "d") {
     onOptionSelection(0,4)
-  } else if(evt.key === "left" || evt.key === "right") {
-    return;
-    const isForward = evt.key === "right"
-    const isAtBeginofSub = currentQuestion === 0
-    const isAtEndOfSub = (currentQuestion+1) === data[currentSection]?.[currentSubsection]?.length
-    const isAtBeginofSec =  isAtBeginofSub && currentSubsection === 0 
-    const isAtEndofSec =  isAtEndOfSub && (currentSubsection+1) === data[currentSection]?.length
-    const isFreeBothWays = !isAtBeginofSub && !isAtEndOfSub
-    const notADeadEnd = !isAtEndofSec && !isAtBeginofSec
-    if (isFreeBothWays) {
-      if (isForward) {
-        changeQuestion(currentSection,currentSubsection,currentQuestion+1)
-      } else {
-        changeQuestion(currentSection,currentSubsection,currentQuestion-1)
-      }
-    } else {
-      if (notADeadEnd) {
-        if (isAtBeginofSub) {
-          if (isForward) {
-            changeQuestion(currentSection,currentSubsection,currentQuestion+1)
-          } else {
-            changeQuestion(currentSection,currentSubsection-1,0)
-          }   
-        }
-        if (isAtEndOfSub) {
-          if (isForward) {
-            changeQuestion(currentSection,currentSubsection+1,0)
-          } else {
-            changeQuestion(currentSection,currentSubsection-1,0)
-          }   
-        }
-      }
-    }
+  } else if(evt.key === "ArrowLeft") {
+    prevQuestion()
+  } else if(evt.key === "ArrowRight") {
+    nextQuestion()
   }
 }
 
@@ -270,6 +242,37 @@ function refreshNumberBarThumbnail() {
   }
 }
 
+function nextQuestion() {
+  const nextQuestion = currentQuestion+1
+  const nextSubQuestion = currentSubsection+1
+  const hasNextQuestion = data[currentSection]?.[currentSubsection]?.[nextQuestion]
+  const nextQuestionID = currentQuestionID+1
+  const hasNextSubSection = data[currentSection]?.[nextSubQuestion]?.[0]
+  if (hasNextQuestion) {
+    changeQuestion(currentSection,currentSubsection,nextQuestion,nextQuestionID)
+    return;
+  }
+  if (hasNextSubSection) {
+    changeQuestion(currentSection,nextSubQuestion,0,nextQuestionID)
+    return;
+  }
+}
 
-
+function prevQuestion() {
+  const prevQuestion = currentQuestion-1
+  const prevSubQuestion = currentSubsection-1
+  const hasPrevQuestion = data[currentSection]?.[currentSubsection]?.[prevQuestion]
+  const hasPrevSubSection = data[currentSection]?.[prevSubQuestion]
+  const prevQuestionID = currentQuestionID-1
+  if (hasPrevQuestion) {
+    changeQuestion(currentSection,currentSubsection,prevQuestion,prevQuestionID)
+    return;
+  }
+  if (hasPrevSubSection) {
+    const length = hasPrevSubSection.length
+    const lastIndex = length-1
+    changeQuestion(currentSection,prevSubQuestion,lastIndex,prevQuestionID)
+    return;
+  } 
+}
 document.addEventListener("DOMContentLoaded", renderMath)

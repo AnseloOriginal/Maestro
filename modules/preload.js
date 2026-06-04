@@ -60,5 +60,7 @@ contextBridge.exposeInMainWorld('media', {
 })
 
 contextBridge.exposeInMainWorld("room", {
-  available: () => ipcRenderer.invoke("Rooms Available")
+  available: () => ipcRenderer.invoke("Rooms Available"),
+  createRoom: (name) => ipcRenderer.invoke('Runtime Create Room',name),
+  connectToRoom: (data) => ipcRenderer.invoke("Rooms Join",data)
 })

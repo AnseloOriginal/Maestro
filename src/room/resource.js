@@ -1,4 +1,4 @@
-import * as video from "./../../src/scripts/dashboard-elements/render/video.js"
+import * as video from "../scripts/dashboard-elements/render/video.js"
 const body = document.getElementById("body")
 const id = document.getElementById("demo1")
 const type = document.getElementById("demo2")

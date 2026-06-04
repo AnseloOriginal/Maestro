@@ -4,10 +4,11 @@ import * as server from "./server.js"
 import * as fs from "./filemanager.js"
 import * as download from "./downloader.js"
 import * as api from "./api.js"
+import * as log from "electron-log"
 // import * as room from "./room.js"
 
 let InitAllowed = true
-let sessionID = 0
+export let sessionID = 0
 let testMode = "online"
 
 export async function serverStatus(mode) {
@@ -33,16 +34,20 @@ export function Initialization(reporter) {
       InitAllowed = false
       if (Login.hasLoginDetails()) {
         return 1
+        // log.info("User logged in")
       } else {
+        // log.info("User not logged in")
         return 2
       }
     } else {
+      // log.info("Brand new device detected")
       deviceID.newID()
       Login.clearLoginDetails()
       InitAllowed = false
       return 2
     }
   } else {
+    // log.warn("User attempted to initialize twice")
     return 0
   }
 }
@@ -107,6 +112,7 @@ export async function getSession() {
     const sessionResponse = await server.attemptNewSession(loginid,deviceid)
     if (sessionResponse[0] === 0 ){
       sessionID = sessionResponse[1]
+      // log.info("User has gotten session id")
       return true
     } else {
       console.error("Session ID not gotten",sessionResponse[1],sessionResponse[2])
@@ -151,6 +157,7 @@ export function addDownload(request) {
 
 export async function logout() {
   const results = await server.logout(sessionID)
+  // log.info("User logging out")
   console.log(results)
   Login.clearLoginDetails()
   return true
@@ -158,8 +165,10 @@ export async function logout() {
 
 export async function tempFile(filename) {
   try {
+    // log.info("Created a temp file",filename)
     return await fs.createTempFile(filename)
   } catch (err) {
+    // log.warn("Failed to create",filename,err)
     console.log(`Failed to open ${filename}`,err)
     return false
   }

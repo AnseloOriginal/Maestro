@@ -8,17 +8,19 @@ import { app, BrowserWindow, ipcMain, Menu, screen} from 'electron/main'
 import * as path from 'node:path'
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
+import * as log from "electron-log"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const getLocalIPAddresses = () => {
+export const getLocalIPAddresses = () => {
   const interfaces = os.networkInterfaces();
   const addresses = [];
 
   for (const name of Object.keys(interfaces)) {
     for (const iface of interfaces[name]) {
-          addresses.push(iface.address);
+      if (iface.family === "IPv6") {continue}
+      addresses.push(iface.address);
     }
   }
   return addresses;
@@ -42,7 +44,7 @@ const createControlWindow = (isClient=false) => {
     }
 })
   
-  win.loadFile(`room/control.html`)
+  win.loadFile(`src/room/control.html`)
   return win
 }
 
@@ -57,7 +59,7 @@ const createResourecWindow = (resType,resID) => {
     }
 })
   
-  win.loadFile(`room/resource.html`)
+  win.loadFile(`src/room/resource.html`)
   return win
 }
 
@@ -67,27 +69,32 @@ export class RoomServer {
   actualUsers = new Map()
   allWindows = new Map()
 
-  constructor(sid,name="Default Room",port=2026) {
+  constructor(sid,name="Default Room",port=2026,onclose) {
     this.name = name;
+    this.onclose = onclose
     this.io = new Server(port);
     console.log("Server Started on port "+port)
     this.controlWindow = createControlWindow(true)
     const primaryDisplay = screen.getPrimaryDisplay()
-    // Get the total screen size
+    
     this.screenSize = primaryDisplay.size
     // The constructor ONLY kicks off the listeners
     this.initializeListeners();
     
     // External registration
     const addr = getLocalIPAddresses();
-    server.registerAvailableRoom(sid, name, addr, port);
+    this.sid = sid
+    server.registerRoom(sid, name, addr, port).then(response => {
+      console.log(response)
+    })
+    
     
   }
 
   initializeListeners() {
-    ipcMain.handle('new-window', (evt,type,resid) => this.newWindow(type,resid)),
-    ipcMain.handle('Media Video', async (event,id) =>  Runtime.convertToVideoURL(id))
-    ipcMain.handle('Media Image', async (event,id) =>  Runtime.convertToImageURL(id))
+    ipcMain.handle('room-new-window', (evt,type,resid) => this.newWindow(type,resid)),
+    ipcMain.handle('room-media-video', async (event,id) =>  Runtime.convertToVideoURL(id))
+    ipcMain.handle('room-media-image', async (event,id) =>  Runtime.convertToImageURL(id))
     console.log("Server Initialized")
     this.io.on("connection", (socket) => this.handleConnection(socket));
     this.controlWindow.on("closed", () => this.endProcess(true))
@@ -126,8 +133,13 @@ export class RoomServer {
 
   endProcess = (controlClosed) => {
     this.io.close()
+    ipcMain.removeHandler("room-new-window")
+    ipcMain.removeHandler("room-media-video")
+    ipcMain.removeHandler("room-media-image")
     console.log("Server Ended")
+    server.removeRegisteredRoom(this.sid,this.name)
     if (!controlClosed) {this.controlWindow.close()}
+    if (typeof(this.onclose) === "function") {this.onclose()}
   }
 
   newWindow = (type,resID) => {
@@ -142,27 +154,90 @@ export class RoomServer {
       window.getBounds(),this.screenSize))
     window.on("resize", () => this.io.emit("window-change",id,"newbound",
       window.getBounds(),this.screenSize))
+    window.on("close", () => {
+      console.log("Server: Closing a window. ID:",id)
+      this.io.emit("window-close",id)
+      this.allWindows.delete(id)
+    })
   }
 
 }
 
 export class RoomClient {
   userUUID = ""
+  allWindows = new Map()
+  exited = false
 
-  constructor(sid,url,port=2026) {
-    this.socket = io(`http://${url}:${port}`);
+  constructor(sid,url,port=2026,onclose) {
+    this.io = io(`http://${url}:${port}`);
+    this.controlWindow = createControlWindow(false)
     this.sid = sid
     this.initializeListeners()
   }
 
   initializeListeners() {
-    this.socket.on("assign-id", this.handleUserID)
+    this.controlWindow.on("close", () => this.handleExit(true))
+    this.io.on("assign-id", this.handleUserID)
+    this.io.on("new-window",this.handleNewWindow)
+    this.io.on("window-change",this.handleWindowChange)
+    this.io.on("window-close",this.handleWindowClose)
+    try {
+      ipcMain.handle('room-new-window', (evt,type,resid) => () => console.log("Client: Creating new windows not allowed")),
+      ipcMain.handle('room-media-video', async (event,id) =>  Runtime.convertToVideoURL(id))
+      ipcMain.handle('room-media-image', async (event,id) =>  Runtime.convertToImageURL(id))
+    } catch {}
   }
 
   handleUserID = (userUUID) => {
     console.log(`Client: My assigned UUID is ${userUUID}`);
     this.userUUID = userUUID
-    this.socket.emit("id-info",userUUID,this.sid)
+    this.io.emit("id-info",userUUID,this.sid)
+    this.io.io.on("close", () => this.handleExit())
+  }
+
+  handleNewWindow = (id,type,resID) => {
+    console.log(`Client: Creating a new window (Type: ${type}, ResID: ${resID})`)
+    const windows = createResourecWindow(type,resID)
+    this.allWindows.set(id,windows)
+  }
+
+  handleExit = (controlClosed) => {
+    if (this.exited) {return}
+    if (!this.io.disconnected) {this.io.disconnect()}
+    ipcMain.removeHandler("room-new-window")
+    ipcMain.removeHandler("room-media-video")
+    ipcMain.removeHandler("room-media-image")
+    console.log("Client Exited")
+    if (!controlClosed) {
+      try{
+        this.controlWindow.close()
+      } catch {
+
+      }
+    }
+    if (typeof(this.onclose) === "function") {this.onclose()}
+    this.exited = true
+  }
+
+  handleWindowClose = (id) => {
+    const window = this.allWindows.get(id)
+    if (!window) {return}
+    console.log("Client: Closing a window. ID:",id)
+    window.close()
+    this.allWindows.delete(id)
+  }
+
+  handleWindowChange = (id,type,extra) => {
+    const window = this.allWindows.get(id)
+    if (!window) {return}
+    if (type === "maximize") {
+      // BrowserWindow.prototype.setBounds()
+      window.maximize()
+    } else if (type === "minimize") {
+      window.minimize()
+    } else if (type === "newbound") {
+      window.setBounds(extra)
+    }
   }
 }
 
@@ -176,6 +251,6 @@ export class RoomClient {
 //   const myClient = new RoomClient("client-session-456", "127.0.0.1", 2026);
 // }, 1000);
 
-setTimeout(() => {
-  const myServer = new RoomServer("host-session-123", "Gamers Den", 2026);
-}, 1000)
+// setTimeout(() => {
+//   const myServer = new RoomServer("host-session-123", "Gamers Den", 2026);
+// }, 1000)

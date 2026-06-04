@@ -308,8 +308,23 @@ export async function getLibraryData() {
   return simpleGet(api.getMediaLibraryURL())
 }
 
-export async function registerAvailableRoom(sid,name,url,port) {
-  
+export async function registerRoom(sid,name,addr,port) {
+  const message = {
+    name,
+    sid,
+    port,
+    addr
+  }
+  const data = JSON.stringify(message)
+  return simpleGet(api.getRegisterRoomURL(),{data})
+}
+
+export async function removeRegisteredRoom(sid,name) {
+  const message = {
+    name,
+    sid
+  }
+  return simpleGet(api.getRemoveRoomURL(),message)
 }
 
 export async function getAvailableRoom() {

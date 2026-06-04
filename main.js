@@ -6,6 +6,11 @@ const rmDirSync = require("node:fs").rmdirSync
 const isDev = require("electron-is-dev");
 const { autoUpdater } = require("electron-updater")
 const {dialog} = require('electron');
+const console = require('node:console')
+const room = require("./modules/room.js")
+const log = require('electron-log');
+let roomServer;
+let roomClient;
 
 autoUpdater.on('error', err => {
   console.error('Update error', err)
@@ -36,7 +41,7 @@ const openFile = async (file) => {
   }
 }
 
-const createWindow = () => {
+const createWindow = (startAtDashboard) => {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
@@ -46,7 +51,9 @@ const createWindow = () => {
       devTools: isDev
     }
   })
-  win.loadFile('src/index.html')
+  const url = startAtDashboard ? "src/dashboard.html" : "src/index.html" 
+  win.loadFile(url)
+  log.info("Created a new windows using url",url)
   return win
 }
 
@@ -68,6 +75,7 @@ const createFileViewer = (filepath,filename) => {
     rmSync(filepath)
     rmDirSync(folder)
   })
+  log.info("Created a new file viewer window")
 }
 
 const openResult = async (uuid,location,data) => {
@@ -82,16 +90,47 @@ const openResult = async (uuid,location,data) => {
       devTools: isDev
     }
   })
+  log.info("Created a new result viewer window")
   resultView.loadFile('src/result.html') 
 }
 
+const closeAllWindows = () => {
+  const allWindows = BrowserWindow.getAllWindows()
+  allWindows.forEach((window) => {
+    window.close() 
+  })
+}
+const createRoom = (name) => {
+  closeAllWindows()
+  const onClose = () => createWindow(true)
+  roomServer = new room.RoomServer(Runtime.sessionID,name,504,onClose)
+}
+const connectToRoom = (data) => {
+  if (!data || !data.addr) {return}
+  const clientIps = room.getLocalIPAddresses()
+  clientIps.forEach((a,b,c) => c[b] = a.slice(0,a.lastIndexOf(".")))
+  let selectedIp = false
+  data.addr.forEach(ip => {
+    clientIps.forEach(client => {
+      if (selectedIp && (ip === "::1" || ip === "127.0.0.1")) {return}
+      if (ip.startsWith(client)) { selectedIp = ip }
+    })
+  })
+  if (!selectedIp) {return}
+  log.info("Connecting to a room server:",selectedIp)
+  closeAllWindows()
+  const onClose = () => createWindow(true)
+  roomClient = new room.RoomClient(Runtime.sessionID,selectedIp,504,onClose)
+}
 let mainApp;
 let reporter;
 if (!isDev) {
   Menu.setApplicationMenu(null)
 }
 app.whenReady().then(() => {
-  mainApp = createWindow(),
+  log.info("App is Ready")
+  mainApp = createWindow()
+  setTimeout(() => createWindow(true), 10000)
   reporter = (status,report) => mainApp.webContents.send(status,report),
   ipcMain.handle('Runtime Init', () => Runtime.Initialization(reporter)),
   ipcMain.handle('Runtime Login', async (event, username, password) => Runtime.freshLogin(username, password)),
@@ -131,6 +170,8 @@ app.whenReady().then(() => {
   ipcMain.handle('Media Video', async (event,id) =>  Runtime.convertToVideoURL(id))
   ipcMain.handle('Media Image', async (event,id) =>  Runtime.convertToImageURL(id))
   ipcMain.handle('Rooms Available', async () =>  Runtime.getAvailableRoom())
+  ipcMain.handle('Runtime Create Room', async (evt,name) =>  createRoom(name))
+  ipcMain.handle('Rooms Join', async (evt,data) =>  connectToRoom(data))
   autoUpdater.checkForUpdates()
 })
 

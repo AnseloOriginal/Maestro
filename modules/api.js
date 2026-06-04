@@ -26,6 +26,8 @@ const serverTestEditSpace = "edit.php"
 const serverTestSpace = "tests"
 const serverGetTestQuestionsSpace = "get.php"
 const serverRoomAvailableSpace = "available.php"
+const serverRegisterRoomSpace = "register.php"
+const serverRemoveRoomSpace = "remove.php"
 const serverSendTestResultsSpace = "result.php"
 const serverSendTestFinishSpace = "finish.php"
 const serverTestDetailsSpace = "details.php"
@@ -135,4 +137,12 @@ export function getMediaImageURL() {
 
 export function getAvailableRoomsURL() {
   return apiJoin(mainURL,serverMainSpace, serverRoomSpace, serverRoomAvailableSpace)
+}
+
+export function getRegisterRoomURL() {
+  return apiJoin(mainURL,serverMainSpace, serverRoomSpace, serverRegisterRoomSpace)
+}
+
+export function getRemoveRoomURL() {
+  return apiJoin(mainURL,serverMainSpace, serverRoomSpace, serverRemoveRoomSpace)
 }

@@ -552,7 +552,16 @@ async function changeScreen(screen,...extras) {
     const roomData = await room.available()
     render.general.loadingAnimationStop(content)
     console.log(roomData)
-    render.interact.renderInteractPage(content,roomData,console.log)
+    const onSecondClick = (name) => {
+      window.room.createRoom(name)
+    }
+    const onFirstCreateClick = () => {
+      dialog.showModal()
+      dialog.innerHTML = ""
+      render.interact.renderCreateDialog(dialog,onSecondClick)
+    }
+    const joinButn = (data) => room.connectToRoom(data)
+    render.interact.renderInteractPage(content,roomData,joinButn,onFirstCreateClick)
   }
   currentScreen = screen
 }

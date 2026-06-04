@@ -10,13 +10,15 @@
   margin-top: 2px;
   font-size: 1.5em;
   font-weight: bold;
+  vertical-align: middle;
 }
 
 .interact-room-butn-container{
   display: inline-block;
   margin-left: 10px;
   margin-right: 10px;
-  width: 100px;
+  min-width: 100px;
+  padding-right: 5px;
   height: 100px;
   border: 2px solid black;
   border-radius: 5px;
@@ -46,4 +48,26 @@
   }
 
   
+}
+
+.interact-room-create-butn{
+ background-color: white;
+  color: black;
+  border: 2px solid black;
+  border-radius: 5px;
+  max-width: 100px;
+  height: 20px;
+  transition: background-color 0.15s color 0.15ms ;
+  margin-left: 5px; 
+  text-align: center;
+}
+
+.interact-room-create-butn:hover {
+  background-color: rgb(110, 16, 16);
+  color: white;
+}
+
+.interact-room-create-name-header{
+  display: inline-block;
+  margin-right: 50px;
 }

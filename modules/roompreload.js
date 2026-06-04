@@ -34,7 +34,7 @@ function getArgContent(arg,justFind) {
 
 contextBridge.exposeInMainWorld('main', {
   isClient: () => getArgContent("roomisclient",true),
-  newWindow: (type,resid)  => ipcRenderer.invoke("new-window",type,resid)
+  newWindow: (type,resid)  => ipcRenderer.invoke("room-new-window",type,resid)
 })
 
 contextBridge.exposeInMainWorld('res', {
@@ -43,7 +43,7 @@ contextBridge.exposeInMainWorld('res', {
 })
 
 contextBridge.exposeInMainWorld('media', {
-  library: () => ipcRenderer.invoke("Media Library"),
-  toVideoURL: (id) => ipcRenderer.invoke("Media Video",id),
-  toImageURL: (id) => ipcRenderer.invoke("Media Image",id)
+  library: () => ipcRenderer.invoke("room-media-library"),
+  toImageURL: (id) => ipcRenderer.invoke("room-media-image",id),
+  toVideoURL: (id) => ipcRenderer.invoke("room-media-video",id),
 })
