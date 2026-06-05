@@ -340,3 +340,10 @@ export async function getBankQuestions(sess_id,uuid,uuid_location) {
   }
   return simpleGet(api.getBankQuestionsDataURL(),message)
 }
+
+export async function announceRoom(sess_id) {
+ const message = {
+  sess_id
+ }
+ return simpleGet(api.getAnnounceRoomURL(),message)
+}

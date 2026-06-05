@@ -29,6 +29,7 @@ const serverGetTestQuestionsSpace = "get.php"
 const serverRoomAvailableSpace = "available.php"
 const serverRegisterRoomSpace = "register.php"
 const serverRemoveRoomSpace = "remove.php"
+const serverAnnounceRoomSpace = "announce.php"
 const serverSendTestResultsSpace = "result.php"
 const serverSendTestFinishSpace = "finish.php"
 const serverTestDetailsSpace = "details.php"
@@ -150,4 +151,8 @@ export function getRemoveRoomURL() {
 
 export function getBankQuestionsDataURL() {
   return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestDataSpace, serverBankQuestionsSpace)
+}
+
+export function getAnnounceRoomURL() {
+  return apiJoin(mainURL,serverMainSpace, serverRoomSpace, serverAnnounceRoomSpace)
 }

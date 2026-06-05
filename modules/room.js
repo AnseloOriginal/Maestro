@@ -68,6 +68,7 @@ export class RoomServer {
   userInfo = new Map()
   actualUsers = new Map()
   allWindows = new Map()
+  timer = 0
 
   constructor(sid,name="Default Room",port=2026,onclose) {
     this.name = name;
@@ -87,8 +88,7 @@ export class RoomServer {
     server.registerRoom(sid, name, addr, port).then(response => {
       console.log(response)
     })
-    
-    
+    this.announceServer()
   }
 
   initializeListeners() {
@@ -137,6 +137,10 @@ export class RoomServer {
     ipcMain.removeHandler("room-media-video")
     ipcMain.removeHandler("room-media-image")
     console.log("Server Ended")
+    this.allWindows.forEach(window => {
+      if (!window) {return}
+      window.close()
+    })
     server.removeRegisteredRoom(this.sid,this.name)
     if (!controlClosed) {this.controlWindow.close()}
     if (typeof(this.onclose) === "function") {this.onclose()}
@@ -161,6 +165,9 @@ export class RoomServer {
     })
   }
 
+  announceServer = async () => {
+    this.timer = setTimeout(this.announceServer,10000)
+  }
 }
 
 export class RoomClient {
@@ -204,6 +211,10 @@ export class RoomClient {
   handleExit = (controlClosed) => {
     if (this.exited) {return}
     if (!this.io.disconnected) {this.io.disconnect()}
+    this.allWindows.forEach(window => {
+      if (!window) {return}
+      window.close()
+    })
     ipcMain.removeHandler("room-new-window")
     ipcMain.removeHandler("room-media-video")
     ipcMain.removeHandler("room-media-image")
