@@ -147,6 +147,7 @@ export class RoomServer {
   }
 
   newWindow = (type,resID) => {
+    clearTimeout(this.timer)
     console.log(`Server: Creating a new window (Type: ${type}, ResID: ${resID})`)
     const window = createResourecWindow(type,resID)
     const id = uuidv4()
@@ -166,7 +167,8 @@ export class RoomServer {
   }
 
   announceServer = async () => {
-    this.timer = setTimeout(this.announceServer,10000)
+    await server.announceRoom(this.sid)
+    this.timer = setTimeout(() => this.announceServer(),10000)
   }
 }
 
