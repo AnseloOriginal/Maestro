@@ -55,5 +55,10 @@ export async function renderVideoPlayerPage(elem,videoData,backFunc) {
   title.classList.add("main-video-playing-title")
   title.innerText = videoData?.title || "No Title"
   playingArea.append(mainVideo,title)
+  if (videoData.source) {
+    const source = document.createElement("div")
+    source.innerHTML = `<b>Source:<b> ${videoData.source}`
+    playingArea.append(source)
+  }
   elem.append(playingArea)
 }
