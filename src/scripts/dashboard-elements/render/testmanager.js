@@ -106,7 +106,7 @@ function createCircleElement(id,text,label) {
   return circle1
 }
 
-export function rerender_create_page(
+export function renderAddQuestionPage(
   bankinfo,
   existing,
   hook
@@ -119,27 +119,28 @@ export function rerender_create_page(
   const header = document.createElement("p")
   header.className = 'testmanager-body-add-header'
   header.innerText = `Add Questions to ${bankinfo.name}`
-  const start = bankinfo.no || 0
   body.append(header)
 
   const questionContainer = document.createElement("div")
-  let count = 1;
+  let nextID = 1;
   if (existing) {
+    let displayCount = 1
     existing.forEach((question,id) => {
       if (!question) {return}
-      const div = create_question_display((start+id),question.question,question.options,question.answer,bankinfo.uuid)
+      const div = create_question_display(displayCount,question.question,question.options,question.answer,bankinfo.uuid)
       questionContainer.append(div)
+      displayCount++
     })
-    count = existing.length
+    nextID = displayCount
   }
 
   const buttondisplay =  document.createElement("div")
   buttondisplay.className = "testmanager-body-buttongroup"
   const createButn = document.createElement("button")
   createButn.onclick = () => {
-    const div = create_question_display((start+count),undefined,undefined,undefined,bankinfo.uuid)
+    const div = create_question_display(nextID,undefined,undefined,undefined,bankinfo.uuid)
     questionContainer.append(div)
-    count++
+    nextID++
   }
   createButn.innerText = "Add Question"
   const finishButn = document.createElement("button")
@@ -148,51 +149,49 @@ export function rerender_create_page(
     let allTrue = true
     let firstFocus = true
     let mainStore = localStorage.getItem("teacher_temporary_store")
-    if (mainStore) {
-      mainStore = JSON.parse(mainStore)
-      const questionStore = mainStore[bankinfo.uuid]
-      if (questionStore) {
-        questionStore.forEach((question,id) => {
-          if (!question) {return}
-          let justTrue = true
-          if (!question.question) {
-            const nameError = document.getElementById("testmanager-body-add-name-error"+id)
-            nameError.focus()
-            nameError.style.display = "block"
-            allTrue = false
-            justTrue = false
-          }
-    
-          const a = question.options.reduce((f,c) => {
-            if (c) {
-              return f + 1
-            } else {
-              return 0
-            }
-          },0)
-
-          if (a < 4) {
-            const error = document.getElementById("testmanager-body-add-option-error"+id)
-            error.style.display = 'block'
-            error.innerText = "Please fill out all 4 options"
-            allTrue = false
-            justTrue = false
-          } else {
-            if (!question.answer) {
-              const error = document.getElementById("testmanager-body-add-option-error"+id)
-              error.style.display = 'block'
-              error.innerText = "Please select an answer"
-              allTrue = false
-              justTrue = false  
-            }
-          }
-          if (justTrue) {
-            question.finished = true
-          }
-        })
-      }
-      localStorage.setItem("teacher_temporary_store",JSON.stringify(mainStore))
+    if (!mainStore) {
+      return;
     }
+    mainStore = JSON.parse(mainStore)
+    const questionStore = mainStore[bankinfo.uuid]
+    if (!questionStore) {
+      return;
+    }
+    questionStore.forEach((question,id) => {
+      if (!question) {return}
+      let justTrue = true
+      if (!question.question) {
+        const nameError = document.getElementById("testmanager-body-add-name-error"+id)
+        nameError.focus()
+        nameError.style.display = "block"
+        allTrue = false
+        justTrue = false
+        console.log("No question",question.question)
+      }
+      const a = question.options.reduce((f,c) =>  c ? f + 1: 0,0)
+      if (a < 4) {
+        const error = document.getElementById("testmanager-body-add-option-error"+id)
+        error.style.display = 'block'
+        error.innerText = "Please fill out all 4 options"
+        allTrue = false
+        justTrue = false
+        console.log("No option",question.options)
+      } else {
+        if (!question.answer) {
+          const error = document.getElementById("testmanager-body-add-option-error"+id)
+          error.style.display = 'block'
+          error.innerText = "Please select an answer"
+          allTrue = false
+          justTrue = false
+          console.log("No answee",question.answer)  
+        }
+      }
+      if (justTrue) {
+        question.finished = true
+      }
+    })
+    localStorage.setItem("teacher_temporary_store",JSON.stringify(mainStore))
+    
     if (allTrue) {
       hook("changescreen","test-manager")
     }

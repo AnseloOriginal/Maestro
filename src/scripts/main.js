@@ -676,7 +676,7 @@ function handle(e,property,caller,...extras) {
         }
         const info = bank[property]
         if (info) {
-          render.testmanager.rerender_create_page(info,store[info.uuid],handle)
+          render.testmanager.renderAddQuestionPage(info,store[info.uuid],handle)
         }
       }
     })
