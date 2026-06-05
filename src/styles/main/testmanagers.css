@@ -236,3 +236,24 @@
   margin-right: 10px;
   border: 1px solid rgb(132, 148, 190);
 }
+
+.testmanager-viewall-answer{
+  font-size: 1.1em;
+  font-weight: bold;
+  color: rgb(44, 18, 0);
+}
+
+.testmanager-viewall-button {
+  width: 50px;
+  height: 25px;
+  background-color: white;
+  color: black;
+  border: 1px double black;
+  border-radius: 2px;
+  transition: background-color 0.15s color 0.15s;
+  margin-right: 5px;
+}
+.testmanager-viewall-button:hover{
+  background-color: black;
+  color: white;
+}

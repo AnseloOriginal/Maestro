@@ -41,6 +41,8 @@ contextBridge.exposeInMainWorld('test', {
   bankDetails: () => ipcRenderer.invoke("Get Bank Details"),
   info: (type,uuid) => ipcRenderer.invoke("Test Info",type,uuid),
   add: (uuid,data) => ipcRenderer.invoke("Add Test Question",uuid,data),
+  remove: (uuid,id) => ipcRenderer.invoke("Remove Test Question",uuid,id),
+  replace: (uuid,no,data) => ipcRenderer.invoke("Replace Test Question",uuid,no,data),
   questions: (uuid,location) => ipcRenderer.invoke("Get Test Questions",uuid,location),
   results: (uuid,section,subsection,question,answer,testlocation) => 
     ipcRenderer.invoke("Send Test Results",uuid,section,subsection,question,answer,testlocation),
@@ -50,7 +52,8 @@ contextBridge.exposeInMainWorld('test', {
   mode: (newmode) => ipcRenderer.invoke("Test Mode",newmode),
   generate: (uuid,no,list,type,duration) => ipcRenderer.invoke("Test Generate",uuid,no,list,type,duration),
   offline: () => ipcRenderer.invoke("Offline Tests"),
-  displayResult: (uuid,location,data)  => ipcRenderer.invoke("Test Final Results",uuid,location,data)
+  displayResult: (uuid,location,data)  => ipcRenderer.invoke("Test Final Results",uuid,location,data),
+  getBankQuestions: (uuid,location)  => ipcRenderer.invoke("Test Bank Questions",uuid,location)
 })
 
 contextBridge.exposeInMainWorld('media', {

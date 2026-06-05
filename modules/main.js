@@ -636,3 +636,40 @@ export async function getAvailableRoom() {
     return false
   }
 }
+
+export async function getBankQuestions(uuid,uuid_location) {
+  const data = await server.getBankQuestions(sessionID,uuid,uuid_location)
+  if (data[0] === 0) {
+    return data[1]
+  } else {
+    return []
+  }
+}
+
+export async function removeTestData(uuid,id) {
+  if (await server.serverIsAvailable() && sessionID) {
+    const response = await server.testEditData("remove",uuid,sessionID,"private",id)
+    if (response[0] === 0) {
+      return true
+    } else {
+      console.log(response)
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
+export async function replaceTestData(uuid,id,data) {
+  if (await server.serverIsAvailable() && sessionID) {
+    const response = await server.testEditData("replace",uuid,sessionID,"private",id,data)
+    if (response[0] === 0) {
+      return true
+    } else {
+      console.log(response)
+      return false
+    }
+  } else {
+    return false
+  }
+}

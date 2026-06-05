@@ -623,10 +623,9 @@ main_account_butn.onclick = () => {if (hasFinishedLoading) {changeScreen("accoun
 main_video_butn.onclick = () => changeScreen("videos")
 
 
-function handle(e,property,caller) {
+function handle(e,property,caller,...extras) {
   if (e === "screen") {
     changeScreen(property)
-
   } else if (e === "download") {
     const temp = window.fs.download(property)
     .then((queue)=>{
@@ -681,6 +680,24 @@ function handle(e,property,caller) {
         }
       }
     })
+  } else if (e === "viewquestions") {
+    // render.general.loadingAnimationStart 
+    window.test.getBankQuestions(property,"private").then(questions => {
+        render.testmanager.render_bank_question(property,questions,handle)
+    })
+  } else if (e === "deletequestions") {
+    const click = async (yes) => {
+      if (yes) {
+        await test.remove(property,extras[0])
+        handle("viewquestions",property)
+      }
+      dialog.close()
+    }
+    render.testmanager.renderConfirmationDialog(dialog,extras[1],extras[0],click)
+    dialog.showModal()
+    // dialog.closeBy = "any"
+  } else if (e === "editquestions") {
+    render.testmanager.renderEditQuestions(property,extras[1],extras[0],handle)
   } else if (e === "changescreen") {
     changeScreen(property)
   } else if (e === "uploadnotes") {

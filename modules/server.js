@@ -230,13 +230,14 @@ export async function testInfoData(type,uuid) {
   return simpleGet(api.getTestInfoDataURL(),message)
 }
 
-export async function testEditData(method,uuid,sess_id,uuid_location,target) {
+export async function testEditData(method,uuid,sess_id,uuid_location,target,secondTarget) {
   const message = {
     method,
     uuid,
     sess_id,
     uuid_location,
-    "target": JSON.stringify(target)
+    "target": JSON.stringify(target),
+    "target2": JSON.stringify(secondTarget)
   }
   return simpleGet(api.getTestEditDataURL(),message)
 }
@@ -329,4 +330,13 @@ export async function removeRegisteredRoom(sid,name) {
 
 export async function getAvailableRoom() {
   return simpleGet(api.getAvailableRoomsURL()) 
+}
+
+export async function getBankQuestions(sess_id,uuid,uuid_location) {
+  const message = {
+    sess_id,
+    uuid,
+    uuid_location
+  }
+  return simpleGet(api.getBankQuestionsDataURL(),message)
 }

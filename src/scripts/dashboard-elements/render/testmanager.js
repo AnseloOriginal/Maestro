@@ -201,7 +201,7 @@ export function rerender_create_page(
   body.append(questionContainer,buttondisplay)
 }
 
-function create_question_display(id,prefillname,prefilledOptions,prefilledAnswer,uuid) {
+function create_question_display(id,prefillname,prefilledOptions,prefilledAnswer,uuid,editMode) {
   function getStore() {
     let store
     if (localStorage.getItem("teacher_temporary_store")) {
@@ -245,10 +245,18 @@ function create_question_display(id,prefillname,prefilledOptions,prefilledAnswer
   nameError.className = "testmanager-body-add-name-error"
   nameError.innerText = "Question must be filled"
   nameError.style.display = "none"
+  div.questionText = ""
+  div.answerNo = 0
+  div.lastAnswerNo = 0
+  div.optionsArray = ["","","",""]
+  if (prefillname) {div.questionText = prefillname}
+  if (prefilledOptions) {div.optionsArray = prefilledOptions}
   name.oninput = () => {
     if (nameError.style.display === "block") {
       nameError.style.display = "none"
     }
+    div.questionText = name.value
+    if (editMode) {return}
     let store = getStore()
     store[uuid][id].finished = false
     store[uuid][id].question = name.value
@@ -277,11 +285,16 @@ function create_question_display(id,prefillname,prefilledOptions,prefilledAnswer
     option.placeholder = "Insert Option "+i
     if (prefilledAnswer === i) {
       radio.checked = true
+      div.answerNo = i
+      div.lastAnswerNo = i
     }
     radio.oninput = () => {
       if (optionsError.style.display === "block") {
         optionsError.style.display = "none"
       }
+      div.answerNo = i
+      div.lastAnswerNo = i
+      if (editMode) {return}
       let store = getStore()
       store[uuid][id].answer = i
       saveStore(store)
@@ -290,6 +303,8 @@ function create_question_display(id,prefillname,prefilledOptions,prefilledAnswer
       if (optionsError.style.display === "block") {
         optionsError.style.display = "none"
       }
+      div.optionsArray[i-1] = option.value
+      if (editMode) {return}
       let store = getStore()
       store[uuid][id].finished = false
       store[uuid][id].options[i-1] = option.value
@@ -300,13 +315,34 @@ function create_question_display(id,prefillname,prefilledOptions,prefilledAnswer
     }
     optionLine.append(option,radio)
   }
+  const bonusLine = document.createElement("p")
+  const bonusBox = document.createElement("input")
+  const bonusComment = document.createElement("span")
+  bonusComment.innerText = "Mark as Bonus"
+  bonusBox.type = "checkbox"
+  bonusBox.oninput = (evt) => {
+    if (bonusBox.value) {
+      div.answerNo = 5
+    } else {
+      div.answerNo = lastAnswerNo
+    }
+  }
+  if (prefilledAnswer === 5) {
+    bonusBox.checked = true
+  }
+  bonusLine.append(bonusBox,bonusComment)
   optionsGroup.append(optionsLabel,optionLine,optionsError)
+  if (editMode) { optionsGroup.append(bonusLine) }
   const buttondisplay = document.createElement('div')
   buttondisplay.className = "testmanager-body-add-buttongroup"
   const b1 = document.createElement('button')
-  b1.innerText = "Delete"
+  b1.innerText = editMode ? "Save" : "Delete"
   b1.className = "testmanager-body-add-buttongroup-delete"
   b1.onclick = () => {
+    if (editMode) {
+      if (div.clickButn) {div.clickButn()}
+      return
+    }
     div.remove()
     if (localStorage.getItem("teacher_temporary_store")) {
       const store = JSON.parse(localStorage.getItem("teacher_temporary_store"))
@@ -319,4 +355,93 @@ function create_question_display(id,prefillname,prefilledOptions,prefilledAnswer
   buttondisplay.append(b1)
   div.append(idElem,nameGroup,nameError,optionsGroup,buttondisplay)
   return div
+}
+
+export function render_bank_question(uuid,questions,handle) {
+  const body = document.querySelector(".testmanager-body")
+  if (!body || !questions) {
+    return
+  }
+  body.innerHTML = ""
+  questions.forEach((question,no) => {
+    const letters = ["A","B","C","D"]
+    const obj = document.createElement("p")
+    obj.innerHTML += `${no+1}. `
+    if (question.answer === 5) {
+      obj.innerHTML += `<span class="testmanager-viewall-answer"> (Bonus) </span>`
+    }
+    obj.innerHTML += `<span>${question.question}</span>`
+    question.options.forEach((option,i) => {
+      const isBold = (i+1) === question.answer
+      const bold = isBold ? `class="testmanager-viewall-answer"` : ""
+      const text = `<span ${bold}> ${letters[i]}. ${option}</span>`
+      obj.innerHTML += text
+    })
+    const editButn = document.createElement("button")
+    editButn.innerText  = "Edit"
+    editButn.classList.add("testmanager-viewall-button")
+    editButn.onclick = () => handle("editquestions",uuid,null,no,question)
+    const deleteButn = document.createElement("button")
+    deleteButn.innerText  = "Delete"
+    deleteButn.onclick = () => handle("deletequestions",uuid,null,no,question.question)
+    deleteButn.classList.add("testmanager-viewall-button")
+    body.append(obj,editButn,deleteButn)
+  })
+}
+
+export function renderConfirmationDialog(dialog,question,no,onclick) {
+  dialog.innerHTML = ""
+  const confirmation = document.createElement("p")
+  confirmation.innerText = `Do you want to delete question ${no}?`
+  const questionHint = document.createElement("p")
+  questionHint.innerText = `"${question.substr(0,15)}..."`
+  const yes = document.createElement("button")
+  yes.onclick = () => onclick(true)
+  yes.innerText = "Yes"
+  yes.classList.add("testmanager-viewall-button")
+  const cancel = document.createElement("button")
+  cancel.innerText = "Cancel"
+  cancel.classList.add("testmanager-viewall-button")
+  cancel.onclick = () => onclick(false)
+  dialog.append(confirmation,questionHint,yes,cancel)
+}
+
+export function renderEditQuestions(uuid,questions,no,handle) {
+  const displayno = no +1
+  const body = document.querySelector(".testmanager-body")
+  if (!body) {
+    return;
+  }
+  body.innerHTML = ''
+  const header = document.createElement("p")
+  header.className = 'testmanager-body-add-header'
+  header.innerText = `Editing Question ${displayno}`
+  const div = create_question_display(
+    displayno,questions.question,
+    questions.options,questions.answer,uuid,true
+  )
+  const onclick = async () => {
+    console.log(div)
+    const name = div.questionText
+    const answer = div.answerNo
+    const option = div.optionsArray
+    const question = {
+      "question": name,
+      "options": option,
+      "answer": answer,
+      "finished": true
+    }
+    
+    if (!name || !answer || !option) {
+      return
+    }
+    let safe = true
+    option.forEach(i => {if (i.length < 1) {safe = false}})
+    if (!safe) {return}
+    await test.replace(uuid,no,question)
+    console.log(question)
+    handle("viewquestions",uuid)
+  }
+  div.clickButn = onclick
+  body.append(header,div)
 }

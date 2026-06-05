@@ -130,7 +130,7 @@ if (!isDev) {
 app.whenReady().then(() => {
   log.info("App is Ready")
   mainApp = createWindow()
-  setTimeout(() => createWindow(true), 10000)
+  // setTimeout(() => createWindow(true), 10000)
   reporter = (status,report) => mainApp.webContents.send(status,report),
   ipcMain.handle('Runtime Init', () => Runtime.Initialization(reporter)),
   ipcMain.handle('Runtime Login', async (event, username, password) => Runtime.freshLogin(username, password)),
@@ -172,6 +172,9 @@ app.whenReady().then(() => {
   ipcMain.handle('Rooms Available', async () =>  Runtime.getAvailableRoom())
   ipcMain.handle('Runtime Create Room', async (evt,name) =>  createRoom(name))
   ipcMain.handle('Rooms Join', async (evt,data) =>  connectToRoom(data))
+  ipcMain.handle('Test Bank Questions', async (evt,uuid,uuid_location) =>  Runtime.getBankQuestions(uuid,uuid_location))
+  ipcMain.handle('Remove Test Question', async (event,uuid,id) => Runtime.removeTestData(uuid,id))
+  ipcMain.handle('Replace Test Question', async (event,uuid,no,data) => Runtime.replaceTestData(uuid,no,data))
   autoUpdater.checkForUpdates()
 })
 

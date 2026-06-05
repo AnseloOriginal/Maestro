@@ -21,6 +21,7 @@ const serverMediaSpace = "media"
 const serverTestNameSpace = "name.php"
 const serverTestAccesSpace = "access.php"
 const serverBankDetailsSpace = "bankdetails.php"
+const serverBankQuestionsSpace = "questions.php"
 const serverTestInfoSpace = "info.php"
 const serverTestEditSpace = "edit.php"
 const serverTestSpace = "tests"
@@ -145,4 +146,8 @@ export function getRegisterRoomURL() {
 
 export function getRemoveRoomURL() {
   return apiJoin(mainURL,serverMainSpace, serverRoomSpace, serverRemoveRoomSpace)
+}
+
+export function getBankQuestionsDataURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestDataSpace, serverBankQuestionsSpace)
 }
