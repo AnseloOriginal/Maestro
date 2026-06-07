@@ -1,3 +1,13 @@
+const renderMath = (target) => {
+  renderMathInElement(target, {
+      delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+      ],
+      throwOnError: false
+  });
+};
+
 export function render_mainpage(
   content,
   loading,
@@ -386,6 +396,7 @@ export function render_bank_question(uuid,questions,handle) {
     deleteButn.classList.add("testmanager-viewall-button")
     body.append(obj,editButn,deleteButn)
   })
+  renderMath(body)
 }
 
 export function renderConfirmationDialog(dialog,question,no,onclick) {
@@ -444,3 +455,4 @@ export function renderEditQuestions(uuid,questions,no,handle) {
   div.clickButn = onclick
   body.append(header,div)
 }
+
