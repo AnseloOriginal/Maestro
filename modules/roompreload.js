@@ -17,6 +17,14 @@ function getClientInfo() {
   }
 }
 
+function findArgContent(content) {
+  let found = false
+  process.argv.forEach(arg => {
+    if (arg.includes(content)) {found = true}
+  })
+  return found
+}
+
 function getArgContent(arg,justFind) {
   let fvalue = -1
   process.argv.forEach((value,i) => {
@@ -33,7 +41,7 @@ function getArgContent(arg,justFind) {
 }
 
 contextBridge.exposeInMainWorld('main', {
-  isClient: () => getArgContent("roomisclient",true),
+  isClient: () => findArgContent("thisisclient"),
   newWindow: (type,resid)  => ipcRenderer.invoke("room-new-window",type,resid)
 })
 

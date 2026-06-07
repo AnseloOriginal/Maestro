@@ -103,7 +103,7 @@ const closeAllWindows = () => {
 const createRoom = (name) => {
   closeAllWindows()
   const onClose = () => createWindow(true)
-  roomServer = new room.RoomServer(Runtime.sessionID,name,504,onClose)
+  roomServer = new room.RoomServer(Runtime.sessionID,name,2026,onClose)
 }
 const connectToRoom = (data) => {
   if (!data || !data.addr) {return}
@@ -120,7 +120,7 @@ const connectToRoom = (data) => {
   log.info("Connecting to a room server:",selectedIp)
   closeAllWindows()
   const onClose = () => createWindow(true)
-  roomClient = new room.RoomClient(Runtime.sessionID,selectedIp,504,onClose)
+  roomClient = new room.RoomClient(Runtime.sessionID,selectedIp,2026,onClose)
 }
 let mainApp;
 let reporter;

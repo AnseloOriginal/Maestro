@@ -10,3 +10,10 @@ windowSpawnerForm.onsubmit = (evt) => {
   console.log("Submitted")
   windowSpawnerInput.value = ""
 }
+
+const client = main.isClient()
+if (client) {
+  windowSpawnerForm.style.display = "none"
+  windowSpawnerInput.style.display = "none"
+  windowSpawnerSelect.style.display = "none"
+}

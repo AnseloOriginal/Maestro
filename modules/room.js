@@ -37,10 +37,10 @@ const createControlWindow = (isClient=false) => {
     titleBarOverlay: true,
     autoHideMenuBar: true,
     alwaysOnTop: true,
-    title: "Room Control",
+    title: `Room Control (${isClient ? "Client" : "Server"})`,
     webPreferences: {
       preload: path.join(__dirname,"roompreload.js"),
-      additionalArguments: [`--roomisclient=${isClient}`]
+      additionalArguments: [`--roomisclient=${isClient ? "thisisclient" : false}`]
     }
 })
   
@@ -75,7 +75,7 @@ export class RoomServer {
     this.onclose = onclose
     this.io = new Server(port);
     console.log("Server Started on port "+port)
-    this.controlWindow = createControlWindow(true)
+    this.controlWindow = createControlWindow()
     const primaryDisplay = screen.getPrimaryDisplay()
     
     this.screenSize = primaryDisplay.size
@@ -177,10 +177,11 @@ export class RoomClient {
   allWindows = new Map()
   exited = false
 
-  constructor(sid,url,port=2026,onclose) {
+  constructor(sid,url,port=2026,onClose) {
     this.io = io(`http://${url}:${port}`);
-    this.controlWindow = createControlWindow(false)
+    this.controlWindow = createControlWindow(true)
     this.sid = sid
+    this.onClose = onClose
     this.initializeListeners()
   }
 
@@ -190,6 +191,9 @@ export class RoomClient {
     this.io.on("new-window",this.handleNewWindow)
     this.io.on("window-change",this.handleWindowChange)
     this.io.on("window-close",this.handleWindowClose)
+    this.controlWindow.on("close", () => {
+      if (!this.io.connected) {this.handleExit()}
+    })
     try {
       ipcMain.handle('room-new-window', (evt,type,resid) => () => console.log("Client: Creating new windows not allowed")),
       ipcMain.handle('room-media-video', async (event,id) =>  Runtime.convertToVideoURL(id))
@@ -213,6 +217,7 @@ export class RoomClient {
   handleExit = (controlClosed) => {
     if (this.exited) {return}
     if (!this.io.disconnected) {this.io.disconnect()}
+    this.onClose()
     this.allWindows.forEach(window => {
       if (!window) {return}
       window.close()
@@ -228,7 +233,6 @@ export class RoomClient {
 
       }
     }
-    if (typeof(this.onclose) === "function") {this.onclose()}
     this.exited = true
   }
 
