@@ -169,6 +169,7 @@ app.whenReady().then(() => {
   ipcMain.handle('Media Library', async () =>  Runtime.getLibraryData())
   ipcMain.handle('Media Video', async (event,id) =>  Runtime.convertToVideoURL(id))
   ipcMain.handle('Media Image', async (event,id) =>  Runtime.convertToImageURL(id))
+  ipcMain.handle('Media PDF', async (event,id) =>  Runtime.convertToPDFURL(id))
   ipcMain.handle('Rooms Available', async () =>  Runtime.getAvailableRoom())
   ipcMain.handle('Runtime Create Room', async (evt,name) =>  createRoom(name))
   ipcMain.handle('Rooms Join', async (evt,data) =>  connectToRoom(data))

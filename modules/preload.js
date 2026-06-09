@@ -59,7 +59,8 @@ contextBridge.exposeInMainWorld('test', {
 contextBridge.exposeInMainWorld('media', {
   library: () => ipcRenderer.invoke("Media Library"),
   toVideoURL: (id) => ipcRenderer.invoke("Media Video",id),
-  toImageURL: (id) => ipcRenderer.invoke("Media Image",id)
+  toImageURL: (id) => ipcRenderer.invoke("Media Image",id),
+  toPDFURL: (id) => ipcRenderer.invoke("Media PDF",id)
 })
 
 contextBridge.exposeInMainWorld("room", {

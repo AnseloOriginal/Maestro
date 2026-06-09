@@ -492,7 +492,11 @@ async function changeScreen(screen,...extras) {
     external_content.style.display = "block"
     external_content.style.position = "absolute"
     external_content.style.height = `${window.innerHeight - 100}px`
-    external_content.src = "./external/testing/testing.html"
+    const usePDF = extras[2]?.usepdf
+    const pdfLocation = extras[2]?.pdflocation || "nopdfprovided"
+    external_content.src = usePDF ? `./scripts/pdfjs/web/viewer.html?file=${await media.toPDFURL(pdfLocation)}` 
+    : "./external/testing/testing.html"
+    
     render.testing.generate_test_topbar(content,manager.cache["userinfo"],duration)
     window.sys.fullscreen(true)
     window.sys.requestLock()

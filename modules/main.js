@@ -628,6 +628,11 @@ export async function convertToImageURL(id) {
   return `${mainURL}?id=${id}`
 }
 
+export async function convertToPDFURL(id) {
+  const mainURL = api.getMediaPDFURL()
+  return `${mainURL}?id=${id}`
+}
+
 export async function getAvailableRoom() {
   const data = await server.getAvailableRoom()
   if (data[0] === 0) {

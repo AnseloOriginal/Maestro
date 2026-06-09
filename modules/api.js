@@ -38,6 +38,7 @@ const serverTestFinalResultSpace = "finalresult.php"
 const serverMediaLibrarySpace = "library.php"
 const serverMediaVideoSpace = "video.php"
 const serverMediaImageSpace = "image.php"
+const serverMediaPDFSpace = "pdf.php"
 
 export const apiJoin = (...parts) => parts.join("/");
 
@@ -135,6 +136,10 @@ export function getMediaVideoURL() {
 
 export function getMediaImageURL() {
   return apiJoin(mainURL,serverMainSpace, serverMediaSpace, serverMediaImageSpace)
+}
+
+export function getMediaPDFURL() {
+  return apiJoin(mainURL,serverMainSpace, serverMediaSpace, serverMediaPDFSpace)
 }
 
 export function getAvailableRoomsURL() {
