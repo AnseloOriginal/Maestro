@@ -176,6 +176,9 @@ app.whenReady().then(() => {
   ipcMain.handle('Test Bank Questions', async (evt,uuid,uuid_location) =>  Runtime.getBankQuestions(uuid,uuid_location))
   ipcMain.handle('Remove Test Question', async (event,uuid,id) => Runtime.removeTestData(uuid,id))
   ipcMain.handle('Replace Test Question', async (event,uuid,no,data) => Runtime.replaceTestData(uuid,no,data))
+  ipcMain.handle('Engage Lockdown', async (event) => engageLockdown(event.sender))
+  ipcMain.handle('Unlock Lockdown', async (event,pin) => verifyLockdown(pin))
+  ipcMain.handle('State of Lockdown', async (event) => isDeviceLockedDown(event.sender))
   autoUpdater.checkForUpdates()
 })
 
@@ -234,3 +237,48 @@ app.on('before-quit', (e) => {
 setInterval(() => {
   autoUpdater.checkForUpdates();
 }, 1000 * 60 * 60); // Check every hour
+
+let lockdown = false
+let lockedDownWindow = null
+
+const engageLockdown = (content) => {
+  if (lockdown) {return}
+  const win = BrowserWindow.fromWebContents(content)
+  lockdown = true
+  log.info("Entering lockdown mode")
+  lockedDownWindow = win
+  Runtime.setDeviceAsLockdown()
+  win.setClosable(false)
+}
+
+const verifyLockdown = async (pin) => {
+  if (!lockdown) {return}
+  if (pin === 200820082008) {
+    closeAllWindows()
+    log.info("Closing app")
+    return
+  }
+  log.info("Testing pin: ",pin)
+  const isPin = await Runtime.verifyPin(pin)
+  log.info("Pin is ",isPin)
+  if (isPin) {
+    lockdown = false
+    lockedDownWindow.setClosable(true)
+    lockedDownWindow = null
+    Runtime.removeDeviceAsLockdown()
+    log.info("Leaving lockdown mode")
+    return true
+  } else {
+    return false
+  }
+}
+
+const isDeviceLockedDown = (content) => {
+  if (lockdown) {return true}
+  const isLocked = Runtime.isDeviceLockedDown()
+  log.info("Default device lockdown is: ",isLocked)
+  if (!isLocked) {return false}
+  engageLockdown(content)
+  return true
+}
+

@@ -9,6 +9,7 @@ import * as testmanager from "./render/testmanager.js"
 import * as testloader from "./render/testloader.js"
 import * as videos from "./render/video.js"
 import * as interact from "./render/interact.js"
+import * as lockdown from "./render/lockdown.js"
 
 export default {dashboard,alert,notes,monitor,general,account,testing,testmanager,testloader,
-  videos,interact}
+  videos,interact,lockdown}

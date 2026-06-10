@@ -3,6 +3,7 @@ import * as Login from "./login.js"
 import * as server from "./server.js"
 import * as fs from "./filemanager.js"
 import * as download from "./downloader.js"
+import * as lockdown from "./lockdown.js"
 import * as api from "./api.js"
 import * as log from "electron-log"
 // import * as room from "./room.js"
@@ -668,6 +669,33 @@ export async function removeTestData(uuid,id) {
 export async function replaceTestData(uuid,id,data) {
   if (await server.serverIsAvailable() && sessionID) {
     const response = await server.testEditData("replace",uuid,sessionID,"private",id,data)
+    if (response[0] === 0) {
+      return true
+    } else {
+      console.log(response)
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
+export function setDeviceAsLockdown() {
+  lockdown.saveLockdownDetails("lockdown")
+}
+
+export  function removeDeviceAsLockdown() {
+  lockdown.clearLockdownDetails()
+}
+
+export function isDeviceLockedDown() {
+  const lock = lockdown.getLockdownDetails()
+  return lock === "lockdown"
+}
+
+export async function verifyPin(pin) {
+  if (await server.serverIsAvailable()) {
+    const response = await server.verifyPin(pin)
     if (response[0] === 0) {
       return true
     } else {

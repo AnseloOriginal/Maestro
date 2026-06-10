@@ -347,3 +347,10 @@ export async function announceRoom(sess_id) {
  }
  return simpleGet(api.getAnnounceRoomURL(),message)
 }
+
+export async function verifyPin(pin) {
+ const message = {
+  pin
+ }
+ return simpleGet(api.getVerifyPinURL(),message)
+}

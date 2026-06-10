@@ -32,7 +32,10 @@ contextBridge.exposeInMainWorld('sys', {
   fullscreen: (bol) => ipcRenderer.invoke("System Fullscreen",bol),
   requestLock: () => ipcRenderer.invoke("System Lock"),
   requestUnlock: () => ipcRenderer.invoke("System Unlock"),
-  appVersion: () => ipcRenderer.invoke("App Version")
+  appVersion: () => ipcRenderer.invoke("App Version"),
+  engageLockdown: () => ipcRenderer.invoke("Engage Lockdown"),
+  unlockLockdown: (pin) => ipcRenderer.invoke("Unlock Lockdown",pin),
+  stateOfLockdown: () => ipcRenderer.invoke("State of Lockdown"),
 })
 
 contextBridge.exposeInMainWorld('test', {

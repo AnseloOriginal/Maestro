@@ -35,6 +35,7 @@ const serverSendTestFinishSpace = "finish.php"
 const serverTestDetailsSpace = "details.php"
 const serverTestVariableSpace = "variable.php"
 const serverTestFinalResultSpace = "finalresult.php"
+const serverVerifyPinResultSpace = "verify-pin.php"
 const serverMediaLibrarySpace = "library.php"
 const serverMediaVideoSpace = "video.php"
 const serverMediaImageSpace = "image.php"
@@ -161,3 +162,8 @@ export function getBankQuestionsDataURL() {
 export function getAnnounceRoomURL() {
   return apiJoin(mainURL,serverMainSpace, serverRoomSpace, serverAnnounceRoomSpace)
 }
+
+export function getVerifyPinURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverVerifyPinResultSpace)
+}
+

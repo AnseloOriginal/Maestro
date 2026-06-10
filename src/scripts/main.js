@@ -31,6 +31,7 @@ let hasSession = false
 let currentScreen = ""
 let hasFinishedLoading = false
 let allowRefresh = true
+let lockDown = false
 startUp()
 
 function ping() {
@@ -86,6 +87,26 @@ async function changeScreen(screen,...extras) {
   refresh_alert()
   allowRefresh = true
   content.innerHTML = ""
+  if (lockDown) {
+    window.sys.fullscreen(true)
+    window.sys.requestLock()
+    await window.sys.engageLockdown()
+    external_content.style.display = "none"
+    const verifyPin = async (pinStr,errorDisplay) => {
+      const pin = parseInt(pinStr)
+      const result = await window.sys.unlockLockdown(pin)
+      if (result)  {
+        lockDown = false
+        window.sys.fullscreen(false)
+        window.sys.requestUnlock()
+        changeScreen("test-cleanup")
+      } else {
+        errorDisplay.innerText = "Invalid pin!"
+      }
+    }
+    render.lockdown.generateLockdownScreen(content,verifyPin)
+    return
+  }
   if (screen === "dashboard") {
     render.general.loadingAnimationStart(content)
     let type = "offline"
@@ -96,6 +117,7 @@ async function changeScreen(screen,...extras) {
     render.dashboard.generate_main_dashboard(content,type)
     render.dashboard.addWidgets(content)
   } else if(screen === "notes") {
+    
     render.general.loadingAnimationStart(content)
     const recents = await window.fs.recents()
     recents.forEach((note,i,a) =>{
@@ -494,6 +516,7 @@ async function changeScreen(screen,...extras) {
     external_content.style.height = `${window.innerHeight - 100}px`
     const usePDF = extras[2]?.usepdf
     const pdfLocation = extras[2]?.pdflocation || "nopdfprovided"
+    if (usePDF) {lockDown = true}
     external_content.src = usePDF ? `./scripts/pdfjs/web/viewer.html?file=${await media.toPDFURL(pdfLocation)}` 
     : "./external/testing/testing.html"
     
@@ -574,6 +597,7 @@ async function startUp() {
   render.general.loadingAnimationStart(content)
   contentProtection()
   hasSession = await window.runtime.newSession() //Starts new session
+  lockDown = await window.sys.stateOfLockdown()
   //Cache important info just in case
   manager.cacheSet("teacher_weekly_quota",server.publicConfig,"teacher_weekly_quota")
   if (hasSession) {
