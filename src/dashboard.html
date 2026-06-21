@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width" />
     <link rel="manifest" href="./../manifestv2.json" />
     <script src="../nodeless/prescript.js" type="module" fetchpriority="high"></script>
-    <script src="./scripts/cdnmath.js"></script>
+    <script src="./scripts/cdnmath.js" type="module"></script>
     <title> Maestro  </title>
     <link rel="stylesheet" type="text/css" href="styles/main/classes-style.css">
     <link rel="stylesheet" type="text/css" href="styles/main/alert.css">
@@ -24,8 +24,8 @@
     <script defer src="./scripts/katex/katex.min.js"></script>
     <script defer src="./scripts/katex/contrib/auto-render.min.js"></script>
   </head>
-  <body>
-    <div class="sidepanel" id="sidepanel" style="opacity: 0;">
+  <body id="root">
+    <div class="sidepanels" id="sidepanels" style="opacity: 0; display: none;">
       <button id="switch" class="menu-button">
         <span class="material-symbols-outlined" >menu</span>
       </button>
@@ -71,5 +71,5 @@
     <div class="floaters" id="floaters" style="display: absolute;"></div>
     <dialog id="main-dialog" closedby="any"></dialog>
   </body>
-  <script src="scripts/main.js" type="module"></script>
+  <script src="client/init.ts" type="module"></script>
 </html>

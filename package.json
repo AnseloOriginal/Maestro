@@ -9,7 +9,7 @@
     "test": "mocha",
     "package": "@electron-packager . --arch=x64 --asar --electron-version=24.8.8 --electron-zip-dir=D:\\Dev\\Electron --platform=win32 --tempdir=\"D:\\Dev\\Auto Apps\\Brain Power\\Export\\\" --no-tmpdir --icon=logo.ico",
     "package-linux": "@electron-packager . --arch=x64 --asar --electron-version=22.3.27 --electron-zip-dir=D:\\Dev\\Electron --platform=linux --tempdir=\"D:\\Dev\\Auto Apps\\Brain Power\\Export\\\" --no-tmpdir --icon=logo.ico",
-    "prebuild": "npm run test",
+    "prebuild": "npm run test && npx vite build",
     "build": "npx electron-builder",
     "build-web": "node build-web.js && npx cap sync",
     "cap-test": "node build-web-test.js && cd capacitortest/src && npx serve"
@@ -29,7 +29,8 @@
     "nyc": "^18.0.0",
     "sinon": "^21.0.2",
     "sinon-chai": "^4.0.1",
-    "vite": "^8.0.16"
+    "vite": "^8.0.16",
+    "vite-plugin-static-copy": "^4.1.1"
   },
   "dependencies": {
     "@capacitor-community/file-opener": "^8.0.0",

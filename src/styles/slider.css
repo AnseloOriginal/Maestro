@@ -4,13 +4,13 @@
   position: fixed;
   border-right: 1px solid black;
 }
-.sidepanel-min{
+.sidepanel-max{
   width: 150px;
   text-align: left;
   animation: slideOut 0.5s ease-out forwards;
 }
 
-.sidepanel-max{
+.sidepanel-min{
   width: 50px;
   text-align: center;
   animation: slideIn 0.5s ease-out forwards;
@@ -49,6 +49,7 @@
   margin-bottom: 20px;
   user-select: none;
   cursor: pointer;
+  display: block;
 }
 
 .menu-butn:hover{

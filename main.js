@@ -51,7 +51,7 @@ const createWindow = (startAtDashboard) => {
       devTools: isDev
     }
   })
-  const url = startAtDashboard ? "src/dashboard.html" : "src/index.html" 
+  const url = startAtDashboard ? "deploy/dashboard.html" : "deploy/index.html" 
   win.loadFile(url)
   log.info("Created a new windows using url",url)
   return win
