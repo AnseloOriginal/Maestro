@@ -11,6 +11,7 @@ export class Renderer {
   subContainer: HTMLDivElement
   elementCreator: ElementCreator
   slider: Slider
+  currentView: AvailableViews | undefined
 
   registar = {
     "dashboard": render 
@@ -25,13 +26,17 @@ export class Renderer {
     this.alertContainer.className = "alert"
     this.subContainer = document.createElement("div")
     this.subContainer.className = "content2"
-    this.mainContainer.append(this.subContainer)
+    this.mainContainer.append(
+      this.alertContainer,
+      this.subContainer
+    )
     this.elementCreator = new ElementCreator()
     this._setup_slider()
     this.app.root.append(
       this.slider.container,
       this.mainContainer
     )
+    
   }
 
   clearSubContainer() {
@@ -40,6 +45,7 @@ export class Renderer {
 
   render = (view: AvailableViews) => {
     this.registar[view](this,this.subContainer)
+    this.currentView = view
   }
 
   _setup_slider = () => {
@@ -48,5 +54,18 @@ export class Renderer {
     this.slider.addButton("notes","book",true,"Notes")
     this.slider.addButton("tests","ink_pen",true,"Tests")
     this.slider.addButton("videos","video_library",true,"Videos")
+  }
+
+  updateAlert() {
+    const isOnline = this.app.session.lastOnlineState
+    const hasSession = this.app.session.lastSessionState
+    this.alertContainer.style.display = "block"
+    if (!isOnline) {
+      this.alertContainer.innerHTML = '<p class="alert-text">Offline Mode</p>'
+    } else if (!hasSession) {
+      this.alertContainer.innerHTML = '<p class="alert-text">No Session</p>'
+    } else {
+      this.alertContainer.style.display = "none"
+    }
   }
 }
