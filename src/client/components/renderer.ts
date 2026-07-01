@@ -2,7 +2,7 @@ import {App} from "./main.ts";
 import {ElementCreator} from "./ui/elements.ts"
 import {render} from "./../views/dashboard/render.ts"
 import {Slider} from "./ui/slider.ts"
-type AvailableViews = "dashboard"
+import { VIEWS, AvailableViews } from "../views/index.ts";
 
 export class Renderer {
   app: App
@@ -11,11 +11,7 @@ export class Renderer {
   subContainer: HTMLDivElement
   elementCreator: ElementCreator
   slider: Slider
-  currentView: AvailableViews | undefined
-
-  registar = {
-    "dashboard": render 
-  }
+  currentView: AvailableViews
 
   constructor(app:App) {
     this.app = app
@@ -31,12 +27,13 @@ export class Renderer {
       this.subContainer
     )
     this.elementCreator = new ElementCreator()
-    this._setup_slider()
+    this.#setup_slider()
     this.app.root.append(
       this.slider.container,
       this.mainContainer
     )
-    
+    this.currentView = "base" //This is so typescript would stop complaining
+    this.render("base")
   }
 
   clearSubContainer() {
@@ -44,11 +41,11 @@ export class Renderer {
   }
 
   render = (view: AvailableViews) => {
-    this.registar[view](this,this.subContainer)
+    VIEWS[view].render(this,this.subContainer)
     this.currentView = view
   }
 
-  _setup_slider = () => {
+  #setup_slider = () => {
     this.slider.addButton("dashboard","home",true,"Dashboard")
     .onclickEvent(() => this.render("dashboard"))
     this.slider.addButton("notes","book",true,"Notes")
