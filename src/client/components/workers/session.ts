@@ -1,5 +1,5 @@
 import {Ping} from "./ping"
-import { addEventHandler } from "../../events/recieve"
+import { addEventHandler } from "../../events/receive"
 export class Session {
   lastOnlineState: boolean = false
   lastSessionState: boolean = false
