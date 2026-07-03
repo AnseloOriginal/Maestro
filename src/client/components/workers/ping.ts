@@ -1,6 +1,7 @@
 
 const PING_TIME = 1000
 type OnPingFunc = ((pingResults: boolean) => void)
+import { sendEvent } from "../../events/send"
 
 export class Ping {
   isOnline: boolean
@@ -17,22 +18,25 @@ export class Ping {
 
   /**
   * Start polling the server. Immediately runs a ping.
-  * @param {boolean} runFuncs Run the registered ping functions during first call
+  * @param {boolean} sendEvent Run the registered ping functions during first call
   */
-  start(runFuncs: boolean) {
-    return this.#ping(!runFuncs)
+  start(sendEvent: boolean) {
+    return this.#ping(!sendEvent)
   }
 
-  #ping = async (skipFuncs: boolean=false) => { 
+  #ping = async (skipEvents: boolean=false) => { 
     this.isOnline = await window.runtime.serverOnline()
-    if (!skipFuncs) {
+    if (!skipEvents) {
+      sendEvent("server-ping",{online: this.isOnline})
+    }
+    if (this.#funcs.length > 0) {
       this.#funcs.forEach(func => func(this.isOnline))
     }
     this.#ping_id = setTimeout(this.#ping,PING_TIME)
   }
 
   /**
-  * Add a new function to be called on every ping
+  * Add a new function to be called on every ping. It is better to listen for the ping event 
   * * @param {OnPingFunc} func - Function called every ping, it takes one boolean representing ping results
   */
   registerOnPing(func: OnPingFunc) {

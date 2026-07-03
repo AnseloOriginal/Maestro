@@ -1,5 +1,5 @@
 import {Ping} from "./ping"
-
+import { addEventHandler } from "../../events/recieve"
 export class Session {
   lastOnlineState: boolean = false
   lastSessionState: boolean = false
@@ -8,7 +8,7 @@ export class Session {
 
   constructor() {
     this.#ping = new Ping()
-    this.#ping.registerOnPing(this.#OnPing)
+    addEventHandler("server-ping", (evt) => this.#OnPing(evt.online))
     this.onStateChanged = (session: Session) => console.log("State Changed")
   }
 
