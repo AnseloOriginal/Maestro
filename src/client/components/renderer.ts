@@ -56,13 +56,20 @@ export class Renderer {
   updateAlert() {
     const isOnline = this.app.session.lastOnlineState
     const hasSession = this.app.session.lastSessionState
+    const isVerified = this.app.validator.userinfo?.verified
     this.alertContainer.style.display = "block"
     if (!isOnline) {
       this.alertContainer.innerHTML = '<p class="alert-text">Offline Mode</p>'
     } else if (!hasSession) {
       this.alertContainer.innerHTML = '<p class="alert-text">No Session</p>'
+    } else if (!isVerified) {
+      this.alertContainer.innerHTML = '<p class="alert-text">Account not approved</p>'
     } else {
       this.alertContainer.style.display = "none"
     }
+  }
+
+  updateRendered() {
+    VIEWS[this.currentView].update(this,this.subContainer)
   }
 }

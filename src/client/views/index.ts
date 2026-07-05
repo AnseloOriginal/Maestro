@@ -11,6 +11,7 @@ export const VIEWS = {
     update: dashboard.update
   },
   base: {
-    render: base.render
+    render: base.render,
+    update: base.update
   }
 }

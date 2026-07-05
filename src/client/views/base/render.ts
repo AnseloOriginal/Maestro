@@ -6,3 +6,7 @@ export function render(renderer: Renderer, container: HTMLDivElement) {
   const loadingSign = new LoadingSign()
   container.append(loadingSign.root)
 }
+
+export function update(renderer: Renderer, container: HTMLDivElement) {
+  
+}

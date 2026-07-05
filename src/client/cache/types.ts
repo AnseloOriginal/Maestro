@@ -11,7 +11,7 @@ const testSchema = z.object({
 const UserSchema = z.object({
   username: z.string(),
   firstname: z.string(),
-  lastname: z.string(),
+  surname: z.string(),
   othername: z.string().default(""),
   student: z.literal([0, 1]).default(0),
   verified: z.literal([0, 1]).default(0),

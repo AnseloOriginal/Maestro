@@ -2,13 +2,15 @@ import {Renderer} from "./../../components/renderer.ts"
 
 export function render(renderer: Renderer, container: HTMLDivElement) {
   renderer.clearSubContainer()
-  // renderer.app.
+  const type = renderer.app.validator.accessLevel() ? "Worker" : "Student"
+  const extra = renderer.app.validator.accessLevel() ? "and monitor students" : ""
   container.innerHTML = `
-    <h1 class="dashboard-title"> Worker Dashboard</h1>
-    <p class="dashboard-title"> Use this app to access notes and monitor students<p>
+    <h1 class="dashboard-title"> ${type} Dashboard</h1>
+    <p class="dashboard-title"> Use this app to access notes ${extra}<p>
     `
 }
 
-export function update(renderer: Renderer) {
-
+export function update(renderer: Renderer, container: HTMLDivElement) {
+  //Due to the likeness of Dashboard update to render, we'll just call it
+  render(renderer, container)
 }
