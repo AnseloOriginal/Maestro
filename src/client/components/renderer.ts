@@ -49,6 +49,7 @@ export class Renderer {
     this.slider.addButton("dashboard","home",true,"Dashboard")
     .onclickEvent(() => this.render("dashboard"))
     this.slider.addButton("notes","book",true,"Notes")
+    .onclickEvent(() => this.render("notes"))
     this.slider.addButton("tests","ink_pen",true,"Tests")
     this.slider.addButton("videos","video_library",true,"Videos")
   }

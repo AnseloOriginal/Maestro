@@ -19,5 +19,11 @@ declare global {
     server: {
       serverUserInfo: () => Promise<UserInfo>;
     }
+
+    fs: {
+      recents: () => Promise<string[]>
+      notes: () => Promise<string[]>
+      open:  (name: string) => Promise<void>
+    }
   }
 }
