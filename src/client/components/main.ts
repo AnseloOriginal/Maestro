@@ -2,6 +2,7 @@ import {Slider} from "./ui/slider.ts"
 import {Renderer} from "./renderer.ts"
 import {Session} from "./workers/session.ts"
 import { Validator } from "./workers/validator.ts"
+import { listenToElectron } from "../events/listenToElectron.ts"
 
 export class App {
   root: HTMLElement
@@ -12,6 +13,7 @@ export class App {
   constructor(root: HTMLElement) {
     console.log(root)
     this.root = root
+    listenToElectron()
     this.session = new Session()
     this.session.onStateChanged = this.StateChanged
     this.renderer = new Renderer(this)

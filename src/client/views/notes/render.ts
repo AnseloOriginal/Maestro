@@ -33,6 +33,10 @@ export function render(renderer: Renderer, container: HTMLDivElement) {
     
       const offlineSection = new OfflineSection(notes, onOpenNote)
       const onlineSection = new OnlineSection()
+      renderer.addEventHandler(
+        "app-download-info", 
+        info => onlineSection.onDownloadComplete(info)
+      )
       onlineNotes.append(onlineSection.root)
 
       offlineNotes.append(

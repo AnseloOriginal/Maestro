@@ -3,6 +3,14 @@ import {ElementCreator} from "./ui/elements.ts"
 import {render} from "./../views/dashboard/render.ts"
 import {Slider} from "./ui/slider.ts"
 import { VIEWS, AvailableViews } from "../views/index.ts";
+import { EventMap } from "../events/types.ts";
+import { addEventHandler } from "../events/receive.ts";
+
+interface Listener {
+  name: keyof EventMap
+  func: (event: any) => void
+  //Any on func because it is not needed
+}
 
 export class Renderer {
   app: App
@@ -12,6 +20,7 @@ export class Renderer {
   elementCreator: ElementCreator
   slider: Slider
   currentView: AvailableViews
+  listeners: Listener[] = [] 
 
   constructor(app:App) {
     this.app = app
@@ -37,6 +46,10 @@ export class Renderer {
   }
 
   clearSubContainer() {
+    this.listeners.forEach((listener) => {
+      document.removeEventListener(listener.name,listener.func)
+    })
+    this.listeners = []
     this.subContainer.innerHTML = ""
   }
 
@@ -72,5 +85,17 @@ export class Renderer {
 
   updateRendered() {
     VIEWS[this.currentView].update(this,this.subContainer)
+  }
+
+  addEventHandler<K extends keyof EventMap>(
+    name: K, 
+    func: (event: EventMap[K]) => void
+  ) {
+    const listener: Listener = {
+      name,
+      func
+    }
+    this.listeners.push(listener)
+    addEventHandler(name,func)
   }
 }

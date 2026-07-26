@@ -1,5 +1,6 @@
 import { IconButn } from "../../components/ui/buttons"
 import { LoadingSign } from "../../components/ui/loading-sign"
+import { DownloadInfoEvent } from "../../events/types"
 import { addOptions, extractSubjectName, getOnlineNotes, pretify } from "./helpers"
 
 const classes = ["JSS1","JSS2","JSS3","SSS1","SSS2","SSS3"]
@@ -172,8 +173,7 @@ export class OnlineSection {
     this.searchBar.oninput = () => this.sort()
     this.termSelector.onchange = () => this.sort()
     this.classSelector.onchange = () => this.sort()
-    this.butnArea.onclick = (evt) => this.onClick(evt)
-    
+    this.butnArea.onclick = (evt) => this.onClick(evt)    
   }
 
   async update() {
@@ -191,7 +191,8 @@ export class OnlineSection {
         displayName = displayName.replace("secondterm","")
         displayName = displayName.replace("thirdterm","")
         displayName = pretify(displayName)
-        const newbutton = new IconButn(displayName,"notes-button","notes-button-text","file_download").root   
+        const newbutton = new IconButn(displayName,"notes-button","notes-button-text","file_download").root
+        newbutton.id = note
         newbutton.classList.add("notes-online-butn")
         newbutton.setAttribute("content",note)
         newbutton.setAttribute("name","notes-online-download-note")
@@ -249,4 +250,18 @@ export class OnlineSection {
     })
   }
 
+  onDownloadComplete = (info: DownloadInfoEvent) =>  {
+    //Linked outside the class
+    console.log(info)
+    const elem = document.getElementById(info.download)?.
+      querySelector(".material-symbols-rounded")
+    if (!(elem instanceof HTMLSpanElement)) {
+      return
+    }
+    if (info.status === "complete") {
+      elem.innerText = "check"
+    } else {
+      elem.innerText = "x"
+    }
+  }
 }

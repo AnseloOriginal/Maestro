@@ -9,7 +9,7 @@ type SessionFailureUserInfo = [number, string]
 type UserInfo = PassedUserInfo & FailedUserInfo & SessionFailureUserInfo
 interface DownloadInfo {
   download: string
-  status: "complete " | "error"
+  status: "complete" | "error"
 }
 
 declare global {
