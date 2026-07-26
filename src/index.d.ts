@@ -7,6 +7,10 @@ interface FailedUserInfo {
 type PassedUserInfo = SchemaTypes["username"]
 type SessionFailureUserInfo = [number, string]
 type UserInfo = PassedUserInfo & FailedUserInfo & SessionFailureUserInfo
+interface DownloadInfo {
+  download: string
+  status: "complete " | "error"
+}
 
 declare global {
   interface Window {
@@ -14,6 +18,9 @@ declare global {
       init: () => Promise<0 | 1 | 2>;
       serverOnline: () => Promise<boolean>;
       newSession: () => Promise<boolean>;
+      onDownloadComplete: (
+        handler: (details: DownloadInfo) => void
+      ) => Promise<void>
     };
 
     server: {
@@ -25,6 +32,7 @@ declare global {
       recents: () => Promise<string[]>
       notes: () => Promise<string[]>
       open:  (name: string) => Promise<void>
+      download: (name: string) => Promise<string[]>
     }
   }
 }

@@ -172,6 +172,7 @@ export class OnlineSection {
     this.searchBar.oninput = () => this.sort()
     this.termSelector.onchange = () => this.sort()
     this.classSelector.onchange = () => this.sort()
+    this.butnArea.onclick = (evt) => this.onClick(evt)
     
   }
 
@@ -214,6 +215,36 @@ export class OnlineSection {
         butn.style.display = ""
       } else {
         butn.style.display = "none"
+      }
+    })
+  }
+
+  onClick = (evt: PointerEvent) => {
+  if (evt.target instanceof HTMLElement) {
+    const button = evt.target.closest(".notes-online-butn")
+    const content = button?.getAttribute("content")
+    if (!content) {
+      return
+    }
+    window.fs.download(content).then(queue => this.disableButns(...queue))
+  }
+}
+
+  disableButns(...names: string[]) {
+    
+    const butns = this.butnArea.querySelectorAll(".notes-online-butn")
+    butns.forEach(butn => {
+      if (!(butn instanceof HTMLButtonElement)) {
+        return
+      }
+      const name = butn.getAttribute("content")
+      if (!name) {
+        return
+      }
+      if (names.includes(name)) {
+        butn.disabled = true
+      } else {
+        butn.disabled = false
       }
     })
   }
