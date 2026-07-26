@@ -18,6 +18,7 @@ declare global {
 
     server: {
       serverUserInfo: () => Promise<UserInfo>;
+      serverNotesInfo: (index: number, term: string) => Promise<string[]>
     }
 
     fs: {

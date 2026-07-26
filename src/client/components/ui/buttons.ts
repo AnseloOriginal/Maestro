@@ -1,4 +1,4 @@
-type icons = "file_open"
+type icons = "file_open" | "file_download"
 export class IconButn {
   root: HTMLButtonElement = document.createElement("button")
   constructor(

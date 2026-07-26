@@ -1,17 +1,19 @@
 import { IconButn } from "../../components/ui/buttons"
-import { extractSubjectName } from "./helpers"
+import { LoadingSign } from "../../components/ui/loading-sign"
+import { addOptions, extractSubjectName, getOnlineNotes, pretify } from "./helpers"
 
+const classes = ["JSS1","JSS2","JSS3","SSS1","SSS2","SSS3"]
 type butnOnClickHandler = (name: string) => void
 
 const butnOnClick = (evt: PointerEvent, handler: butnOnClickHandler) => {
-      if (evt.target instanceof HTMLElement) {
-        const button = evt.target.closest(".notes-button")
-        const content = button?.getAttribute("content")
-        if (!content) {
-          return
-        }
-        handler(content)
-      }
+  if (evt.target instanceof HTMLElement) {
+    const button = evt.target.closest(".notes-button")
+    const content = button?.getAttribute("content")
+    if (!content) {
+      return
+    }
+    handler(content)
+  }
 }
 export function generateRecentsButns(rarray: string[], onclick: butnOnClickHandler) {
   const recents = document.createElement("div")
@@ -61,27 +63,13 @@ export class OfflineSection {
     this.searchBar = this.root.querySelector(".notes-offline-options-sort") as HTMLInputElement
     this.termSelector.onchange = this.sort
     this.searchBar.oninput = this.sort
+    this.root.querySelector(".notes-offline-options-online")?.addEventListener("click", () => {
+      this.toOnlineSection()
+    })
 
     this.butnArea.onclick = (evt) => butnOnClick(evt,onclick)
-    this.butnArea.setAttribute("class","offline-butn-group")
-    if (notes.length > 0) {
-      notes.forEach(note => {
-        const lowerCase1 = note.toLowerCase()
-        const lowerCase2 = ""
-        if (lowerCase1.includes(lowerCase2)){
-          note = note.replace("firstterm","")
-          note = note.replace("thirdterm","")
-          note = note.replace("secondterm","")
-          console.log(note)
-          const newbutton = new IconButn(note,"notes-button","notes-button-text","file_open").root
-          newbutton.setAttribute("content",lowerCase1)
-          newbutton.setAttribute("name","notes-offline-open-note")
-          this.butnArea.append(newbutton)
-        }
-      });
-    } else {
-      this.root.innerHTML = this.root.innerHTML + '<p class="offline-no-notes"> No offline notes available here </p>'
-    }
+    this.butnArea.classList.add("offline-butn-group")
+    this.renderButns(notes)
     this.root.append(this.butnArea)
   }
 
@@ -96,7 +84,7 @@ export class OfflineSection {
   sort = () => {
     const allButtons = document.getElementsByName("notes-offline-open-note")
     const term = this.termSelector.value.toLowerCase()
-    const keywords = this.searchBar.value
+    const keywords = this.searchBar.value.toLowerCase()
     console.log("Sorting",term,keywords)
     allButtons.forEach(button => {
       const content = button.getAttribute("content")
@@ -109,5 +97,125 @@ export class OfflineSection {
         button.style.display = "none"
       }
     });
+  }
+
+  update  = async () => {
+    const notes = await window.fs.notes()
+    notes.forEach((note,i,a) =>{
+      a[i] = pretify(note)
+    })
+    this.renderButns(notes)
+  }
+
+  toOnlineSection = () => {
+    console.warn("No handler for going to online section")
+  }
+  renderButns = (notes: string[]) => {
+    this.butnArea.innerHTML = ""
+    if (notes.length === 0) {
+      this.root.innerHTML = this.root.innerHTML + '<p class="offline-no-notes"> No offline notes available here </p>'
+      return
     }
+    notes.forEach(note => {
+      let displayName = note
+      displayName = displayName.replace("firstterm","")
+      displayName = displayName.replace("thirdterm","")
+      displayName = displayName.replace("secondterm","")
+      const newbutton = new IconButn(displayName,"notes-button","notes-button-text","file_open").root
+      newbutton.setAttribute("content",note.toLowerCase())
+      newbutton.setAttribute("name","notes-offline-open-note")
+      this.butnArea.append(newbutton)
+    });
+  }
+}
+
+
+export class OnlineSection {
+  root = document.createElement("div")
+  termSelector = document.createElement("select")
+  classSelector = document.createElement("select")
+  butnArea = document.createElement("div")
+  searchBar = document.createElement("input")
+
+  constructor() {
+    this.root.innerHTML = `
+      <button class="notes-online-back notes-classic-button"> Back </button>
+      <h1> School Notes </h1>
+    `
+    this.root.classList.add("notes-online")
+    const controlContainer = document.createElement("div")
+    controlContainer.classList.add("notes-online-control-group")
+    this.classSelector.classList.add("notes-online-sorter")
+    this.termSelector.classList.add("notes-online-term-sorter")
+    this.searchBar.classList.add("notes-online-text-sorter")
+    this.searchBar.placeholder = "Search Notes"
+
+    this.termSelector.innerHTML = `
+      <option value="firstterm">First Term</option>
+      <option value="secondterm">Second Term</option>
+      <option value="thirdterm">Third Term</option>
+    `
+    this.classSelector.innerHTML =  `
+      <option value="">All</option>
+    `
+    addOptions(this.classSelector,...classes)
+    
+    controlContainer.append(
+      this.termSelector,
+      this.classSelector,
+      this.searchBar
+    )
+    this.root.append(
+      controlContainer,
+      this.butnArea
+    )
+    this.searchBar.oninput = () => this.sort()
+    this.termSelector.onchange = () => this.sort()
+    this.classSelector.onchange = () => this.sort()
+    
+  }
+
+  async update() {
+    this.butnArea.append(
+      (new LoadingSign).root
+    )
+    const notes = [
+      ...(await getOnlineNotes("firstterm")).notes,
+      ...(await getOnlineNotes("secondterm")).notes,
+      ...(await getOnlineNotes("thirdterm")).notes
+    ]
+    this.butnArea.innerHTML = ""
+    notes.forEach(note => {
+        let displayName = note.replace("firstterm","")
+        displayName = displayName.replace("secondterm","")
+        displayName = displayName.replace("thirdterm","")
+        displayName = pretify(displayName)
+        const newbutton = new IconButn(displayName,"notes-button","notes-button-text","file_download").root   
+        newbutton.classList.add("notes-online-butn")
+        newbutton.setAttribute("content",note)
+        newbutton.setAttribute("name","notes-online-download-note")
+        this.butnArea.append(newbutton)
+    })
+    this.sort()
+  }
+
+  sort = () => {
+    const term = this.termSelector.value.toLowerCase()
+    const curClass = this.classSelector.value.toLowerCase()
+    const search = this.searchBar.value.toLowerCase()
+    const butns = this.butnArea.querySelectorAll(".notes-online-butn")
+    butns.forEach(butnElem => {
+      const butn = butnElem as HTMLButtonElement
+      const value = butn.getAttribute("content")?.toLowerCase()
+      if (!value) {
+        return
+      }
+      if (value.includes(term) && value.includes(curClass) && value.includes(search)) {
+        butn.style.display = ""
+      } else {
+        butn.style.display = "none"
+      }
+    })
+  }
+
 }

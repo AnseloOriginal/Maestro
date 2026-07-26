@@ -34,3 +34,42 @@ export function pretify(input: string){
 export function fixTerms(input: string) {
   
 }
+
+export function showAndHide(shown: HTMLElement, hidden: HTMLElement) {
+  shown.style.display = ""
+  hidden.style.display = "none" 
+}
+
+export function pretifyAll(strs: string[]) {
+  strs.forEach((str,i,a) =>{
+    a[i] = pretify(str)
+  })
+  return strs
+}
+
+export function addOptions(select: HTMLSelectElement,...options: string[]) {
+  options.forEach(option => {
+    const newOption = document.createElement("option")
+    newOption.innerText = option
+    newOption.value = option
+    select.add(newOption);
+  })
+}
+
+export async function getOnlineNotes(term: string) {
+  const all: string[] = []
+  const group: string[] = []
+  let classes = ["JSS1","JSS2","JSS3","SSS1","SSS2","SSS3"]
+  for (let index = 7; index < 13; index++) {
+    const notes = await window.server.serverNotesInfo(index,term)
+    notes.forEach((name,i,a) => {
+      a[i] = term + " " + classes[index-7] + " " + name
+    });
+    if (notes.length > 0) {group.push(classes[index-7])}
+    all.push(...notes)
+  }
+  return {
+    "notes": all,
+    "group": group
+  }
+}
