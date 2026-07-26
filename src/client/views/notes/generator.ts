@@ -1,7 +1,7 @@
 import { IconButn } from "../../components/ui/buttons"
 import { LoadingSign } from "../../components/ui/loading-sign"
 import { DownloadInfoEvent } from "../../events/types"
-import { addOptions, extractSubjectName, getOnlineNotes, pretify } from "./helpers"
+import { addOptions, extractSubjectName, getOnlineNotes, pretify, pretifyAll } from "./helpers"
 
 const classes = ["JSS1","JSS2","JSS3","SSS1","SSS2","SSS3"]
 type butnOnClickHandler = (name: string) => void
@@ -101,10 +101,13 @@ export class OfflineSection {
   }
 
   update  = async () => {
-    const notes = await window.fs.notes()
-    notes.forEach((note,i,a) =>{
-      a[i] = pretify(note)
-    })
+    this.butnArea.innerHTML = ""
+    this.butnArea.append(
+      (new LoadingSign).root
+    )
+    const notes = pretifyAll(
+      await window.fs.notes()
+    )
     this.renderButns(notes)
   }
 
@@ -173,10 +176,17 @@ export class OnlineSection {
     this.searchBar.oninput = () => this.sort()
     this.termSelector.onchange = () => this.sort()
     this.classSelector.onchange = () => this.sort()
-    this.butnArea.onclick = (evt) => this.onClick(evt)    
+    this.butnArea.onclick = (evt) => this.onClick(evt)
+    this.root.querySelector(".notes-online-back")?.
+    addEventListener("click", () => this.toOfflineSection())
+  }
+
+  toOfflineSection() {
+    console.error("No handler assigned to online notes back button")
   }
 
   async update() {
+    this.butnArea.innerHTML = ""
     this.butnArea.append(
       (new LoadingSign).root
     )

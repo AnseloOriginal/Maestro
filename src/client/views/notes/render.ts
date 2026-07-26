@@ -50,10 +50,10 @@ export function render(renderer: Renderer, container: HTMLDivElement) {
       }
 
       const toOfflineNote = () => {
-        showAndHide(offlineNotes,onlineNotes)
         offlineSection.update()
+        showAndHide(offlineNotes,onlineNotes)
       }
-
+      onlineSection.toOfflineSection = toOfflineNote
       offlineSection.toOnlineSection = toOnlineNote
   })
 }
