@@ -6,6 +6,7 @@ import * as download from "./downloader.js"
 import * as lockdown from "./lockdown.js"
 import * as api from "./api.js"
 import * as log from "electron-log"
+import * as bible from "holy-bible"
 // import * as room from "./room.js"
 
 let InitAllowed = true
@@ -704,5 +705,14 @@ export async function verifyPin(pin) {
     }
   } else {
     return false
+  }
+}
+
+export async function getBibleVerses(request, type="web") {
+  try {
+    const results = await bible.default.get(request, type)
+    return results
+  } catch(e) {
+    return undefined
   }
 }

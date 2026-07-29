@@ -179,6 +179,7 @@ app.whenReady().then(() => {
   ipcMain.handle('Engage Lockdown', async (event) => engageLockdown(event.sender))
   ipcMain.handle('Unlock Lockdown', async (event,pin) => verifyLockdown(pin))
   ipcMain.handle('State of Lockdown', async (event) => isDeviceLockedDown(event.sender))
+  ipcMain.handle('Get Bible Verses', async (event,request,type) => Runtime.getBibleVerses(request,type))
   autoUpdater.checkForUpdates()
 })
 
