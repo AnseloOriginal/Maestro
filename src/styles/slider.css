@@ -3,6 +3,7 @@
   height: 100vh;
   position: fixed;
   border-right: 1px solid black;
+  z-index: 1;
 }
 .sidepanel-max{
   width: 150px;
