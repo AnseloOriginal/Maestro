@@ -13,7 +13,6 @@ export class Validator {
     }
     const onlineUserInfo = await window.server.serverUserInfo()
     const failed = typeof onlineUserInfo?.["username"] !== "string"
-    console.log("Online UserInfo",onlineUserInfo,failed)
 
     if (failed && this.userinfo)  {
       //Return since the user info already exists from cache

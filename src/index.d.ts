@@ -12,6 +12,12 @@ interface DownloadInfo {
   status: "complete" | "error"
 }
 
+interface Verse {
+  passage: string
+  text: string
+  version: string
+}
+
 declare global {
   interface Window {
     runtime: {
@@ -37,6 +43,10 @@ declare global {
 
     sys: {
       appVersion: () => Promise<string>
+    }
+
+    media: {
+      getBibleVerses: (verse: string) => Promise<Verse | undefined>
     }
   }
 }

@@ -15,7 +15,6 @@ export function getValue<K extends keyof typeof SchemaMap, T>(
     }
     const data = JSON.parse(storageData)
     const result = schema.safeParse(data)
-    console.log(result)
     if (result.success) {
       return result.data as z.infer<typeof SchemaMap[K]>
     } else {

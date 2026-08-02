@@ -32,11 +32,13 @@ export class Widget {
   mainDom  = document.createElement("div")
   options: Object
   format: WidgetFormatType
+  data: string[]
 
   constructor(format: WidgetFormatType ="largeandsmall", options={}, ...data: string[]) {
     const mainDom =  document.createElement("div")
     this.mainDom = mainDom
     this.options = options
+    this.data = data
     this.format = format
     this.formatText(data)
   }

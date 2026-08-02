@@ -5,6 +5,7 @@ import {Slider} from "./ui/slider.ts"
 import { VIEWS, AvailableViews } from "../views/index.ts";
 import { EventMap } from "../events/types.ts";
 import { addEventHandler } from "../events/receive.ts";
+import { DialogManager } from "./ui/dialog-manager.ts";
 
 interface Listener {
   name: keyof EventMap
@@ -21,6 +22,7 @@ export class Renderer {
   slider: Slider
   currentView: AvailableViews
   listeners: Listener[] = [] 
+  dialogManager = new DialogManager()
 
   constructor(app:App) {
     this.app = app
@@ -32,6 +34,7 @@ export class Renderer {
     this.subContainer = document.createElement("div")
     this.subContainer.className = "content2"
     this.mainContainer.append(
+      this.dialogManager.root,
       this.alertContainer,
       this.subContainer
     )

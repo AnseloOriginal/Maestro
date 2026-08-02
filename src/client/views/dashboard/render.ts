@@ -15,7 +15,6 @@ export function render(renderer: Renderer, container: HTMLDivElement, updateCall
   
   const widgetLine = new DashboardWidgets(renderer)
   container.append(widgetLine.root)
-  console.log(widgetLine)
 }
 
 export function update(renderer: Renderer, container: HTMLDivElement) {

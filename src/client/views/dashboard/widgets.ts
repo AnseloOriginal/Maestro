@@ -28,5 +28,20 @@ export class DashboardWidgets {
       }
     })
 
+    widgetsArray[3].onClick(
+      (widget) => renderer.dialogManager.newDialog((dialog) => {
+        const h2  = document.createElement("h2")
+        h2.innerText = "Verse of the Day"
+        const p = document.createElement("p")
+        window.media.getBibleVerses(widget.data[0]).then(verses => {
+          if (!verses) {
+            return
+          }
+          p.innerHTML = verses.text
+        })
+        dialog.root.append(h2,p)
+      })
+    )
+
   }
 }
