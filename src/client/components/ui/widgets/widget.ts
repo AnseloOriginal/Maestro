@@ -1,3 +1,4 @@
+import { getValue } from "../../../cache/cache"
 import {widgetFormatter} from "./widgetFormatter"
 
 type WidgetFormatType = "largeandsmall"
@@ -29,33 +30,42 @@ export class Widget {
 
   mainDom  = document.createElement("div")
   options: Object
-  data: string[]
   format: WidgetFormatType
 
   constructor(format: WidgetFormatType ="largeandsmall", options={}, ...data: string[]) {
-    //Supported formats include largeandsmall, 
     const mainDom =  document.createElement("div")
     this.mainDom = mainDom
     this.options = options
-    this.data = data
     this.format = format
-    this.formatText(format,options,data)
-    // const formatter = new widgetFormatter(this)
+    this.formatText(data)
   }
   
-  formatText(formatType: WidgetFormatType ,options: Object,data: string[]) {
+  formatText(data: string[]) {
     this.mainDom.innerHTML = ""
-    if (formatType === "largeandsmall") {
+    if (this.format === "largeandsmall") {
         const text1 = document.createElement("p")
-        text1.classList.add("bolden","larger","no-bottom")
+        text1.classList.add("bolden","larger","no-bottom","widget-largeandsmall-text1")
         const text2 = document.createElement("p")
-        text2.classList.add("no-top")
+        text2.classList.add("no-top","widget-largeandsmall-text2")
         text1.innerHTML = data[0] || "No Data"
         text2.innerHTML = data[1] || "No Data"
         this.mainDom.append(text1,text2)
       }
-      
+  }
+
+  updateData(...data: string[]) {
+    if (this.format) {
+      const text1 = this.mainDom.querySelector(".widget-largeandsmall-text1")
+      const text2 = this.mainDom.querySelector(".widget-largeandsmall-text2")
+      if (text1 && data[0]) {
+        text1.innerHTML = data[0]
+      }
+      if (text2 && data[1]) {
+        text2.innerHTML = data[1]
+      }
     }
+  }
+
   onHover = (func: (s: Widget, e: PointerEvent | MouseEvent) => void) => {
     this.mainDom.onmouseover = (evt) => func(this,evt)
   }
@@ -89,7 +99,12 @@ export class TimeWidget extends Widget {
 }
 
 export class VersionWidget extends Widget {
-  constructor(version: string) {
-    super("largeandsmall",{},version,"Maestro") 
+  constructor() {
+    const appVersion = getValue("version","0.0.0")
+    super("largeandsmall",{},appVersion,"Maestro") 
+  }
+
+  changeVersion(newVersion: string) {
+    this.updateData(newVersion,"Maestro")
   }
 }

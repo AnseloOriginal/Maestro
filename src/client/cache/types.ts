@@ -18,9 +18,12 @@ const UserSchema = z.object({
   joined: z.string().default(() => new Date().getFullYear().toString())
 })
 
+export const versionSchema = z.string()
+
 export const SchemaMap = {
   'username': UserSchema,
-  'test': testSchema
+  'test': testSchema,
+  'version': versionSchema
 }
 
 export type SchemaTypes = {

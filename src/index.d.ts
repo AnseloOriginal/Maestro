@@ -34,5 +34,9 @@ declare global {
       open:  (name: string) => Promise<void>
       download: (name: string) => Promise<string[]>
     }
+
+    sys: {
+      appVersion: () => Promise<string>
+    }
   }
 }

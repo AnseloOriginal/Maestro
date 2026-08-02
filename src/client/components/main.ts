@@ -1,8 +1,9 @@
-import {Slider} from "./ui/slider.ts"
 import {Renderer} from "./renderer.ts"
 import {Session} from "./workers/session.ts"
 import { Validator } from "./workers/validator.ts"
 import { listenToElectron } from "../events/listenToElectron.ts"
+import { getValue, updateValue } from "../cache/cache.ts"
+import { sendEvent } from "../events/send.ts"
 
 export class App {
   root: HTMLElement
@@ -27,6 +28,7 @@ export class App {
     //In case state didn't change
     await this.validator.validate()
     this.renderer.updateAlert()
+    this.checkForUpdates()
     this.renderer.render("dashboard")
   }
 
@@ -34,5 +36,18 @@ export class App {
     await this.validator.validate()
     this.renderer.updateAlert()
     this.renderer.updateRendered()
+  }
+
+  checkForUpdates = async () => {
+    const lastVersion = getValue("version","0.0.0")
+    const currentVersion = await window.sys.appVersion()
+    if (lastVersion == currentVersion) {
+      return
+    }
+    sendEvent("update-event",{
+      oldVersion: lastVersion,
+      newVersion: currentVersion
+    })
+    updateValue("version",currentVersion)
   }
 }

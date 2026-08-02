@@ -13,7 +13,7 @@ export function render(renderer: Renderer, container: HTMLDivElement, updateCall
   //   return
   // }
   
-  const widgetLine = new DashboardWidgets()
+  const widgetLine = new DashboardWidgets(renderer)
   container.append(widgetLine.root)
   console.log(widgetLine)
 }
