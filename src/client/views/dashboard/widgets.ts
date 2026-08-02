@@ -18,7 +18,8 @@ export class DashboardWidgets {
     const widgetsArray = setupWidget(
       new widgets.DateWidget(),
       new widgets.TimeWidget(),
-      new widgets.VersionWidget()
+      new widgets.VersionWidget(),
+      new widgets.VOTDWidget()
     )
 
     renderer.addEventHandler("update-event", (evt) => {

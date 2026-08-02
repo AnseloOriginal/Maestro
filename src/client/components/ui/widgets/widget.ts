@@ -1,4 +1,5 @@
 import { getValue } from "../../../cache/cache"
+import { getVerseOfTheDay } from "../../gospel/votd/main"
 import {widgetFormatter} from "./widgetFormatter"
 
 type WidgetFormatType = "largeandsmall"
@@ -106,5 +107,12 @@ export class VersionWidget extends Widget {
 
   changeVersion(newVersion: string) {
     this.updateData(newVersion,"Maestro")
+  }
+}
+
+export class VOTDWidget extends Widget {
+  constructor() {
+    const verse = getVerseOfTheDay()
+    super("largeandsmall",{},verse,"Verse of the Day") 
   }
 }
