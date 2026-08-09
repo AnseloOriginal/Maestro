@@ -126,7 +126,8 @@
   grid-template-columns: 1fr 1fr;
   height: 99vh;
   background-color: rgb(235, 235, 235);
-  padding: 10px;
+  padding: 15px;
+  gap: 15px;
 }
 
 
@@ -146,15 +147,27 @@
 .test-mainpage-maindiv{
   background-color: white;
   min-height: 200px;
+  max-height: 300px;
   border: 1px solid rgb(109, 109, 109);
   border-radius: 5px;
   padding: 5px;
-  overflow: scroll;
-  p {
+  overflow-y: auto;
+
+  /* p {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     display: inline-block;
     font-size: medium;
     font-weight: 400;
+  } */
+  .test-mainpage-body {
+    padding: 0px 10px;
+    font-size: 0.9em;
+  }
+  .test-mainpage-line {
+    display: flex;
+    span {
+      flex: 1;
+    }
   }
   .test-mainpage-subheaders{
     font-size: 1.1em;

@@ -67,6 +67,7 @@ export class Renderer {
     this.slider.addButton("notes","book",true,"Notes")
     .onclickEvent(() => this.render("notes"))
     this.slider.addButton("tests","ink_pen",true,"Tests")
+    .onclickEvent(() => this.render("tests"))
     this.slider.addButton("videos","video_library",true,"Videos")
   }
 

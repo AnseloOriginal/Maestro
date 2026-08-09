@@ -1,3 +1,28 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('./../../fonts/Inter-VariableFont.ttf') format('woff2 supports variations'),
+       url('./../../fonts/Inter-VariableFont.ttf') format('woff2-variations');
+  font-weight: 100 900; /* Defines the min and max weight range */
+  font-style: normal;
+  font-display: swap;   /* Prevents invisible text while loading */
+}
+
+:root  {
+  font-family: "Inter";
+}
+
+button {
+  font-family: "Inter";
+}
+
+select {
+  font-family: "Inter";
+}
+
+input {
+  font-family: "Inter";
+}
+
 .main-button{
   background-color: white;
   border: 10px solid black;

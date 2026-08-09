@@ -48,5 +48,8 @@ declare global {
     media: {
       getBibleVerses: (verse: string) => Promise<Verse | undefined>
     }
+    test: {
+      names: (type: "scheduled" | "special") => Promise<[string, string][]>
+    }
   }
 }

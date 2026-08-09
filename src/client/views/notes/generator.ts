@@ -24,7 +24,12 @@ export function generateRecentsButns(rarray: string[], onclick: butnOnClickHandl
   recents.onclick = (evt) => butnOnClick(evt,onclick)
   if (rarray.length > 0) {
     rarray.forEach(recent => {
-      const newbutton = new IconButn(recent,"notes-button","notes-button-text","file_open").root
+      let displayName = recent
+      .replaceAll("firstterm","First Term")
+      .replaceAll("secondterm","Second Term")
+      .replaceAll("thirdterm","Third Term")
+      displayName = pretify(displayName)
+      const newbutton = new IconButn(displayName,"notes-button","notes-button-text","file_open").root
       newbutton.setAttribute("name","notes-recents-button")
       newbutton.setAttribute("content",recent.toLowerCase())
       recents.append(newbutton)
