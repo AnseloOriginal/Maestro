@@ -2,6 +2,7 @@ import { getValue } from "../../cache/cache.ts"
 import {Renderer} from "../../components/renderer.ts"
 import { LoadingSign } from "../../components/ui/loading-sign.ts"
 import { BaseTestWindow } from "./base.ts"
+import { convertOfflineTestToTuple } from "./helpers.ts"
 import { ListGenerator } from "./list-generator.ts"
 
 export function render(renderer: Renderer, container: HTMLDivElement) {
@@ -15,9 +16,12 @@ export function render(renderer: Renderer, container: HTMLDivElement) {
   container.append(maincontainer)
 
   const start = async () => {
+    const publicBanks = getValue("public banks", false) || await window.test.names("public")
 
     const scheduled = await window.test.names("scheduled")
     const special = await window.test.names("special")
+    const pastOfflineTests = await window.test.offline()
+    const offlineTestNormalized = convertOfflineTestToTuple(pastOfflineTests,publicBanks)
 
     maincontainer.innerHTML = ""
     maincontainer.append(
@@ -32,7 +36,14 @@ export function render(renderer: Renderer, container: HTMLDivElement) {
         special,
         [["Start","start"]]
       )).root,
-      (new BaseTestWindow("D")).root
+      (new ListGenerator(
+        "Past Offline Tests",
+        offlineTestNormalized,
+        [
+          ["Continue","continue"],
+          ["Delete","delete"]
+        ]
+      )).root
     )
   }
   start()

@@ -49,7 +49,8 @@ declare global {
       getBibleVerses: (verse: string) => Promise<Verse | undefined>
     }
     test: {
-      names: (type: "scheduled" | "special") => Promise<[string, string][]>
+      names: (type: "scheduled" | "special" | "public") => Promise<[string, string][]>
+      offline: () => Promise<{[key: string]: number[], }>
     }
   }
 }

@@ -19,11 +19,12 @@ const UserSchema = z.object({
 })
 
 export const versionSchema = z.string()
-
+export const publicBankSchema = z.array(z.tuple([z.string(),z.string()]))
 export const SchemaMap = {
   'username': UserSchema,
   'test': testSchema,
-  'version': versionSchema
+  'version': versionSchema,
+  "public banks": publicBankSchema
 }
 
 export type SchemaTypes = {
