@@ -2,6 +2,8 @@ import * as dashboard from "./dashboard/render.ts"
 import * as base from "./base/render.ts"
 import * as notes from "./notes/render.ts"
 import * as tests from "./tests/render.ts"
+import * as videos from "./videos/render.ts"
+import * as videosPlayer from "./videoplayer/render.ts"
 
 export type AvailableViews = keyof typeof VIEWS
 export const VIEWS = {
@@ -20,5 +22,13 @@ export const VIEWS = {
   tests: {
     render: tests.render,
     update: tests.update
+  },
+  videos: {
+    render: videos.render,
+    update: videos.update
+  },
+  "video-player": {
+    render: videosPlayer.render,
+    update: videosPlayer.update
   }
 }

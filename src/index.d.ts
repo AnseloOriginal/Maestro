@@ -18,6 +18,24 @@ interface Verse {
   version: string
 }
 
+export interface MediaLibrary {
+  content: MediaSection[]
+  offline: boolean
+}
+
+interface MediaSection {
+  title: string
+  group: MediaVideo[]
+}
+
+export interface MediaVideo {
+  imageID: string
+    title: string
+    videoID: string
+    downloads: boolean
+    source?: string
+}
+
 declare global {
   interface Window {
     runtime: {
@@ -47,10 +65,14 @@ declare global {
 
     media: {
       getBibleVerses: (verse: string) => Promise<Verse | undefined>
+      toVideoURL: (id: string) =>  Promise<string>
+      toImageURL: (id: string) =>  Promise<string>
+      library: () => Promise<MediaLibrary>
     }
     test: {
       names: (type: "scheduled" | "special" | "public") => Promise<[string, string][]>
       offline: () => Promise<{[key: string]: number[], }>
+      
     }
   }
 }

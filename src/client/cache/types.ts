@@ -20,11 +20,20 @@ const UserSchema = z.object({
 
 export const versionSchema = z.string()
 export const publicBankSchema = z.array(z.tuple([z.string(),z.string()]))
+export const targetVideoSchema = z.object({
+  imageID: z.string(),
+  title: z.string(),
+  videoID: z.string(),
+  downloads: z.boolean().default(false),
+  source: z.string().optional()
+})
+
 export const SchemaMap = {
   'username': UserSchema,
   'test': testSchema,
   'version': versionSchema,
-  "public banks": publicBankSchema
+  "public banks": publicBankSchema,
+  "target video": targetVideoSchema
 }
 
 export type SchemaTypes = {
