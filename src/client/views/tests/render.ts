@@ -23,6 +23,22 @@ export function render(renderer: Renderer, container: HTMLDivElement) {
     const pastOfflineTests = await window.test.offline()
     const offlineTestNormalized = convertOfflineTestToTuple(pastOfflineTests,publicBanks)
 
+    const comingSoonTag = document.createElement("p")
+    comingSoonTag.innerHTML = "Functionality will return in newer versions."
+
+    const offlinePastTest = new ListGenerator(
+        "Past Offline Tests",
+        offlineTestNormalized,
+        [
+          ["Continue","continue"],
+          ["Delete","delete"]
+        ]
+    ) //Coming soom
+    offlinePastTest.body.innerHTML = ""
+    offlinePastTest.body.append(comingSoonTag)
+    const offlineTest = new BaseTestWindow("New Offline Test")
+    offlineTest.body.append(comingSoonTag)
+
     maincontainer.innerHTML = ""
     maincontainer.append(
       (new ListGenerator(
@@ -30,20 +46,13 @@ export function render(renderer: Renderer, container: HTMLDivElement) {
         scheduled,
         [["Start","start"]]
       )).root,
-      (new BaseTestWindow("B")).root,
+      offlineTest.root,
       (new ListGenerator(
         "Special Exams",
         special,
         [["Start","start"]]
       )).root,
-      (new ListGenerator(
-        "Past Offline Tests",
-        offlineTestNormalized,
-        [
-          ["Continue","continue"],
-          ["Delete","delete"]
-        ]
-      )).root
+      offlinePastTest.root
     )
   }
   start()
