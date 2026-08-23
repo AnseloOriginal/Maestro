@@ -36,6 +36,11 @@ export interface MediaVideo {
     source?: string
 }
 
+export interface TestDetails {
+  duration?: number
+  calculator?: boolean
+}
+
 declare global {
   interface Window {
     runtime: {
@@ -71,7 +76,8 @@ declare global {
     }
     test: {
       names: (type: "scheduled" | "special" | "public") => Promise<[string, string][]>
-      offline: () => Promise<{[key: string]: number[], }>
+      offline: () => Promise<{[key: string]: number[], }>,
+      details: (uuid: string, type: string) => Promise<TestDetails | undefined>
       
     }
   }

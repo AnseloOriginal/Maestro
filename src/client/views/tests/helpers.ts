@@ -37,3 +37,5 @@ export function convertOfflineTestToTuple(
 }
 
 const dateNumToString = (n: number) => timeFormatter.format(n) + " " + dateFormatter.format(n)
+
+export const secToMinutes = (n: number | undefined) => n ? n / 60 : n

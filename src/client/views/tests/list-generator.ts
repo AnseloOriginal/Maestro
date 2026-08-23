@@ -1,10 +1,14 @@
 import { BaseTestWindow } from "./base";
 
+export type mainHandlerFunc = (type: string, uuid: string, listType: string, name: string) => void
+
 export class ListGenerator extends BaseTestWindow {
   constructor(
     name: string,
     list: [string, string][],
     buttons: [string, string][],
+    listType: "scheduled" | "special" | "offline",
+    handleOnClick?: mainHandlerFunc
   ) {
     super(name)
     list.forEach(instance => {
@@ -21,11 +25,21 @@ export class ListGenerator extends BaseTestWindow {
       buttons.forEach(buttonDef => {
         const button = document.createElement("button")
         button.innerText = buttonDef[0]
+        button.onclick = () => this.handleOnClick(
+          buttonDef[1],id,listType,name
+        )
         buttonContainer.append(button)
       })
 
       line.classList.add("test-mainpage-line")
+      if (handleOnClick) {
+        this.handleOnClick = handleOnClick
+      }
       
     })
+  }
+
+  handleOnClick = (type: string, uuid: string, listType: string, name: string) => {
+    console.warn("No handler attached to list generator to handle:",type,uuid,listType)
   }
 }
