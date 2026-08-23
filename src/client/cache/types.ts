@@ -27,13 +27,19 @@ export const targetVideoSchema = z.object({
   downloads: z.boolean().default(false),
   source: z.string().optional()
 })
+export const targetTest = z.object({
+  type: z.string(),
+  uuid: z.string(),
+  isOffline: z.boolean().default(false),
+})
 
 export const SchemaMap = {
   'username': UserSchema,
   'test': testSchema,
   'version': versionSchema,
   "public banks": publicBankSchema,
-  "target video": targetVideoSchema
+  "target video": targetVideoSchema,
+  "target-test": targetTest
 }
 
 export type SchemaTypes = {

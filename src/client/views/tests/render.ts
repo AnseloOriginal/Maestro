@@ -1,4 +1,4 @@
-import { getValue } from "../../cache/cache.ts"
+import { getValue, updateValue } from "../../cache/cache.ts"
 import {Renderer} from "../../components/renderer.ts"
 import { LoadingSign } from "../../components/ui/loading-sign.ts"
 import { showAndHide } from "../notes/helpers.ts"
@@ -20,6 +20,13 @@ export function render(renderer: Renderer, container: HTMLDivElement) {
       showAndHide(preStartContainer,maincontainer)
     } else if (type === "cancel") {
       showAndHide(maincontainer,preStartContainer)
+    } else if (type === "mainstart") {
+      updateValue("target-test",{
+        type: listType,
+        uuid,
+        isOffline: false
+      })
+      renderer.render("test")
     }
   }
   initialRendering(maincontainer,handleOnClick)
