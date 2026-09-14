@@ -29,7 +29,9 @@ export class App {
     await this.validator.validate()
     this.renderer.updateAlert()
     this.checkForUpdates()
-    this.renderer.render("dashboard")
+    if (this.renderer.currentView === "base") {
+      this.renderer.render("dashboard")
+    }
   }
 
   StateChanged = async () => {

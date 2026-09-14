@@ -1,4 +1,3 @@
-import { type } from "node:os";
 import * as api from "./api.js"
 
 async function simpleGet(url,post,debug){
@@ -15,7 +14,7 @@ async function simpleGet(url,post,debug){
     if (data[0] === 0) {
       return [0, data[1]]
     } else {
-      return [1,data[1]]
+      return [1,data[1], data[0]]
     }
   } catch(error) {
     return [1,"Internal server/app error",error]
@@ -256,7 +255,7 @@ export async function sendResultData(uuid,section,subsection,question,answer,sid
   uuid,
   section,subsection,question,answer,sid
   }
-  console.log(uuid,section,subsection,question,answer,sid)
+  console.log(uuid,section,subsection,question,answer)
   return simpleGet(api.getTestResultsURL(),message)
 }
 
@@ -276,6 +275,15 @@ export async function getTestDetails(uuid,location) {
     location
   }
   return simpleGet(api.getTestDetailsURL(),message)
+}
+
+export async function uploadTestAnswers(sid,uuid,answers) {
+  const message = {
+    sid,
+    uuid,
+    answers: JSON.stringify(answers)
+  }
+  return simpleGet(api.getTestUploadURL(),message)
 }
 
 export async function TestVariable(action,uuid,name,content,sessid) {

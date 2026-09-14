@@ -1,0 +1,110 @@
+.test-root {
+  display: flex;
+  flex-direction: column;
+}
+.test-subjectlist{
+  border-bottom: 2px solid black;
+  height: 20px;
+
+  button {
+    border-top: 2px solid black;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    border-bottom: 0px;
+    margin-left: 5px;
+    background-color: white;
+    border-radius: 0px;
+    border-top-left-radius: 5%;
+    border-top-right-radius: 5%;
+    max-width: 200px;
+    min-width: 50px;
+    transition: background-color 0.15s color 0.15s;
+    font-size: 1.1em;
+    border-top-left-radius: 10px;
+  }
+
+  button:hover {
+    background-color: gray;
+  }
+
+  button:active {
+    background-color: black;
+    color: white;
+  }
+
+  button[selected="yes"] {
+    background-color: black;
+    color: white;
+  }
+}
+
+
+.test-testarea-question{
+  font-size: 1.1em;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  padding: 20px;
+}
+
+.test-testarea-options {
+  label {
+    display: block;
+    /* vertical-align: middle; */
+    input {
+      width: 15px;
+      height: 15px;
+    }
+    p {
+      display: inline-block;
+    }
+  }
+}
+
+.test-numberarea{
+  border: 1px solid black;
+  padding: 16px;
+  
+  button {
+    width: 32px;
+    height: 32px;
+    margin-left: 8px;
+    color: black;
+    background-color: white;
+    border: 2px solid black;
+    margin-bottom: 8px;
+  }
+
+  button:hover{
+    color: black;
+    background-color: gray;
+  }
+
+  button:active{
+    color: white;
+    background-color: black;
+  }
+
+  button[selected="true"] {
+    color: white;
+    background-color: black;
+  }
+  
+  button[answered="true"]:not(button[selected="true"]) {
+    color: black;
+    background-color: lightgreen;
+  }
+
+  button[correct="true"]:not(button[selected="true"]) {
+    color: black;
+    background-color: lightgreen;
+  }
+
+  button[correct="false"]:not(button[selected="true"]) {
+    color: black;
+    background-color: rgb(214, 5, 5);
+  }
+}
+
+.test-highlight{
+  background-color: rgb(208, 250, 208);
+}
+

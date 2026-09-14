@@ -1,5 +1,5 @@
 import * as isDev from "electron-is-dev";
-const mainURL = isDev.default ? "http://localhost/aba" : "http://192.168.1.2" //"http://192.168.1.2" //"http://localhost/aba"
+const mainURL = isDev.default ? "http://127.0.0.1/aba" : "http://192.168.1.2" //"http://192.168.1.2" //"http://localhost/aba"
 const serverMainSpace = "server"
 const serverStatusSpace = "status"
 const serverCreateSpace = "create"
@@ -19,6 +19,7 @@ const serverGetMonitorDataSpace = "get.php"
 const serverTestDataSpace = "banks"
 const serverMediaSpace = "media"
 const serverTestNameSpace = "name.php"
+const serverTestUploadSpace = "upload.php"
 const serverTestAccesSpace = "access.php"
 const serverBankDetailsSpace = "bankdetails.php"
 const serverBankQuestionsSpace = "questions.php"
@@ -167,3 +168,6 @@ export function getVerifyPinURL() {
   return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverVerifyPinResultSpace)
 }
 
+export function getTestUploadURL() {
+  return apiJoin(mainURL,serverMainSpace, serverDataSpace, serverTestSpace, serverTestUploadSpace)
+}

@@ -56,7 +56,8 @@ contextBridge.exposeInMainWorld('test', {
   generate: (uuid,no,list,type,duration) => ipcRenderer.invoke("Test Generate",uuid,no,list,type,duration),
   offline: () => ipcRenderer.invoke("Offline Tests"),
   displayResult: (uuid,location,data)  => ipcRenderer.invoke("Test Final Results",uuid,location,data),
-  getBankQuestions: (uuid,location)  => ipcRenderer.invoke("Test Bank Questions",uuid,location)
+  getBankQuestions: (uuid,location)  => ipcRenderer.invoke("Test Bank Questions",uuid,location),
+  upload: (uuid,answers) => ipcRenderer.invoke("Upload Test Answers",uuid,answers)
 })
 
 contextBridge.exposeInMainWorld('media', {

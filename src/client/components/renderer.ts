@@ -103,4 +103,15 @@ export class Renderer {
     this.listeners.push(listener)
     addEventHandler(name,func)
   }
+
+  setAppMode(mode: "normal" | "focused") {
+    if (mode === "normal") {
+      this.slider.show()
+      this.mainContainer.classList.remove("content-no-padddng")
+    } else if (mode === "focused") {
+      this.slider.hide()
+      this.mainContainer.classList.add("content-no-padddng")
+    }
+
+  }
 }

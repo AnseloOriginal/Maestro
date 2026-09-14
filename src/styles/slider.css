@@ -17,9 +17,17 @@
   animation: slideIn 0.5s ease-out forwards;
 }
 
+.sidepanel-hide {
+  display: none;
+}
+
 .content{
   background-color:rgb(254, 254, 254);
   padding-left: 60px;
+}
+
+.content-no-padddng {
+  padding-left: 0px;  
 }
 
 .content-fullscreen{

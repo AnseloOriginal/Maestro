@@ -41,6 +41,14 @@ export interface TestDetails {
   calculator?: boolean
 }
 
+export interface TestQuestion {
+  options: string[]
+  question: string
+  preanswer?: number | string
+}
+
+export type TestQuestions = {[name: string]: TestQuestion[][]}
+
 declare global {
   interface Window {
     runtime: {
@@ -77,8 +85,13 @@ declare global {
     test: {
       names: (type: "scheduled" | "special" | "public") => Promise<[string, string][]>
       offline: () => Promise<{[key: string]: number[], }>,
-      details: (uuid: string, type: string) => Promise<TestDetails | undefined>
-      
+      details: (uuid: string, type: string) => Promise<TestDetails | undefined>,
+      questions: (uuid: string, type: string) => Promise<TestQuestions | undefined | "OUT_OF_RETRIES" | "USER_HAS_SUBMITTED">
+      results: (uuid: string,section: string,sub: number,ques: number,answer: number,type: string) => Promise<boolean>,
+      submit: (uuid: string,location: string) => Promise<boolean>
+      displayResult: (uuid: string,location:string,examName: string)  => Promise<void>
+      variable: (action: "get" | "set",uuid: string,name: string, content: string | number | null,location: string) => Promise<string | number | undefined>
+      upload: (uuid: string, answers: TestQuestions) => Promise<boolean>
     }
   }
 }

@@ -97,4 +97,7 @@ export class Slider {
       }
     }
   }
+
+  hide = () => this.container.classList.add("sidepanel-hide")
+  show = () => this.container.classList.remove("sidepanel-hide")
 }

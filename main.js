@@ -16,7 +16,7 @@ autoUpdater.on('error', err => {
   console.error('Update error', err)
 })
 
-autoUpdater.autoInstallOnAppQuit = true;
+autoUpdater.autoInstallOnAppQuit = false;
 autoUpdater.autoDownload = true;
 
 let updateReady = false;
@@ -180,6 +180,7 @@ app.whenReady().then(() => {
   ipcMain.handle('Unlock Lockdown', async (event,pin) => verifyLockdown(pin))
   ipcMain.handle('State of Lockdown', async (event) => isDeviceLockedDown(event.sender))
   ipcMain.handle('Get Bible Verses', async (event,request,type) => Runtime.getBibleVerses(request,type))
+  ipcMain.handle('Upload Test Answers', async (event,uuid,answers) => Runtime.uploadTestAnswers(uuid,answers))
   autoUpdater.checkForUpdates()
 })
 
@@ -211,28 +212,22 @@ const removeLock = () => {
   return true
 }
 
-let isUpdating = false;
+let isQuittingForUpdate = false;
 
-app.on('window-all-closed', () => {
-  if (updateReady) {
-    isUpdating = true;
-    // silent: false (show installer UI), isForceRunAfter: true (run app after finish)
-    autoUpdater.quitAndInstall(false, true); 
-  } else {
-    if (process.platform !== 'darwin') {
-      app.quit();
-    }
+app.on('before-quit', (e) => {
+  if (updateReady && !isQuittingForUpdate) {
+    e.preventDefault();
+    isQuittingForUpdate = true;
+    BrowserWindow.getAllWindows().forEach(w => w.destroy());
+    setImmediate(() => autoUpdater.quitAndInstall(false, true));
   }
 });
 
-app.on('before-quit', (e) => {
-  if (updateReady && !isUpdating) {
-    // This handles cases where the user selects "Quit" from a menu 
-    // instead of just closing the last window.
-    isUpdating = true;
-    BrowserWindow.getAllWindows().forEach(w => w.destroy());
-    autoUpdater.quitAndInstall(false, true);
+app.on('window-all-closed', () => {
+  if (!updateReady && process.platform !== 'darwin') {
+    app.quit();
   }
+  // if updateReady, do nothing here — before-quit already owns the quit+install flow
 });
 
 setInterval(() => {

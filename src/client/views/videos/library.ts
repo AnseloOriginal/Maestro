@@ -2,6 +2,7 @@ import { MediaLibrary, MediaVideo } from "../../.."
 import { updateValue } from "../../cache/cache"
 import { Renderer } from "../../components/renderer"
 import { LoadingSign } from "../../components/ui/loading-sign"
+import { MessageDisplay } from "../../components/ui/message"
 
 export class VideoLibrary {
 
@@ -29,7 +30,7 @@ export class VideoLibrary {
   renderVideoLibrary = async (data: MediaLibrary) => {
     this.root.innerHTML = ""
     if (data.offline) {
-      return
+      (new MessageDisplay("offline","Seems you aren't connected")).root
     }
 
     for(let s = 0;s<data.content.length;s++) {

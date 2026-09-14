@@ -303,6 +303,10 @@ export async function getTestQuestions(uuid,location,includeAnswers) {
       const response = await server.getQuestionData(uuid,sessionID,location)
       if (response[0] === 0) {
         return response[1]
+      } else if (response[2] === 10) {
+        return "OUT_OF_RETRIES"
+      } else if (response[2] === 9) {
+        return "USER_HAS_SUBMITTED"
       } else {
         console.log(response)
         return false
@@ -714,5 +718,15 @@ export async function getBibleVerses(request, type="web") {
     return results
   } catch(e) {
     return undefined
+  }
+}
+
+export async function uploadTestAnswers(uuid, answers) {
+  if (await server.serverIsAvailable() && sessionID) { 
+    const response = await server.uploadTestAnswers(sessionID,uuid,answers)
+    console.log("Result from upload",response)
+    return response[0] === 0
+  } else {
+    return false
   }
 }
