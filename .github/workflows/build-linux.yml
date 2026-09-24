@@ -5,7 +5,14 @@ on:
 
 jobs:
   build-linux:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            arch: x64
+          - os: ubuntu-24.04-arm
+            arch: arm64
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
@@ -20,10 +27,10 @@ jobs:
         run: npm ci
 
       - name: Build AppImage
-        run: npx electron-builder -l AppImage --publish=never
+        run: npx electron-builder -l AppImage --${{ matrix.arch }} --publish=never
 
       - name: Upload AppImage
         uses: actions/upload-artifact@v4
         with:
-          name: linux-appimage
+          name: linux-appimage-${{ matrix.arch }}
           path: dist/*.AppImage
