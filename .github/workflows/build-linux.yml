@@ -2,6 +2,12 @@ name: Build Linux AppImage
 
 on:
   workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: 'Commit SHA or Ref to checkout and build'
+        required: false
+        type: string
+        default: ''
 
 jobs:
   build-linux:
@@ -18,7 +24,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ inputs.commit_sha != '' && inputs.commit_sha || github.sha }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
